@@ -15,14 +15,18 @@ flowchart LR
     A[content/<br>resume.yaml · bio.md · projects/*.md] --> B[load.py<br>parse + front matter]
     B --> C[models.py<br>pydantic validation]
     C --> D[render/site.py<br>Jinja templates]
-    D --> E[_site/<br>static HTML]
+    C --> P[render/pdf.py<br>Typst]
+    D --> E[_site/<br>static HTML + resume.pdf]
+    P --> E
     E --> F[GitHub Actions<br>→ GitHub Pages]
 ```
 
 - **Extract:** `load.py` reads YAML and Markdown (with front matter) from `content/`.
 - **Validate:** `models.py` defines strict pydantic models. Unknown fields, bad dates, and
   roles that end before they start fail the build.
-- **Render:** `render/site.py` turns the validated `Site` into HTML using `site/templates/`.
+- **Render:** `render/site.py` turns the validated `Site` into HTML using `site/templates/`,
+  and `render/pdf.py` compiles the same resume data into `resume.pdf` with
+  [Typst](https://typst.app/). One YAML file feeds both, so they can't drift apart.
 - **Deploy:** `.github/workflows/deploy.yml` builds and publishes `_site/` to Pages.
 
 ## Quickstart
@@ -37,7 +41,7 @@ make serve      # build and serve at http://127.0.0.1:8000
 | Command         | What it does                                  |
 | --------------- | --------------------------------------------- |
 | `make validate` | Validate content without writing anything     |
-| `make build`    | Validate and render into `_site/`             |
+| `make build`    | Validate and render site + PDF into `_site/`  |
 | `make check`    | Lint, type-check, and test (same as CI)       |
 | `make format`   | Auto-fix lint issues and format               |
 | `make clean`    | Remove build output and tool caches           |
@@ -51,6 +55,7 @@ make serve      # build and serve at http://127.0.0.1:8000
 │   └── projects/*.md     # one file per project; filename = URL slug
 ├── site/                 # the presentation: how it looks
 │   ├── templates/        # Jinja templates
+│   ├── typst/            # PDF resume layout
 │   └── static/           # CSS, images
 ├── src/portfolio/        # the pipeline
 │   ├── models.py         # schemas
@@ -82,7 +87,7 @@ make serve      # build and serve at http://127.0.0.1:8000
 ## Roadmap
 
 - [x] Phase 2: scaffold, schemas, HTML renderer, CI, Pages deploy
-- [ ] Phase 3: PDF resume rendered from the same YAML; GitHub API project ingestion
+- [ ] Phase 3: ~~PDF resume rendered from the same YAML~~ ✅; GitHub API project ingestion
 - [ ] Phase 4: real content, design and personal flair, custom domain
 - [ ] Phase 5: launch, redirect the old Shiny app, archive the legacy repo
 
