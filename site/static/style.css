@@ -819,9 +819,12 @@ button.chip:hover {
 
 .pub h3 {
   margin: 0.2rem 0;
+  color: var(--fg);
+  font-weight: 400;
 }
 
 .pub h3 a {
+  color: inherit;
   text-decoration: none;
 }
 
