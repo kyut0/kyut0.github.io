@@ -5,14 +5,14 @@ from portfolio.cli import main
 from portfolio.load import load_site
 from portfolio.models import Resume
 from portfolio.render import build_site
-from portfolio.render.site import resume_download_name
+from portfolio.render.site import download_name
 
 
 def test_build_writes_every_page(content_dir: Path, site_dir: Path, tmp_path: Path) -> None:
     site = load_site(content_dir)
     build_site(site, tmp_path, site_dir / "templates", site_dir / "static")
 
-    for page in ("index.html", "resume.html", "projects.html", ".nojekyll"):
+    for page in ("index.html", "resume.html", "cover-letter.html", "projects.html", ".nojekyll"):
         assert (tmp_path / page).exists()
     for project in site.projects:
         assert (tmp_path / "projects" / f"{project.slug}.html").exists()
@@ -40,13 +40,16 @@ def test_resume_page_bolds_own_name_in_citations(
     assert f'<strong class="me">{site.resume.citation_name}</strong>' in html
 
 
-def test_resume_download_name_uses_citation_name_and_date() -> None:
+def test_download_name_uses_citation_name_and_date() -> None:
     resume = Resume(
         name="Katherine (Katy) Yut", headline="H", summary="S", citation_name="Yut, K."
     )
-    assert resume_download_name(resume, date(2026, 10, 9)) == "YutK_Resume_20261009.pdf"
+    assert download_name(resume, "Resume", date(2026, 10, 9)) == "YutK_Resume_20261009.pdf"
+    assert download_name(resume, "CoverLetter", date(2026, 10, 9)) == (
+        "YutK_CoverLetter_20261009.pdf"
+    )
     no_citation = Resume(name="Katherine (Katy) Yut", headline="H", summary="S")
-    assert resume_download_name(no_citation, date(2026, 1, 2)) == (
+    assert download_name(no_citation, "Resume", date(2026, 1, 2)) == (
         "KatherineKatyYut_Resume_20260102.pdf"
     )
 
@@ -57,9 +60,21 @@ def test_resume_page_sets_dated_download_name(
     site = load_site(content_dir)
     build_site(site, tmp_path, site_dir / "templates", site_dir / "static")
     html = (tmp_path / "resume.html").read_text()
-    expected = resume_download_name(site.resume, date.today())
+    expected = download_name(site.resume, "Resume", date.today())
     assert f'href="resume.pdf" download="{expected}" data-download-stem="YutK_Resume"' in html
     assert 'src="static/download.js"' in html
+
+
+def test_cover_letter_page_has_letter_and_download(
+    content_dir: Path, site_dir: Path, tmp_path: Path
+) -> None:
+    site = load_site(content_dir)
+    build_site(site, tmp_path, site_dir / "templates", site_dir / "static")
+    html = (tmp_path / "cover-letter.html").read_text()
+    expected = download_name(site.resume, "CoverLetter", date.today())
+    assert f'href="cover-letter.pdf" download="{expected}"' in html
+    assert 'data-download-stem="YutK_CoverLetter"' in html
+    assert site.cover_letter_html in html
 
 
 def test_resume_page_shows_updated_date(content_dir: Path, site_dir: Path, tmp_path: Path) -> None:
@@ -86,3 +101,5 @@ def test_cli_build(content_dir: Path, site_dir: Path, tmp_path: Path) -> None:
     args = ["--content", str(content_dir), "--site-dir", str(site_dir), "--out", str(out)]
     assert main([*args, "build"]) == 0
     assert (out / "index.html").exists()
+    assert (out / "resume.pdf").exists()
+    assert (out / "cover-letter.pdf").exists()

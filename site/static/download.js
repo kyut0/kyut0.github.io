@@ -1,4 +1,4 @@
-// Name the resume download with the visitor's own date (e.g. YutK_Resume_20261009.pdf),
+// Name PDF downloads with the visitor's own date (e.g. YutK_Resume_20261009.pdf),
 // set at click time. Without JavaScript the build-date name in the HTML is used.
 (function () {
   const pad = (n) => String(n).padStart(2, "0");

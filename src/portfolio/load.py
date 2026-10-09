@@ -20,6 +20,23 @@ def render_markdown(text: str) -> str:
     return str(_md.render(text))
 
 
+def plain_paragraphs(text: str) -> list[str]:
+    """Return each Markdown paragraph as plain text (inline formatting dropped, line
+    breaks joined), for outputs like the PDF that take text rather than HTML."""
+    paragraphs = []
+    for token in _md.parse(text):
+        if token.type != "inline":
+            continue
+        parts = []
+        for child in token.children or []:
+            if child.type in ("text", "code_inline"):
+                parts.append(child.content)
+            elif child.type in ("softbreak", "hardbreak"):
+                parts.append(" ")
+        paragraphs.append("".join(parts))
+    return paragraphs
+
+
 def parse_front_matter(text: str) -> tuple[dict[str, Any], str]:
     """Split a Markdown document into its YAML front matter and body."""
     if not text.startswith("---\n"):
@@ -76,16 +93,20 @@ def load_site(content_dir: Path) -> Site:
     """Load and validate everything under content_dir."""
     resume_path = content_dir / "resume.yaml"
     bio_path = content_dir / "bio.md"
-    for required in (resume_path, bio_path):
+    cover_letter_path = content_dir / "cover-letter.md"
+    for required in (resume_path, bio_path, cover_letter_path):
         if not required.is_file():
             raise ContentError(f"missing required content file: {required}")
 
     projects = [load_project(p) for p in sorted((content_dir / "projects").glob("*.md"))]
     projects.sort(key=lambda p: p.date, reverse=True)
 
+    cover_letter = cover_letter_path.read_text(encoding="utf-8")
     return Site(
         resume=load_resume(resume_path),
         projects=projects,
         bio_html=render_markdown(bio_path.read_text(encoding="utf-8")),
+        cover_letter_html=render_markdown(cover_letter),
+        cover_letter_paragraphs=plain_paragraphs(cover_letter),
         resume_updated=last_commit_date(resume_path),
     )

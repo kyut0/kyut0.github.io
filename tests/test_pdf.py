@@ -4,9 +4,15 @@ from pathlib import Path
 from pypdf import PdfReader
 import pytest
 
-from portfolio.load import load_resume
+from portfolio.load import load_resume, load_site
 from portfolio.models import Resume, Role
-from portfolio.render.pdf import SCALES, ResumeOverflowError, build_resume_pdf, resume_data
+from portfolio.render.pdf import (
+    SCALES,
+    PdfOverflowError,
+    build_cover_letter_pdf,
+    build_resume_pdf,
+    resume_data,
+)
 
 
 def _resume(**overrides: object) -> Resume:
@@ -64,7 +70,7 @@ def test_slightly_long_resume_is_scaled_to_fit(site_dir: Path, tmp_path: Path) -
 
 
 def test_resume_too_long_at_min_scale_raises(site_dir: Path, tmp_path: Path) -> None:
-    with pytest.raises(ResumeOverflowError, match=f"{SCALES[-1]:.0%}"):
+    with pytest.raises(PdfOverflowError, match=f"{SCALES[-1]:.0%}"):
         build_resume_pdf(_long_resume(40), site_dir / "typst" / "resume.typ", tmp_path / "r.pdf")
     assert not (tmp_path / "r.pdf").exists()
 
@@ -77,3 +83,30 @@ def test_markup_characters_are_rendered_literally(site_dir: Path, tmp_path: Path
     text = PdfReader(pdf.path).pages[0].extract_text()
     assert "#let x = 1" in text
     assert "// not a comment" in text
+
+
+def test_repo_cover_letter_is_exactly_one_page(
+    content_dir: Path, site_dir: Path, tmp_path: Path
+) -> None:
+    site = load_site(content_dir)
+    pdf = build_cover_letter_pdf(
+        site.resume,
+        site.cover_letter_paragraphs,
+        site_dir / "typst" / "cover-letter.typ",
+        tmp_path / "cover-letter.pdf",
+    )
+    reader = PdfReader(pdf.path)
+    assert len(reader.pages) == pdf.pages == 1
+    text = reader.pages[0].extract_text()
+    assert site.resume.name in text
+    assert "Best," in text
+    assert reader.metadata is not None
+    assert reader.metadata.title == f"{site.resume.name} – Cover Letter"
+
+
+def test_cover_letter_too_long_raises(site_dir: Path, tmp_path: Path) -> None:
+    paragraphs = ["A long paragraph of cover letter text that keeps going. " * 12] * 20
+    with pytest.raises(PdfOverflowError, match=r"cover-letter\.md"):
+        build_cover_letter_pdf(
+            _resume(), paragraphs, site_dir / "typst" / "cover-letter.typ", tmp_path / "c.pdf"
+        )

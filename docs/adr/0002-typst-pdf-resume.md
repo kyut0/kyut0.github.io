@@ -30,7 +30,12 @@ used (`ignore_system_fonts=True`) so local and CI builds are identical.
 - **One-page budget.** The template exposes its final page count as `<page-count>`
   metadata. `build_resume_pdf` queries it at decreasing layout scales (`SCALES`, 100% down
   to 88%, ~9.2pt body text) and compiles at the largest one that fits. If none fit, the
-  build fails with `ResumeOverflowError` rather than publishing a two-page resume, and
+  build fails with `PdfOverflowError` rather than publishing a two-page resume, and
   `test_repo_resume_is_exactly_one_page` enforces the same in CI.
+- **Cover letter (added 2026-10-09).** `site/typst/cover-letter.typ` reuses the same
+  pipeline and one-page budget (`build_cover_letter_pdf`). It shares the palette, page
+  setup, and letterhead with the resume through `site/typst/common.typ`. The letter is
+  written in Markdown for the site, so the PDF receives its paragraphs as plain text
+  (`load.plain_paragraphs`), and any inline Markdown formatting is dropped in print.
 - Custom fonts would need to be committed under `site/typst/fonts/` and passed via
   `font_paths`.

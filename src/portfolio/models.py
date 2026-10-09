@@ -112,4 +112,6 @@ class Site(_Model):
     resume: Resume
     projects: list[Project]
     bio_html: str
+    cover_letter_html: str
+    cover_letter_paragraphs: list[str]  # plain text, for the PDF
     resume_updated: date | None = None  # last commit to content/resume.yaml

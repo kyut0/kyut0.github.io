@@ -2,7 +2,13 @@ from pathlib import Path
 
 import pytest
 
-from portfolio.load import ContentError, load_project, load_site, parse_front_matter
+from portfolio.load import (
+    ContentError,
+    load_project,
+    load_site,
+    parse_front_matter,
+    plain_paragraphs,
+)
 
 
 def test_parse_front_matter_splits_meta_and_body() -> None:
@@ -44,6 +50,11 @@ def test_load_project_finds_asset_dir(tmp_path: Path) -> None:
     path = tmp_path / "maps.md"
     path.write_text("---\ntitle: T\nsummary: S\ndate: 2024-05-01\n---\n![fig](maps/fig.jpg)\n")
     assert load_project(path).asset_dir == tmp_path / "maps"
+
+
+def test_plain_paragraphs_drops_inline_formatting() -> None:
+    text = "Hello, *world*.\nSecond `line`.\n\n[A link](https://x.y) here.\n"
+    assert plain_paragraphs(text) == ["Hello, world. Second line.", "A link here."]
 
 
 def test_missing_required_file_raises(tmp_path: Path) -> None:

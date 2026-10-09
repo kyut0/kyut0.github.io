@@ -8,7 +8,7 @@
 <header class="resume-intro">
   <div class="page-title">
     <h1>{{ resume.name }} <span class="title-suffix">— Resume</span></h1>
-    <a class="button" href="resume.pdf" download="{{ resume_download_name }}" data-download-stem="{{ resume_download_stem }}">Download PDF</a>
+    <a class="button" href="resume.pdf" download="{{ downloads.resume.name }}" data-download-stem="{{ downloads.resume.stem }}">Download PDF</a>
   </div>
   <p class="job-title">{{ resume.headline }}</p>
   {% if resume.location %}<p class="location">{{ resume.location }}</p>{% endif %}

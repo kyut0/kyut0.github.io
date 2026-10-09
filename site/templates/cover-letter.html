@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% set root = "" %}
+{% block title %}Cover Letter · {{ resume.name }}{% endblock %}
+{% block content %}
+<div class="page-title">
+  <h1>Cover Letter</h1>
+  <a class="button" href="cover-letter.pdf" download="{{ downloads.cover_letter.name }}" data-download-stem="{{ downloads.cover_letter.stem }}">Download PDF</a>
+</div>
+<article class="letter">
+  {{ site.cover_letter_html | safe }}
+  <p class="signoff">
+    Best,<br>
+    <span class="signature">{{ resume.name }}</span>
+    {% if resume.email %}<br><a href="mailto:{{ resume.email }}">{{ resume.email }}</a>{% endif %}
+  </p>
+</article>
+{% endblock %}
+{% block scripts %}<script src="static/download.js" defer></script>{% endblock %}

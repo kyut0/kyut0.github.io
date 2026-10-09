@@ -1,6 +1,6 @@
-"""Render the resume to PDF with Typst.
+"""Render the resume and cover letter to PDF with Typst.
 
-The validated resume is handed to the Typst template as JSON through `sys.inputs`, so
+The validated content is handed to the Typst template as JSON through `sys.inputs`, so
 content is always treated as plain text and never interpreted as Typst markup.
 """
 
@@ -44,8 +44,8 @@ def resume_data(resume: Resume) -> dict[str, Any]:
     return data
 
 
-class ResumeOverflowError(RuntimeError):
-    """Raised when the resume can't fit the page budget even at the smallest scale."""
+class PdfOverflowError(RuntimeError):
+    """Raised when a document can't fit its page budget even at the smallest scale."""
 
 
 @dataclass(frozen=True)
@@ -69,21 +69,23 @@ def _page_count(template: Path, inputs: dict[str, str]) -> int:
     return int(json.loads(result))
 
 
-def build_resume_pdf(
-    resume: Resume, template: Path, out: Path, *, max_pages: int = 1
+def _compile_to_fit(
+    data: dict[str, Any], template: Path, out: Path, *, max_pages: int, source: str
 ) -> RenderedPdf:
-    """Compile the resume at the largest scale that fits max_pages and write it to out."""
-    data = json.dumps(resume_data(resume))
-    colors = json.dumps(PDF_COLORS)
+    """Compile at the largest scale that fits max_pages and write the PDF to out.
+
+    source names the content file to trim if nothing fits, for the error message.
+    """
+    base = {"data": json.dumps(data), "colors": json.dumps(PDF_COLORS)}
     for scale in SCALES:
-        inputs = {"data": data, "colors": colors, "scale": str(scale)}
+        inputs = {**base, "scale": str(scale)}
         pages = _page_count(template, inputs)
         if pages <= max_pages:
             break
     else:
-        raise ResumeOverflowError(
-            f"resume is {pages} pages even at {SCALES[-1]:.0%} scale (limit: {max_pages}); "
-            "trim content in content/resume.yaml"
+        raise PdfOverflowError(
+            f"{out.name} is {pages} pages even at {SCALES[-1]:.0%} scale "
+            f"(limit: {max_pages}); trim content in {source}"
         )
 
     pdf = typst.compile(
@@ -96,3 +98,22 @@ def build_resume_pdf(
     out.parent.mkdir(parents=True, exist_ok=True)
     out.write_bytes(pdf)
     return RenderedPdf(path=out, pages=pages, scale=scale)
+
+
+def build_resume_pdf(
+    resume: Resume, template: Path, out: Path, *, max_pages: int = 1
+) -> RenderedPdf:
+    """Compile the resume at the largest scale that fits max_pages and write it to out."""
+    return _compile_to_fit(
+        resume_data(resume), template, out, max_pages=max_pages, source="content/resume.yaml"
+    )
+
+
+def build_cover_letter_pdf(
+    resume: Resume, paragraphs: list[str], template: Path, out: Path, *, max_pages: int = 1
+) -> RenderedPdf:
+    """Compile the cover letter under the resume's letterhead and write it to out."""
+    data = {**resume_data(resume), "paragraphs": paragraphs}
+    return _compile_to_fit(
+        data, template, out, max_pages=max_pages, source="content/cover-letter.md"
+    )

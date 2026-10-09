@@ -12,7 +12,7 @@ and deployed to GitHub Pages on every push to `main`.
 
 ```mermaid
 flowchart LR
-    A[content/<br>resume.yaml · bio.md · projects/*.md] --> B[load.py<br>parse + front matter]
+    A[content/<br>resume.yaml · bio.md · cover-letter.md · projects/*.md] --> B[load.py<br>parse + front matter]
     B --> C[models.py<br>pydantic validation]
     C --> D[render/site.py<br>Jinja templates]
     C --> P[render/pdf.py<br>Typst]
@@ -52,6 +52,7 @@ make serve      # build and serve at http://127.0.0.1:8000
 ├── content/              # the data: what the site says
 │   ├── resume.yaml
 │   ├── bio.md
+│   ├── cover-letter.md   # general (not company-specific) letter
 │   └── projects/*.md     # one file per project; filename = URL slug
 ├── site/                 # the presentation: how it looks
 │   ├── templates/        # Jinja templates
