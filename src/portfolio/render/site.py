@@ -7,12 +7,9 @@ import shutil
 from jinja2 import Environment, FileSystemLoader, StrictUndefined, select_autoescape
 
 from portfolio.models import Site
+from portfolio.render.formatting import date_range, month_year
 
 PAGES = ("index.html", "resume.html", "projects.html")
-
-
-def _month_year(value: date | None) -> str:
-    return "Present" if value is None else value.strftime("%b %Y")
 
 
 def _environment(templates_dir: Path) -> Environment:
@@ -23,7 +20,8 @@ def _environment(templates_dir: Path) -> Environment:
         trim_blocks=True,
         lstrip_blocks=True,
     )
-    env.filters["month_year"] = _month_year
+    env.filters["month_year"] = month_year
+    env.globals["date_range"] = date_range
     return env
 
 

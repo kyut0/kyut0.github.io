@@ -4,13 +4,14 @@
 {% block content %}
 <h1>Resume</h1>
 <p class="headline">{{ resume.headline }}{% if resume.location %} · {{ resume.location }}{% endif %}</p>
+<p><a class="button" href="resume.pdf" download>Download PDF</a></p>
 
 <h2>Experience</h2>
 {% for role in resume.experience %}
 <article class="role">
   <h3>{{ role.title }} <span class="muted">· {{ role.organization }}</span></h3>
   <p class="muted">
-    {{ role.start | month_year }} – {{ role.end | month_year }}
+    {{ date_range(role.start, role.end) }}
     {% if role.location %} · {{ role.location }}{% endif %}
   </p>
   <ul>

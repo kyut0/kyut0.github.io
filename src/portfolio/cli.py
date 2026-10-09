@@ -10,7 +10,7 @@ import sys
 from pydantic import ValidationError
 
 from portfolio.load import ContentError, load_site
-from portfolio.render import build_site
+from portfolio.render import build_resume_pdf, build_site
 
 
 def _parser() -> argparse.ArgumentParser:
@@ -20,7 +20,7 @@ def _parser() -> argparse.ArgumentParser:
     parser.add_argument("--out", type=Path, default=Path("_site"))
     sub = parser.add_subparsers(dest="command", required=True)
     sub.add_parser("validate", help="validate content without writing anything")
-    sub.add_parser("build", help="validate content and render the site")
+    sub.add_parser("build", help="validate content and render the site and PDF resume")
     serve = sub.add_parser("serve", help="build, then serve the site locally")
     serve.add_argument("--port", type=int, default=8000)
     return parser
@@ -40,7 +40,9 @@ def main(argv: list[str] | None = None) -> int:
         return 0
 
     pages = build_site(site, args.out, args.site_dir / "templates", args.site_dir / "static")
-    print(f"built {len(pages)} page(s) into {args.out}/")
+    template = args.site_dir / "typst" / "resume.typ"
+    pdf = build_resume_pdf(site.resume, template, args.out / "resume.pdf")
+    print(f"built {len(pages)} page(s) and {pdf.name} into {args.out}/")
 
     if args.command == "serve":
         handler = partial(http.server.SimpleHTTPRequestHandler, directory=str(args.out))
