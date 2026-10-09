@@ -2,12 +2,18 @@
 {% set root = "" %}
 {% block title %}Resume · {{ resume.name }}{% endblock %}
 {% block content %}
-<h1>Resume</h1>
-<p class="headline">{{ resume.headline }}{% if resume.location %} · {{ resume.location }}{% endif %}</p>
 {% if site.resume_updated %}
 <p class="updated">Updated <time datetime="{{ site.resume_updated.isoformat() }}">{{ site.resume_updated | long_date }}</time></p>
 {% endif %}
-<p><a class="button" href="resume.pdf" download="{{ resume_download_name }}" data-download-stem="{{ resume_download_stem }}">Download PDF</a></p>
+<header class="resume-intro">
+  <div class="page-title">
+    <h1>{{ resume.name }} <span class="title-suffix">— Resume</span></h1>
+    <a class="button" href="resume.pdf" download="{{ resume_download_name }}" data-download-stem="{{ resume_download_stem }}">Download PDF</a>
+  </div>
+  <p class="job-title">{{ resume.headline }}</p>
+  {% if resume.location %}<p class="location">{{ resume.location }}</p>{% endif %}
+  <p class="summary">{{ resume.summary }}</p>
+</header>
 
 <h2>Experience</h2>
 {% for role in resume.experience %}

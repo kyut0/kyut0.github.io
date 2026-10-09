@@ -272,6 +272,16 @@ code {
   }
 }
 
+/* Page heading with an action pinned to the right (e.g. Resume + Download PDF).
+   Wraps the button under the heading on narrow screens. */
+.page-title {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem 1rem;
+}
+
 .headline {
   color: var(--muted);
   font-size: 1.05rem;
@@ -283,10 +293,48 @@ code {
   font-weight: normal;
 }
 
+/* Sits at the top right, just under the header's divider line. */
 .updated {
   color: var(--muted);
-  font-size: 0.82rem;
-  margin-top: -0.6rem;
+  font-size: 0.78rem;
+  text-align: right;
+  margin: 0.6rem 0 0;
+}
+
+/* Resume page intro: name + Download PDF, then job title, location and summary. */
+.resume-intro {
+  display: grid;
+  gap: 0.35rem;
+  margin-bottom: 0.5rem;
+}
+
+.resume-intro h1 {
+  margin: 0.4rem 0 0;
+}
+
+.resume-intro p {
+  margin: 0;
+}
+
+.title-suffix {
+  color: var(--muted);
+  font-weight: 400;
+  white-space: nowrap;
+}
+
+.job-title {
+  font-size: 1.3rem;
+  font-weight: 600;
+  color: var(--fg);
+}
+
+.location {
+  color: var(--muted);
+  font-size: 0.88rem;
+}
+
+.resume-intro .summary {
+  margin-top: 0.9rem;
 }
 
 .updated::before {

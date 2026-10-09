@@ -4,20 +4,9 @@
 <section class="hero">
   <h1>{{ resume.name }}</h1>
   <p class="headline">{{ resume.headline }}</p>
-  <p>{{ resume.summary }}</p>
 </section>
 <section class="bio">
   <h2>About</h2>
   {{ site.bio_html | safe }}
 </section>
-{% if site.projects %}
-<section>
-  <h2>Recent work</h2>
-  <ul class="cards">
-    {% for project in site.projects[:3] %}
-    {% include "_card.html" %}
-    {% endfor %}
-  </ul>
-</section>
-{% endif %}
 {% endblock %}
