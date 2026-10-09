@@ -1,12 +1,12 @@
 # Single source of truth for the resume. Validated by portfolio.models.Resume.
 # Dates are YYYY-MM-DD (use -01 for month-only dates); omit `end` for a current role.
 # This file is published: keep phone numbers and other private details out of it.
-name: Katherine M. Yut
+name: Katherine (Katy) Yut
 headline: Geospatial Data Engineer
 summary: >-
-  Expert in geospatial analysis, statistics, and programming using R and Python.
-  Passionate about data visualization. Seeking to solve complex problems to make
-  systems more efficient. Meticulous, intrinsically motivated, and a quick learner.
+  Expert in geospatial analysis, data visualization, and programming using R and Python.
+  Passionate about efficiency and optimization. Seeking to solve complex problems to make
+  the world a better place. Meticulous, intrinsically motivated, and a quick learner.
 location: Austin, TX
 email: katy.yut@gmail.com   # optional; shown in the PDF and site header if set
 citation_name: Yut, K.
@@ -49,6 +49,7 @@ experience:
       - Leveraged R to clean and manipulate data tables, solve problems, and automate processes.
       - Utilized ArcMap to aid in oil & gas research publications.
       - Published research findings as papers, posters, and presentations.
+    skills: [R, RStudio, ArcMap, geospatial analysis, data visualization]
 
 education:
   - degrees:
