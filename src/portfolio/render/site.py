@@ -11,7 +11,7 @@ from portfolio.models import Resume, Site
 from portfolio.render.formatting import date_range, long_date, month_year
 from portfolio.render.timeline import build_timeline
 
-PAGES = ("index.html", "experience.html", "projects.html", "publications.html")
+PAGES = ("index.html", "experience.html", "projects.html", "publications.html", "about.html")
 
 
 # Downloadable PDFs: the file each is published as, and the label in its saved name.
@@ -81,6 +81,9 @@ def build_site(site: Site, out_dir: Path, templates_dir: Path, static_dir: Path)
         written.append(target)
         if project.asset_dir is not None:
             shutil.copytree(project.asset_dir, project_dir / project.slug, dirs_exist_ok=True)
+
+    if site.about_asset_dir is not None:
+        shutil.copytree(site.about_asset_dir, out_dir / "about", dirs_exist_ok=True)
 
     if static_dir.is_dir():
         shutil.copytree(static_dir, out_dir / "static", dirs_exist_ok=True)

@@ -53,7 +53,8 @@ make serve      # build and serve at http://127.0.0.1:8000
 ```
 ├── content/              # the data: what the site says
 │   ├── resume.yaml
-│   ├── bio.md
+│   ├── bio.md            # home page intro
+│   ├── about.md          # About page; its photos and art go in about/
 │   ├── cover-letter.md   # general letter; published as a PDF only
 │   └── projects/*.md     # one file per project; filename = URL slug
 ├── site/                 # the presentation: how it looks

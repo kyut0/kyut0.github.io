@@ -4,6 +4,7 @@ import pytest
 
 from portfolio.load import (
     ContentError,
+    load_page,
     load_project,
     load_site,
     parse_front_matter,
@@ -66,3 +67,10 @@ def test_repo_content_is_valid(content_dir: Path) -> None:
     """The real content in content/ must always validate."""
     site = load_site(content_dir)
     assert site.resume.name
+
+
+def test_load_page_rejects_missing_images(tmp_path: Path) -> None:
+    page = tmp_path / "about.md"
+    page.write_text("![Me](about/missing.jpg)\n")
+    with pytest.raises(ContentError, match=r"missing\.jpg"):
+        load_page(page)

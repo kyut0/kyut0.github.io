@@ -176,6 +176,9 @@ class Site(_Model):
     resume: Resume
     projects: list[Project]
     bio_html: str
+    about_html: str = ""
+    # content/about/, if it exists: photos and art for the About page, copied alongside it.
+    about_asset_dir: Path | None = Field(default=None, exclude=True)
     cover_letter_paragraphs: list[str]  # plain text; the letter is published only as a PDF
     resume_updated: date | None = None  # last commit to content/resume.yaml
 

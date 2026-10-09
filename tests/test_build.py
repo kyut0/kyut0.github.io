@@ -1,5 +1,6 @@
 from datetime import date
 from pathlib import Path
+import shutil
 
 from markupsafe import escape
 
@@ -19,6 +20,7 @@ def test_build_writes_every_page(content_dir: Path, site_dir: Path, tmp_path: Pa
         "experience.html",
         "projects.html",
         "publications.html",
+        "about.html",
         ".nojekyll",
     ):
         assert (tmp_path / page).exists()
@@ -134,3 +136,15 @@ def test_cli_build(content_dir: Path, site_dir: Path, tmp_path: Path) -> None:
     assert (out / "index.html").exists()
     assert (out / "resume.pdf").exists()
     assert (out / "cover-letter.pdf").exists()
+
+
+def test_about_page_copies_its_photos(content_dir: Path, site_dir: Path, tmp_path: Path) -> None:
+    content = tmp_path / "content"
+    shutil.copytree(content_dir, content)
+    (content / "about").mkdir(exist_ok=True)
+    (content / "about" / "kiddo.jpg").write_bytes(b"jpg")
+    (content / "about.md").write_text("![Me, age 5](about/kiddo.jpg)\n")
+    out = tmp_path / "out"
+    build_site(load_site(content), out, site_dir / "templates", site_dir / "static")
+    assert 'src="about/kiddo.jpg"' in (out / "about.html").read_text()
+    assert (out / "about" / "kiddo.jpg").is_file()
