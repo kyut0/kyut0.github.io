@@ -1,4 +1,4 @@
-Hello, and thanks for stopping by.
+To whom it may concern,
 
 I'm a geospatial data engineer and a voracious learner. I earned two undergraduate degrees
 and a graduate degree in five years, then went from Python novice to Data Engineer in less
@@ -31,5 +31,5 @@ confident in my ability to learn new skills and sharpen the ones I have. I do my
 surrounded by smart, hardworking people who treat others with respect and share the same
 goals.
 
-If that sounds like someone you'd want on your team, I'd love to talk. Thank you for
-reading.
+Thank you for considering my application; I look forward to discussing the role
+further.
