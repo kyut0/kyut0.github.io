@@ -1,0 +1,41 @@
+# Single source of truth for the resume. Validated by portfolio.models.Resume.
+# Dates are YYYY-MM-DD; omit `end` for a current role.
+# TODO(phase 3): replace placeholders with real content.
+name: Katy Yut
+headline: Data Engineer · Geospatial
+summary: >-
+  Placeholder summary. One or two sentences on the kind of data systems you build
+  and the problems you like solving.
+location: TODO City, ST
+links:
+  - label: GitHub
+    url: https://github.com/kyut0
+  - label: LinkedIn
+    url: https://www.linkedin.com/in/TODO
+
+experience:
+  - title: TODO Current Title
+    organization: TODO Organization
+    location: Remote
+    start: 2024-01-01
+    highlights:
+      - Placeholder highlight with a measurable outcome.
+  - title: TODO Previous Title
+    organization: TODO Previous Organization
+    start: 2022-01-01
+    end: 2023-12-31
+    highlights:
+      - Placeholder highlight.
+
+education:
+  - degree: TODO Degree
+    institution: TODO Institution
+    year: 2020
+
+skills:
+  - category: Languages
+    items: [Python, SQL, R]
+  - category: Data
+    items: [TODO]
+  - category: Geospatial
+    items: [TODO]

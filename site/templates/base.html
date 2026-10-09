@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}{{ resume.name }}{% endblock %}</title>
+  <meta name="description" content="{{ resume.headline }}">
+  <link rel="stylesheet" href="{{ root }}static/style.css">
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="{{ root }}index.html">{{ resume.name }}</a>
+    <nav>
+      <a href="{{ root }}resume.html">Resume</a>
+      <a href="{{ root }}projects.html">Projects</a>
+    </nav>
+  </header>
+  <main>
+    {% block content %}{% endblock %}
+  </main>
+  <footer class="site-footer">
+    <span>&copy; {{ year }} {{ resume.name }}</span>
+    {% for link in resume.links %}
+    <a href="{{ link.url }}">{{ link.label }}</a>
+    {% endfor %}
+  </footer>
+</body>
+</html>

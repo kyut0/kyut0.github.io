@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+{% set root = "" %}
+{% block title %}Resume · {{ resume.name }}{% endblock %}
+{% block content %}
+<h1>Resume</h1>
+<p class="headline">{{ resume.headline }}{% if resume.location %} · {{ resume.location }}{% endif %}</p>
+
+<h2>Experience</h2>
+{% for role in resume.experience %}
+<article class="role">
+  <h3>{{ role.title }} <span class="muted">· {{ role.organization }}</span></h3>
+  <p class="muted">
+    {{ role.start | month_year }} – {{ role.end | month_year }}
+    {% if role.location %} · {{ role.location }}{% endif %}
+  </p>
+  <ul>
+    {% for item in role.highlights %}<li>{{ item }}</li>{% endfor %}
+  </ul>
+</article>
+{% endfor %}
+
+<h2>Education</h2>
+{% for edu in resume.education %}
+<p><strong>{{ edu.degree }}</strong>, {{ edu.institution }} <span class="muted">({{ edu.year }})</span></p>
+{% endfor %}
+
+<h2>Skills</h2>
+<dl class="skills">
+  {% for group in resume.skills %}
+  <dt>{{ group.category }}</dt>
+  <dd>{{ group.items | join(", ") }}</dd>
+  {% endfor %}
+</dl>
+{% endblock %}

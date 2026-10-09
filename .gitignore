@@ -1,0 +1,22 @@
+# Build output
+_site/
+dist/
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+# Editors / OS
+.DS_Store
+.vscode/
+.idea/
+
+# Never commit private application materials
+private/
+*.env

@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% set root = "../" %}
+{% block title %}{{ project.title }} · {{ resume.name }}{% endblock %}
+{% block content %}
+<article class="project">
+  <h1>{{ project.title }}</h1>
+  <p class="muted">{{ project.date | month_year }}{% if project.repo %} · <a href="{{ project.repo }}">Source</a>{% endif %}</p>
+  {% if project.image %}<img src="../static/{{ project.image }}" alt="{{ project.title }}">{% endif %}
+  {{ project.body_html | safe }}
+</article>
+{% endblock %}

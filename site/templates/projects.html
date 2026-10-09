@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% set root = "" %}
+{% block title %}Projects · {{ resume.name }}{% endblock %}
+{% block content %}
+<h1>Projects</h1>
+<ul class="cards">
+  {% for project in site.projects %}
+  <li class="card">
+    <a href="projects/{{ project.slug }}.html"><h3>{{ project.title }}</h3></a>
+    <p>{{ project.summary }}</p>
+    <p class="tags">{% for tag in project.tags %}<span>{{ tag }}</span>{% endfor %}</p>
+  </li>
+  {% endfor %}
+</ul>
+{% endblock %}
