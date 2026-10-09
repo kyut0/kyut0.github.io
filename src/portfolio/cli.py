@@ -11,6 +11,7 @@ from pydantic import ValidationError
 
 from portfolio.load import ContentError, load_site
 from portfolio.render import build_resume_pdf, build_site
+from portfolio.render.pdf import ResumeOverflowError
 
 
 def _parser() -> argparse.ArgumentParser:
@@ -41,8 +42,14 @@ def main(argv: list[str] | None = None) -> int:
 
     pages = build_site(site, args.out, args.site_dir / "templates", args.site_dir / "static")
     template = args.site_dir / "typst" / "resume.typ"
-    pdf = build_resume_pdf(site.resume, template, args.out / "resume.pdf")
-    print(f"built {len(pages)} page(s) and {pdf.name} into {args.out}/")
+    try:
+        pdf = build_resume_pdf(site.resume, template, args.out / "resume.pdf")
+    except ResumeOverflowError as exc:
+        print(f"pdf error: {exc}", file=sys.stderr)
+        return 1
+    scaled = "" if pdf.scale == 1.0 else f", scaled to {pdf.scale:.0%} to fit"
+    print(f"built {len(pages)} page(s) into {args.out}/")
+    print(f"built {pdf.path} ({pdf.pages} page{scaled})")
 
     if args.command == "serve":
         handler = partial(http.server.SimpleHTTPRequestHandler, directory=str(args.out))

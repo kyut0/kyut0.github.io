@@ -27,5 +27,10 @@ used (`ignore_system_fonts=True`) so local and CI builds are identical.
   markup, characters like `#`, `*`, `$` and `//` render literally with no escaping
   logic (covered by `tests/test_pdf.py`).
 - Layout changes happen in one `.typ` file; content changes stay in `content/resume.yaml`.
+- **One-page budget.** The template exposes its final page count as `<page-count>`
+  metadata. `build_resume_pdf` queries it at decreasing layout scales (`SCALES`, 100% down
+  to 88%, ~9.2pt body text) and compiles at the largest one that fits. If none fit, the
+  build fails with `ResumeOverflowError` rather than publishing a two-page resume, and
+  `test_repo_resume_is_exactly_one_page` enforces the same in CI.
 - Custom fonts would need to be committed under `site/typst/fonts/` and passed via
   `font_paths`.

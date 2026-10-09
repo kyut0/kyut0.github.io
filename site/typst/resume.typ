@@ -1,19 +1,25 @@
 // Resume layout. Data comes from content/resume.yaml via portfolio.render.pdf.
 #let data = json(bytes(sys.inputs.data))
+// Shrink factor chosen by portfolio.render.pdf to fit the page budget. Every size and
+// gap below is in `em`, so this one number scales the whole layout.
+#let scale = float(sys.inputs.at("scale", default: "1.0"))
 
 #let accent = rgb("#2f6f5e")
 #let muted = luma(90)
 
 #set document(title: data.name + " – Resume", author: data.name)
 #set page(paper: "us-letter", margin: (x: 0.65in, y: 0.55in))
-#set text(font: "Libertinus Serif", size: 10.5pt)
+#set text(font: "Libertinus Serif", size: 10.5pt * scale)
+
+// Expose the final page count so the build can enforce a page budget.
+#context [#metadata(counter(page).final().first()) <page-count>]
 #set par(leading: 0.55em)
 #set list(indent: 0.6em, spacing: 0.45em)
 #show link: set text(fill: accent)
 
 #let section(title) = {
   v(0.8em)
-  text(size: 11pt, weight: "bold", fill: accent, upper(title))
+  text(size: 1.05em, weight: "bold", fill: accent, upper(title))
   v(-0.65em)
   line(length: 100%, stroke: 0.5pt + accent)
   v(0.1em)
@@ -24,9 +30,9 @@
 
 // Header
 #align(center)[
-  #text(size: 22pt, weight: "bold", data.name) \
+  #text(size: 2.1em, weight: "bold", data.name) \
   #v(-0.3em)
-  #text(size: 11.5pt, fill: muted, data.headline) \
+  #text(size: 1.1em, fill: muted, data.headline) \
   #{
     let items = ()
     if data.location != none { items.push(data.location) }
@@ -42,11 +48,11 @@
   section("Experience")
   for role in data.experience {
     entry([*#role.title* · #role.organization], role.dates)
-    if role.location != none { v(-0.4em); text(size: 9.5pt, fill: muted, role.location) }
+    if role.location != none { v(-0.4em); text(size: 0.9em, fill: muted, role.location) }
     list(..role.highlights)
     if role.skills.len() > 0 {
       v(-0.2em)
-      text(size: 9.5pt)[#h(0.6em)_Tools:_ #role.skills.join(", ")]
+      text(size: 0.9em)[#h(0.6em)_Tools:_ #role.skills.join(", ")]
     }
     v(0.25em)
   }
