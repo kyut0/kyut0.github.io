@@ -31,8 +31,5 @@ confident in my ability to learn new skills and sharpen the ones I have. I do my
 surrounded by smart, hardworking people who treat others with respect and share the same
 goals.
 
-If that sounds like someone you'd want on your team, I'd love to talk. Thank you for
-reading.
-
 All my best,\
 Katy
