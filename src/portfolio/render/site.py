@@ -11,7 +11,7 @@ from portfolio.models import Resume, Site
 from portfolio.render.formatting import date_range, long_date, month_year
 from portfolio.render.timeline import build_timeline
 
-PAGES = ("index.html", "resume.html", "projects.html")
+PAGES = ("index.html", "resume.html", "projects.html", "publications.html")
 
 
 # Downloadable PDFs: the file each is published as, and the label in its saved name.

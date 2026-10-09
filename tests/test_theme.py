@@ -21,6 +21,7 @@ PAIRS = [
     ("heading", "card", TEXT_MIN),
     ("on-pop", "pop", TEXT_MIN),  # button text
     ("link", "bg", UI_MIN),  # focus ring
+    ("card-link", "card", TEXT_MIN),  # "Sample work" links in timeline cards
 ]
 
 # Maximum chroma (0 = gray, 1 = pure color) for surfaces and running text, so vivid

@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 {% set root = "" %}
-{% set kind_label = {"work": "Work", "education": "Education", "project": "Project", "research": "Research"} %}
+{% set kind_label = {"work": "Work", "education": "Education"} %}
 {% block title %}Resume · {{ resume.name }}{% endblock %}
 {% block content %}
 {% if site.resume_updated %}
@@ -15,7 +15,7 @@
     </div>
   </div>
   <p class="lede">
-    Every role, degree, project, and paper, newest first, with the tools each one used.
+    Every role and degree, newest first, with the tools each step used.
     Tools marked <span class="chip is-new chip-sample">new</span> were picked up at that step.
     Click any tool to trace it through the timeline.
   </p>
@@ -28,11 +28,7 @@
     <dt>{{ group.category }}</dt>
     <dd>
       {% for skill in group.skills %}
-      {% if skill.count %}
       <button class="chip" type="button" data-skill="{{ skill.key }}" data-label="{{ skill.label }}" aria-pressed="false">{{ skill.label }}<span class="chip-count" aria-label="{{ skill.count }} timeline steps">{{ skill.count }}</span></button>
-      {% else %}
-      <span class="chip is-static">{{ skill.label }}</span>
-      {% endif %}
       {% endfor %}
     </dd>
     {% endfor %}
@@ -61,20 +57,18 @@
     <p class="tl-date">{{ event.date_label }}</p>
     <article class="tl-card">
       <p class="tl-kind">{{ kind_label[event.kind] }}</p>
-      <h3>{% if event.url %}<a href="{{ event.url }}">{{ event.title }}</a>{% else %}{{ event.title }}{% endif %}</h3>
+      <h3>{{ event.title }}</h3>
       {% if event.subtitle or event.location %}
       <p class="tl-sub">{{ event.subtitle }}{% if event.subtitle and event.location %} · {% endif %}{{ event.location or "" }}</p>
       {% endif %}
-      {% if event.authors %}
-      <p class="tl-authors">{% for name, me in event.authors %}{% if me %}<strong class="me">{{ name }}</strong>{% else %}{{ name }}{% endif %}{{ ", " if not loop.last }}{% endfor %}</p>
-      {% endif %}
-      {% if event.kind == "project" %}
-      {% for line in event.details %}<p>{{ line }}</p>{% endfor %}
-      {% elif event.details %}
+      {% if event.details %}
       <ul>
         {% for line in event.details %}<li>{{ line }}</li>{% endfor %}
       </ul>
       {% endif %}
+      {% for write_up in event.write_ups %}
+      <p class="tl-writeup"><a href="{{ write_up.url }}">Sample work</a>: {{ write_up.title }}</p>
+      {% endfor %}
       {% if event.skills %}
       <p class="chips">
         {% for skill in event.skills %}

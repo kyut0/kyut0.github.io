@@ -6,6 +6,7 @@ malformed date or a misspelled field fails the build (and CI) instead of shippin
 
 from datetime import date
 from pathlib import Path
+import re
 from typing import Annotated, Self
 
 from pydantic import (
@@ -20,6 +21,11 @@ from pydantic import (
 
 class _Model(BaseModel):
     model_config = ConfigDict(extra="forbid", frozen=True)
+
+
+def skill_key(name: str) -> str:
+    """Match spellings of the same tool: "R Shiny", "RShiny" and "r-shiny" -> "rshiny"."""
+    return re.sub(r"[^a-z0-9]", "", name.lower())
 
 
 class Link(_Model):
@@ -51,6 +57,7 @@ class Education(_Model):
     start: date | None = None
     end: date
     honors: str | None = None
+    skills: list[str] = Field(default_factory=list)  # tools used while studying
 
 
 # "Last, F. M." -- also catches YAML flow lists like [Smye, K. M.] silently splitting names.
@@ -63,6 +70,9 @@ class Publication(_Model):
     title: str
     venue: str
     url: HttpUrl | None = None
+    # The role's organization or school's institution this came out of; shown as context
+    # on the publications page.
+    organization: str | None = None
 
 
 class SkillGroup(_Model):
@@ -85,7 +95,10 @@ class Resume(_Model):
     experience: list[Role] = Field(default_factory=list)
     education: list[Education] = Field(default_factory=list)
     publications: list[Publication] = Field(default_factory=list)
+    # Tool tiers (the site's toolbox). When set, they must match the tools listed on roles
+    # and education exactly: see _toolbox_matches_cards.
     skills: list[SkillGroup] = Field(default_factory=list)
+    strengths: list[str] = Field(default_factory=list)  # soft skills; PDF only
 
     @property
     def display_name(self) -> str:
@@ -101,6 +114,46 @@ class Resume(_Model):
             raise ValueError(f"citation_name '{self.citation_name}' is in no author list")
         return self
 
+    @model_validator(mode="after")
+    def _toolbox_matches_cards(self) -> Self:
+        """Every toolbox tool is used on some role or school, and every tool used there is
+        in the toolbox, so the site's toolbox and timeline always agree."""
+        if not self.skills:
+            return self
+        toolbox = {skill_key(i): i for g in self.skills for i in g.items}
+        used: dict[str, str] = {}
+        card_tools = [r.skills for r in self.experience] + [e.skills for e in self.education]
+        for tools in card_tools:
+            for name in tools:
+                used.setdefault(skill_key(name), name)
+        problems = [
+            f"'{name}' is in the toolbox but on no role or school"
+            for key, name in toolbox.items()
+            if key not in used
+        ]
+        problems += [
+            f"'{name}' is used on a role or school but missing from the toolbox"
+            for key, name in used.items()
+            if key not in toolbox
+        ]
+        if problems:
+            raise ValueError("toolbox and timeline disagree: " + "; ".join(problems))
+        return self
+
+    def organizations(self) -> set[str]:
+        return {r.organization for r in self.experience} | {e.institution for e in self.education}
+
+    @model_validator(mode="after")
+    def _publication_organizations_exist(self) -> Self:
+        known = self.organizations()
+        for pub in self.publications:
+            if pub.organization and pub.organization not in known:
+                raise ValueError(
+                    f"publication '{pub.title}' names organization '{pub.organization}', "
+                    "which matches no role or school"
+                )
+        return self
+
 
 class Project(_Model):
     slug: str = Field(pattern=r"^[a-z0-9]+(-[a-z0-9]+)*$")
@@ -109,6 +162,9 @@ class Project(_Model):
     date: date
     tags: list[str] = Field(default_factory=list)
     repo: HttpUrl | None = None
+    # The role's organization (or school) this was done for; the site timeline links the
+    # write-up from that entry.
+    organization: str | None = None
     # Card thumbnail, relative to the project's Markdown file (e.g. "my-project/thumb.png").
     image: str | None = None
     body_html: str = ""
@@ -122,3 +178,14 @@ class Site(_Model):
     bio_html: str
     cover_letter_paragraphs: list[str]  # plain text; the letter is published only as a PDF
     resume_updated: date | None = None  # last commit to content/resume.yaml
+
+    @model_validator(mode="after")
+    def _project_organizations_exist(self) -> Self:
+        known = self.resume.organizations()
+        for project in self.projects:
+            if project.organization and project.organization not in known:
+                raise ValueError(
+                    f"project '{project.slug}' names organization '{project.organization}', "
+                    "which matches no role or school"
+                )
+        return self

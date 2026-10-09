@@ -119,3 +119,11 @@ def test_cover_letter_too_long_raises(site_dir: Path, tmp_path: Path) -> None:
         build_cover_letter_pdf(
             _resume(), paragraphs, site_dir / "typst" / "cover-letter.typ", tmp_path / "c.pdf"
         )
+
+
+def test_strengths_print_in_skills_section(site_dir: Path, tmp_path: Path) -> None:
+    resume = _resume(strengths=["Curiosity", "Focus"])
+    pdf = build_resume_pdf(resume, site_dir / "typst" / "resume.typ", tmp_path / "r.pdf")
+    text = PdfReader(pdf.path).pages[0].extract_text()
+    assert "Strengths" in text
+    assert "Curiosity, Focus" in text

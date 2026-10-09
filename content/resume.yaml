@@ -28,7 +28,8 @@ experience:
       - >-
         Building ETL/ELT data pipelines using Python, GitHub, and Docker containerization
         at a company passionate about doing right for the land, the rancher, and the world.
-    skills: [pydantic, Streamlit, cron, GitHub Actions, CI/CD, APIs, code review]
+    skills:
+      [Python, H3, matplotlib, Salesforce, APIs, SQL, GitHub, Docker, Pydantic, Streamlit, cron, CI/CD, APIs, code review]
 
   - title: Carbon Technical Manager
     organization: Grassroots Carbon
@@ -37,11 +38,11 @@ experience:
     end: 2025-08-01
     highlights:
       - >-
-        Automated rancher eligibility screening processes using R Shiny and Python
+        Automated rancher eligibility screening processes using RShiny and Python
         through the Salesforce API.
       - Provided geospatial data analysis using QGIS.
       - Supported the navigation of carbon standards.
-    skills: [R, RShiny, Salesforce API, QGIS, geospatial analysis]
+    skills: [R, RShiny, Python, QGIS, LULC, geospatial analysis]
 
   - title: GIS & Energy Data Analyst
     organization: University of Texas, Bureau of Economic Geology
@@ -52,7 +53,7 @@ experience:
       - Leveraged R to clean and manipulate data tables, solve problems, and automate processes.
       - Utilized ArcMap to aid in oil & gas research publications.
       - Published research findings as papers, posters, and presentations.
-    skills: [R, RStudio, ArcMap, geospatial analysis, data visualization]
+    skills: [R, ArcGIS, geospatial analysis, data visualization]
 
   - title: Viticulture Research GIS Intern
     organization: E. & J. Gallo Winery
@@ -66,7 +67,7 @@ experience:
         Built a multivariate linear model and ran remote sensing analysis in Google Earth
         Engine to inform irrigation decisions for wine grape yield and quality.
       - Collected in situ data with Trimble GPS and berry sampling in the vineyard.
-    skills: [R, Google Earth Engine, QGIS, kriging, Landsat, Sentinel-2, Trimble GPS]
+    skills: [R, Google Earth Engine, QGIS, Landsat, Sentinel-2, Trimble GPS]
 
   - title: Remote Sensing Intern
     organization: NASA DEVELOP
@@ -80,7 +81,7 @@ experience:
         models, and scored restoration site suitability.
       - Designed figures, maps, and slideshows to NASA's style guidelines.
       - Wrote a tutorial to reproduce the workflow and presented the science to partners.
-    skills: [ArcGIS, ENVI, TerrSet, Google Earth Engine, Landsat, classification]
+    skills: [ArcGIS, ENVI, TerrSet, Google Earth Engine, Landsat, LULC]
 
 education:
   - degrees:
@@ -92,6 +93,7 @@ education:
     start: 2016-08-01
     end: 2021-05-01
     honors: Summa cum laude
+    skills: [ArcGIS, SQL, Big data, R, RShiny, data visualization, geospatial analysis, Python, LULC, Google Earth Engine, ENVI, Landsat, Sentinel-2]
 
 publications:
   - authors:
@@ -106,6 +108,7 @@ publications:
       Challenges with managing unconventional water production and disposal in the
       Permian Basin
     venue: AAPG Bulletin 108 (12), 2215–2240
+    organization: University of Texas, Bureau of Economic Geology
   - authors:
       - "Peng, S."
       - "Maraggi, L. M. R."
@@ -118,6 +121,7 @@ publications:
       Feasibility of CO2 storage in depleted unconventional oil and gas reservoirs:
       Capacity, microscale mechanism, injectivity, fault stability, and monitoring
     venue: URTeC, 13–15 June 2023
+    organization: University of Texas, Bureau of Economic Geology
   - authors:
       - "Bull, M."
       - "Francis, T."
@@ -128,17 +132,43 @@ publications:
     year: 2019
     title: West Virginia Ecological Forecasting
     venue: NASA DEVELOP National Program
+    organization: NASA DEVELOP
   - authors: ["Kelley, S.", "Yut, K.", "Kulkarni, R.", "Gaffin, D."]
     year: 2019
     title: Avoidance of rosemary oil by scorpions
     venue: Journal of Arachnology
+    organization: University of Oklahoma
 
+# The site's toolbox. Must match the tools on roles and education exactly (the build
+# fails otherwise); spelling variants like "RShiny" / "RShiny" count as the same tool.
 skills:
   - category: Expert
-    items: [R, RStudio, R Shiny, ESRI ArcGIS Pro, QGIS]
+    items: [R, RShiny, ArcGIS, QGIS, geospatial analysis, data visualization]
   - category: Advanced
-    items: [Python, GitHub, Salesforce backend, Big data statistical analysis & modeling]
+    items:
+      - Python
+      - GitHub
+      - Salesforce
+      - Big data
+      - Pydantic
+      - CI/CD
+      - APIs
+      - code review
   - category: Intermediate
-    items: [SQL, Docker, Google Earth Engine, ENVI]
-  - category: Strengths
-    items: [Timely deliverables, Clear communication, Curiosity, Organization, Multitasking, Focus]
+    items:
+      - SQL
+      - Docker
+      - Google Earth Engine
+      - ENVI
+      - Streamlit
+      - cron
+      - H3
+      - matplotlib
+      - Landsat
+      - Sentinel-2
+      - LULC
+      - TerrSet
+      - Trimble GPS
+
+# Soft skills: printed on the PDF resume, not part of the site's toolbox.
+strengths: [Timely deliverables, Clear communication, Curiosity, Organization, Multitasking, Focus]

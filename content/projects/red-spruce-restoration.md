@@ -4,6 +4,7 @@ summary: >-
   NASA DEVELOP: mapped 30 years of red spruce change in West Virginia's Monongahela
   National Forest from Landsat imagery, scored restoration suitability, and forecast
   forest extent to 2040.
+organization: "NASA DEVELOP"
 date: 2019-08-01
 tags: [remote-sensing, landsat, classification, google-earth-engine, arcgis, terrset]
 image: red-spruce-restoration/lulc-and-suitability.jpg

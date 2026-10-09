@@ -4,6 +4,7 @@ title: Soil Carbon Accrual Mapping with H3
 summary: >-
   Turned soil carbon model output into a ranch-scale heatmap on Uber's H3 hexagonal grid,
   showing where grazing management is most likely to build soil organic carbon.
+organization: "Grassroots Carbon"
 date: 2025-06-01
 tags: [python, h3, matplotlib, soil-carbon, geospatial]
 image: soil-carbon-h3/accruals-map.jpg

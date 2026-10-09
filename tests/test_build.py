@@ -14,7 +14,7 @@ def test_build_writes_every_page(content_dir: Path, site_dir: Path, tmp_path: Pa
     site = load_site(content_dir)
     build_site(site, tmp_path, site_dir / "templates", site_dir / "static")
 
-    for page in ("index.html", "resume.html", "projects.html", ".nojekyll"):
+    for page in ("index.html", "resume.html", "projects.html", "publications.html", ".nojekyll"):
         assert (tmp_path / page).exists()
     for project in site.projects:
         assert (tmp_path / "projects" / f"{project.slug}.html").exists()
@@ -37,13 +37,15 @@ def test_project_pages_link_back_to_root(
     assert 'href="../static/style.css"' in html
 
 
-def test_resume_page_bolds_own_name_in_citations(
+def test_publications_page_bolds_own_name(
     content_dir: Path, site_dir: Path, tmp_path: Path
 ) -> None:
     site = load_site(content_dir)
     build_site(site, tmp_path, site_dir / "templates", site_dir / "static")
-    html = (tmp_path / "resume.html").read_text()
+    html = (tmp_path / "publications.html").read_text()
     assert f'<strong class="me">{site.resume.citation_name}</strong>' in html
+    for pub in site.resume.publications:
+        assert str(escape(pub.title)) in html
 
 
 def test_download_name_uses_citation_name_and_date() -> None:
@@ -90,8 +92,9 @@ def test_resume_page_renders_timeline(content_dir: Path, site_dir: Path, tmp_pat
     html = (tmp_path / "resume.html").read_text()
     for role in site.resume.experience:  # including roles left out of the PDF
         assert str(escape(role.title)) in html
-    for project in site.projects:
-        assert f'href="projects/{project.slug}.html"' in html
+    for project in site.projects:  # write-ups link from the role they came out of
+        if project.organization:
+            assert f'href="projects/{project.slug}.html"' in html
     assert 'src="static/timeline.js"' in html
 
 

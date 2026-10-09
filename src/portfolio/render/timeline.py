@@ -1,28 +1,21 @@
-"""Turn the resume and projects into one dated timeline for the site.
+"""Turn the resume into one dated timeline for the site.
 
-Roles, education, projects, and publications become events, newest first. Walking them
-oldest first, each tool is marked "new" on the first event that uses it, so the timeline
-shows where every skill was picked up along the way.
+Roles and education become events, newest first. Project write-ups that name an
+`organization` are linked from that role or school's event. (Publications have their own
+page.) Walking the events oldest first, each tool is marked "new" on the first event that
+uses it, so the timeline shows where every skill was picked up along the way.
 """
 
 from dataclasses import dataclass, field
 from datetime import date
-import re
 
-from portfolio.models import Site
+from portfolio.models import Site, skill_key
 from portfolio.render.formatting import date_range, month_year
 
 KINDS = {
     "work": "Work",
     "education": "Education",
-    "project": "Projects",
-    "research": "Research",
 }
-
-
-def skill_key(name: str) -> str:
-    """Match spellings of the same tool: "R Shiny", "RShiny" and "r-shiny" -> "rshiny"."""
-    return re.sub(r"[^a-z0-9]", "", name.lower())
 
 
 @dataclass(frozen=True)
@@ -32,19 +25,29 @@ class SkillUse:
     new: bool  # first event (oldest first) to use this tool
 
 
+@dataclass(frozen=True)
+class WriteUp:
+    title: str
+    url: str  # relative to the site root
+
+
 @dataclass
 class Event:
     kind: str
     when: date  # sort date; for ranges, the start
+    until: date | None  # end of the range; None for ongoing or single dates
     date_label: str
     title: str
     subtitle: str = ""
+    organization: str | None = None  # what project write-ups attach by
     location: str | None = None
-    url: str | None = None  # relative to the site root
     details: list[str] = field(default_factory=list)
     raw_skills: list[str] = field(default_factory=list)
     skills: list[SkillUse] = field(default_factory=list)
-    authors: list[tuple[str, bool]] = field(default_factory=list)  # (name, is_me)
+    write_ups: list[WriteUp] = field(default_factory=list)
+
+    def covers(self, day: date) -> bool:
+        return self.when <= day <= (self.until or date.max)
 
 
 @dataclass(frozen=True)
@@ -67,15 +70,25 @@ class Timeline:
     kinds: dict[str, str]  # kinds present, in KINDS order: key -> label
 
 
+def _host(events: list[Event], organization: str, on: date) -> Event:
+    """The event for organization covering `on`, or the one starting closest to it when
+    none does (e.g. a write-up dated after the role ended)."""
+    candidates = [e for e in events if e.organization == organization]
+    covering = [e for e in candidates if e.covers(on)]
+    return (covering or sorted(candidates, key=lambda e: abs((e.when - on).days)))[0]
+
+
 def _events(site: Site) -> list[Event]:
     resume = site.resume
     events = [
         Event(
             kind="work",
             when=role.start,
+            until=role.end,
             date_label=date_range(role.start, role.end),
             title=role.title,
             subtitle=role.organization,
+            organization=role.organization,
             location=role.location,
             details=role.highlights,
             raw_skills=role.skills,
@@ -86,51 +99,34 @@ def _events(site: Site) -> list[Event]:
         Event(
             kind="education",
             when=edu.start or edu.end,
+            until=edu.end,
             date_label=date_range(edu.start, edu.end) if edu.start else month_year(edu.end),
             title=edu.institution,
             subtitle=edu.honors or "",
+            organization=edu.institution,
             location=edu.location,
             details=edu.degrees,
+            raw_skills=edu.skills,
         )
         for edu in resume.education
     ]
-    events += [
-        Event(
-            kind="project",
-            when=project.date,
-            date_label=month_year(project.date),
-            title=project.title,
-            url=f"projects/{project.slug}.html",
-            details=[project.summary],
-            raw_skills=project.tags,
-        )
-        for project in site.projects
-    ]
-    events += [
-        Event(
-            kind="research",
-            when=date(pub.year, 1, 1),
-            date_label=str(pub.year),
-            title=pub.title,
-            subtitle=pub.venue,
-            url=str(pub.url) if pub.url else None,
-            authors=[(a, a == resume.citation_name) for a in pub.authors],
-        )
-        for pub in resume.publications
-    ]
+
+    for project in site.projects:
+        if project.organization:
+            host = _host(events, project.organization, project.date)
+            host.write_ups.append(WriteUp(project.title, f"projects/{project.slug}.html"))
     return events
 
 
 def build_timeline(site: Site) -> Timeline:
     events = _events(site)
 
-    # Display labels: prefer the resume's spelling ("Google Earth Engine") over project
-    # tag slugs ("google-earth-engine").
+    # Display labels: prefer the toolbox's spelling, then the first role's.
     labels: dict[str, str] = {}
     for group in site.resume.skills:
         for item in group.items:
             labels.setdefault(skill_key(item), item)
-    for event in sorted(events, key=lambda e: e.kind == "project"):
+    for event in events:
         for name in event.raw_skills:
             labels.setdefault(skill_key(name), name)
 

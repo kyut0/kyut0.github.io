@@ -46,13 +46,15 @@
   }
 }
 
-#if data.skills.len() > 0 {
+#if data.skills.len() > 0 or data.strengths.len() > 0 {
   section("Skills")
+  let rows = data.skills.map(g => ([*#g.category*], g.items.join(", ")))
+  if data.strengths.len() > 0 { rows.push(([*Strengths*], data.strengths.join(", "))) }
   grid(
     columns: (auto, 1fr),
     column-gutter: 1em,
     row-gutter: 0.6em,
-    ..data.skills.map(g => ([*#g.category*], g.items.join(", "))).flatten(),
+    ..rows.flatten(),
   )
 }
 

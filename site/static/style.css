@@ -49,6 +49,8 @@
   --pop-2: #f0bf3a;
   --on-pop: #24120b;
   --thumb-bg: #ffffff;
+  /* Links inside resume timeline cards, whose titles are already --link blue. */
+  --card-link: #4fd8e8;
   color-scheme: dark;
 }
 
@@ -64,6 +66,7 @@
   --pop-2: #e2a400;
   --on-pop: #24120b;
   --thumb-bg: #ffffff;
+  --card-link: #0b7285;
   color-scheme: light;
 }
 
@@ -454,21 +457,11 @@ ul li::marker {
 }
 
 /* ---- Resume timeline ---------------------------------------------------------------
-   Each event type gets a color, used for its dot on the line and its filter button. */
-.kind-work {
-  --kind: var(--pop);
-}
-
-.kind-education {
+   Work and education share one color (blue) for dots, labels, titles, and bullets.
+   Pink is reserved for years and tool chips. */
+.timeline-controls,
+.timeline {
   --kind: var(--link);
-}
-
-.kind-project {
-  --kind: var(--pop-2);
-}
-
-.kind-research {
-  --kind: var(--heading);
 }
 
 .timeline-intro h1 {
@@ -527,11 +520,6 @@ button.chip:hover {
 
 .chip.is-active::before {
   color: var(--on-pop);
-}
-
-.chip.is-static {
-  cursor: default;
-  border-style: dashed;
 }
 
 .chip-sample {
@@ -721,9 +709,11 @@ button.chip:hover {
 
 .tl-card h3 {
   margin: 0;
+  color: var(--kind);
 }
 
 .tl-card h3 a {
+  color: inherit;
   text-decoration: none;
 }
 
@@ -740,6 +730,10 @@ button.chip:hover {
   padding-left: 1.1rem;
 }
 
+.tl-card li::marker {
+  color: var(--kind);
+}
+
 .tl-kind {
   color: var(--kind);
   font-size: 0.7rem;
@@ -749,20 +743,17 @@ button.chip:hover {
   margin: 0 0 0.15rem !important;
 }
 
-.kind-work .tl-kind,
-.kind-project .tl-kind {
-  /* --pop and --pop-2 are too light to read as small text on cream. */
-  color: var(--muted);
-}
-
-.tl-sub,
-.tl-authors {
+.tl-sub {
   color: var(--muted);
   font-size: 0.85rem;
 }
 
-.tl-authors .me {
-  color: var(--link);
+.tl-writeup {
+  font-size: 0.85rem;
+}
+
+.tl-writeup a {
+  color: var(--card-link);
 }
 
 .tl-event.is-dimmed {
@@ -808,4 +799,43 @@ button.chip:hover {
   .toolbox dl {
     grid-template-columns: 1fr;
   }
+}
+
+/* ---- Publications page ---------------------------------------------------------- */
+.pub-list {
+  list-style: none;
+  padding: 0;
+  margin: 1.5rem 0 0;
+}
+
+.pub {
+  padding: 1rem 0;
+  border-top: 1px solid var(--border);
+}
+
+.pub:last-child {
+  border-bottom: 1px solid var(--border);
+}
+
+.pub h3 {
+  margin: 0.2rem 0;
+}
+
+.pub h3 a {
+  text-decoration: none;
+}
+
+.pub h3 a:hover {
+  text-decoration: underline;
+}
+
+.pub-meta,
+.pub-authors {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.85rem;
+}
+
+.pub-authors .me {
+  color: var(--link);
 }

@@ -4,6 +4,7 @@ title: Produced Water in the Permian Basin
 summary: >-
   Bureau of Economic Geology: mapped water cut, production, and drilling history for
   hundreds of thousands of wells to support peer-reviewed research on produced water.
+organization: "University of Texas, Bureau of Economic Geology"
 date: 2024-07-01
 tags: [arcgis, r, oil-and-gas, water, research]
 image: permian-produced-water/water-cut.jpg

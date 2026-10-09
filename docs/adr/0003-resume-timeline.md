@@ -12,8 +12,17 @@ click away.
 ## Decision
 
 - The resume page is a vertical timeline, newest first, built by `render/timeline.py`
-  from the same validated data as the PDF: roles, education, projects, and publications
-  become dated events.
+  from the same validated data as the PDF: roles and education become dated events.
+- Each step appears once. Project write-ups name the `organization` they came out of
+  and are linked from that role or school's card instead of being separate events.
+  When an organization has several roles, the one active at the time wins. Unknown
+  organizations fail validation. Projects without one (personal work) live only on the
+  Projects page.
+- Publications are not on the timeline: nesting them in cards made it too busy. They
+  have their own page (`publications.html`), where `organization` is shown as context.
+- Colors: work and education share one blue (dots, labels, titles, bullets), with
+  "Sample work" links in cyan. Pink is reserved for years and tool chips. Cards carry no
+  colored side stripes, to keep the page calm.
 - Each event lists its tools. Walking events oldest first, a tool is marked new on the
   first event that uses it. Spellings are matched by `skill_key` ("R Shiny" = "RShiny" =
   "r-shiny"), and labels prefer the resume's spelling over project tag slugs.
@@ -27,7 +36,9 @@ click away.
 
 ## Consequences
 
-- Tools only show on the timeline if a role's `skills` or a project's `tags` list them;
-  toolbox entries no event uses render as plain dashed chips, which flags gaps in the
-  data.
-- Publications have no month, so they sort as January of their year.
+- Tools only show on the timeline if a role's or school's `skills` list them (project
+  tags mix tools with topics, so they stay on the Projects page).
+- The toolbox and the timeline must agree exactly (`Resume._toolbox_matches_cards`):
+  every toolbox tool is used on some card, and every tool on a card is in a toolbox
+  tier. A mismatch fails validation, naming each offending tool. Soft skills live in a
+  separate `strengths` list that only the PDF prints.

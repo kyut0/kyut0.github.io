@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% set root = "" %}
+{% block title %}Publications · {{ resume.name }}{% endblock %}
+{% block content %}
+<h1>Publications</h1>
+<ol class="pub-list">
+  {% for pub in resume.publications | sort(attribute="year", reverse=True) %}
+  <li class="pub">
+    <p class="pub-meta">{{ pub.year }} · <em>{{ pub.venue }}</em>{% if pub.organization %} · {{ pub.organization }}{% endif %}</p>
+    <h3>{% if pub.url %}<a href="{{ pub.url }}">{{ pub.title }}</a>{% else %}{{ pub.title }}{% endif %}</h3>
+    <p class="pub-authors">{% for author in pub.authors %}{% if author == resume.citation_name %}<strong class="me">{{ author }}</strong>{% else %}{{ author }}{% endif %}{{ ", " if not loop.last }}{% endfor %}</p>
+  </li>
+  {% endfor %}
+</ol>
+{% endblock %}

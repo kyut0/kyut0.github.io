@@ -3,6 +3,7 @@ title: Precision Viticulture Sampling
 summary: >-
   E. & J. Gallo Winery: interpolated grape sugar content across a vineyard block and
   compared satellite-driven sampling designs to support irrigation and harvest decisions.
+organization: "E. & J. Gallo Winery"
 date: 2020-12-01
 tags: [qgis, kriging, landsat, sentinel-2, agriculture]
 image: precision-viticulture/brix-kriging.jpg
