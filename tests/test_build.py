@@ -13,6 +13,8 @@ def test_build_writes_every_page(content_dir: Path, site_dir: Path, tmp_path: Pa
         assert (tmp_path / page).exists()
     for project in site.projects:
         assert (tmp_path / "projects" / f"{project.slug}.html").exists()
+        if project.image:
+            assert (tmp_path / "projects" / project.image).is_file()
     assert (tmp_path / "static" / "style.css").exists()
     assert site.resume.name in (tmp_path / "index.html").read_text()
 

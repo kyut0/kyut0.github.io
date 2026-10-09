@@ -5,7 +5,7 @@
 <article class="project">
   <h1>{{ project.title }}</h1>
   <p class="muted">{{ project.date | month_year }}{% if project.repo %} · <a href="{{ project.repo }}">Source</a>{% endif %}</p>
-  {% if project.image %}<img src="../static/{{ project.image }}" alt="{{ project.title }}">{% endif %}
+  <p class="tags">{% for tag in project.tags %}<span>{{ tag }}</span>{% endfor %}</p>
   {{ project.body_html | safe }}
 </article>
 {% endblock %}

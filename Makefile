@@ -23,10 +23,12 @@ check: lint typecheck test  ## Everything CI runs
 validate:
 	poetry run portfolio validate
 
-build:
+build:  ## Fresh build, so deleted pages don't linger
+	rm -rf _site
 	poetry run portfolio build
 
 serve:
+	rm -rf _site
 	poetry run portfolio serve
 
 clean:

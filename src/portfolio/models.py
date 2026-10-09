@@ -5,6 +5,7 @@ malformed date or a misspelled field fails the build (and CI) instead of shippin
 """
 
 from datetime import date
+from pathlib import Path
 from typing import Annotated, Self
 
 from pydantic import (
@@ -100,8 +101,11 @@ class Project(_Model):
     date: date
     tags: list[str] = Field(default_factory=list)
     repo: HttpUrl | None = None
-    image: str | None = None  # path relative to site/static/
+    # Card thumbnail, relative to the project's Markdown file (e.g. "my-project/thumb.png").
+    image: str | None = None
     body_html: str = ""
+    # content/projects/<slug>/, if it exists; copied next to the rendered page.
+    asset_dir: Path | None = Field(default=None, exclude=True)
 
 
 class Site(_Model):

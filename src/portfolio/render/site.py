@@ -44,6 +44,8 @@ def build_site(site: Site, out_dir: Path, templates_dir: Path, static_dir: Path)
         target = project_dir / f"{project.slug}.html"
         target.write_text(project_template.render(project=project, **context), encoding="utf-8")
         written.append(target)
+        if project.asset_dir is not None:
+            shutil.copytree(project.asset_dir, project_dir / project.slug, dirs_exist_ok=True)
 
     if static_dir.is_dir():
         shutil.copytree(static_dir, out_dir / "static", dirs_exist_ok=True)

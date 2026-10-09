@@ -28,6 +28,24 @@ def test_load_project_uses_filename_as_slug(tmp_path: Path) -> None:
     assert "<h1>Heading</h1>" in project.body_html
 
 
+def test_load_project_rejects_missing_images(tmp_path: Path) -> None:
+    path = tmp_path / "maps.md"
+    path.write_text(
+        "---\ntitle: T\nsummary: S\ndate: 2024-05-01\nimage: maps/thumb.jpg\n---\n"
+        "![fig](maps/fig.jpg)\n![remote](https://example.com/x.png)\n"
+    )
+    with pytest.raises(ContentError, match=r"maps/fig\.jpg, maps/thumb\.jpg"):
+        load_project(path)
+
+
+def test_load_project_finds_asset_dir(tmp_path: Path) -> None:
+    (tmp_path / "maps").mkdir()
+    (tmp_path / "maps" / "fig.jpg").write_bytes(b"jpg")
+    path = tmp_path / "maps.md"
+    path.write_text("---\ntitle: T\nsummary: S\ndate: 2024-05-01\n---\n![fig](maps/fig.jpg)\n")
+    assert load_project(path).asset_dir == tmp_path / "maps"
+
+
 def test_missing_required_file_raises(tmp_path: Path) -> None:
     with pytest.raises(ContentError, match=r"resume\.yaml"):
         load_site(tmp_path)

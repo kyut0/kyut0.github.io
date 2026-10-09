@@ -38,9 +38,37 @@ def load_resume(path: Path) -> Resume:
     return Resume.model_validate(data)
 
 
+def _local_image_paths(body: str) -> list[str]:
+    """Return the src of every non-URL image referenced in a Markdown body."""
+    paths = []
+    for token in _md.parse(body):
+        for child in token.children or []:
+            src = child.attrGet("src")
+            if child.type == "image" and isinstance(src, str) and "://" not in src:
+                paths.append(src)
+    return paths
+
+
 def load_project(path: Path) -> Project:
+    """Load a project page. Image paths are relative to the Markdown file, which mirrors
+    where the page and its asset folder land in the built site."""
     meta, body = parse_front_matter(path.read_text(encoding="utf-8"))
-    return Project.model_validate({"slug": path.stem, **meta, "body_html": render_markdown(body)})
+    images = _local_image_paths(body)
+    if isinstance(meta.get("image"), str):
+        images.append(meta["image"])
+    missing = [src for src in images if not (path.parent / src).is_file()]
+    if missing:
+        raise ContentError(f"{path}: image(s) not found: {', '.join(missing)}")
+
+    asset_dir = path.parent / path.stem
+    return Project.model_validate(
+        {
+            "slug": path.stem,
+            **meta,
+            "body_html": render_markdown(body),
+            "asset_dir": asset_dir if asset_dir.is_dir() else None,
+        }
+    )
 
 
 def load_site(content_dir: Path) -> Site:

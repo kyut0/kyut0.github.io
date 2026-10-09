@@ -1,0 +1,11 @@
+{# Project card. Expects `project`; links are relative to the site root. #}
+<li class="card{% if project.image %} has-thumb{% endif %}">
+  {% if project.image %}
+  <a class="thumb" href="projects/{{ project.slug }}.html"><img src="projects/{{ project.image }}" alt="" loading="lazy"></a>
+  {% endif %}
+  <div class="card-body">
+    <a href="projects/{{ project.slug }}.html"><h3>{{ project.title }}</h3></a>
+    <p>{{ project.summary }}</p>
+    <p class="tags">{% for tag in project.tags %}<span>{{ tag }}</span>{% endfor %}</p>
+  </div>
+</li>

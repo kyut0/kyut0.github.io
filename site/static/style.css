@@ -53,6 +53,36 @@ img { max-width: 100%; border-radius: 6px; }
 .cards { list-style: none; padding: 0; display: grid; gap: 1rem; }
 .card { background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 1rem 1.25rem; }
 .card h3 { margin: 0 0 0.25rem; }
+/* Maps come in every aspect ratio, so thumbnails show the whole image ("contain")
+   inside a fixed square rather than cropping it. */
+.card.has-thumb {
+  display: grid;
+  grid-template-columns: 9rem 1fr;
+  gap: 1.25rem;
+  align-items: start;
+}
+.card .thumb {
+  display: block;
+  aspect-ratio: 1;
+  padding: 0.35rem;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: #fff;
+}
+.card .thumb img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  border-radius: 0;
+}
+@media (max-width: 34rem) {
+  .card.has-thumb { grid-template-columns: 1fr; }
+  .card .thumb { aspect-ratio: 16 / 10; }
+}
+
+.project figure, .project img { margin: 1.5rem 0 0.5rem; }
+.project em { color: var(--muted); }
 .card p { margin: 0.25rem 0; }
 
 .tags span {

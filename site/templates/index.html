@@ -15,10 +15,7 @@
   <h2>Recent work</h2>
   <ul class="cards">
     {% for project in site.projects[:3] %}
-    <li class="card">
-      <a href="projects/{{ project.slug }}.html"><h3>{{ project.title }}</h3></a>
-      <p>{{ project.summary }}</p>
-    </li>
+    {% include "_card.html" %}
     {% endfor %}
   </ul>
 </section>
