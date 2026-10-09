@@ -17,12 +17,22 @@
   <ul>
     {% for item in role.highlights %}<li>{{ item }}</li>{% endfor %}
   </ul>
+  {% if role.skills %}
+  <p class="tags">{% for skill in role.skills %}<span>{{ skill }}</span>{% endfor %}</p>
+  {% endif %}
 </article>
 {% endfor %}
 
 <h2>Education</h2>
 {% for edu in resume.education %}
-<p><strong>{{ edu.degree }}</strong>, {{ edu.institution }} <span class="muted">({{ edu.year }})</span></p>
+<article class="role">
+  {% for degree in edu.degrees %}<h3>{{ degree }}</h3>{% endfor %}
+  <p class="muted">
+    {{ edu.institution }}{% if edu.location %} ({{ edu.location }}){% endif %}
+    · {{ date_range(edu.start, edu.end) if edu.start else edu.end | month_year }}
+    {% if edu.honors %} · <em>{{ edu.honors }}</em>{% endif %}
+  </p>
+</article>
 {% endfor %}
 
 <h2>Skills</h2>
@@ -32,4 +42,18 @@
   <dd>{{ group.items | join(", ") }}</dd>
   {% endfor %}
 </dl>
+
+{% if resume.publications %}
+<h2>Research</h2>
+<ul class="publications">
+  {% for pub in resume.publications %}
+  <li>
+    {% for author in pub.authors %}{% if author == resume.citation_name %}<strong>{{ author }}</strong>{% else %}{{ author }}{% endif %}{{ ", " if not loop.last }}{% endfor %}
+    ({{ pub.year }}).
+    {% if pub.url %}<a href="{{ pub.url }}">{{ pub.title }}</a>{% else %}{{ pub.title }}{% endif %}.
+    <em>{{ pub.venue }}</em>.
+  </li>
+  {% endfor %}
+</ul>
+{% endif %}
 {% endblock %}

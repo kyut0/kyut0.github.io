@@ -74,6 +74,9 @@ img { max-width: 100%; border-radius: 6px; }
 }
 .button:hover { background: var(--accent); color: var(--bg); }
 
+.publications { padding-left: 1.1rem; }
+.publications li { margin-bottom: 0.6rem; }
+
 .role h3 { margin-bottom: 0; }
 .role p.muted { margin-top: 0; }
 

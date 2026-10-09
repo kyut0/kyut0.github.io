@@ -1,41 +1,112 @@
 # Single source of truth for the resume. Validated by portfolio.models.Resume.
-# Dates are YYYY-MM-DD; omit `end` for a current role.
-# TODO(phase 3): replace placeholders with real content.
-name: Katy Yut
-headline: Data Engineer · Geospatial
+# Dates are YYYY-MM-DD (use -01 for month-only dates); omit `end` for a current role.
+# This file is published: keep phone numbers and other private details out of it.
+name: Katherine M. Yut
+headline: Geospatial Data Engineer
 summary: >-
-  Placeholder summary. One or two sentences on the kind of data systems you build
-  and the problems you like solving.
-location: TODO City, ST
+  Expert in geospatial analysis, statistics, and programming using R and Python.
+  Passionate about data visualization. Seeking to solve complex problems to make
+  systems more efficient. Meticulous, intrinsically motivated, and a quick learner.
+location: Austin, TX
+email: katy.yut@gmail.com   # optional; shown in the PDF and site header if set
+citation_name: Yut, K.
 links:
   - label: GitHub
     url: https://github.com/kyut0
   - label: LinkedIn
-    url: https://www.linkedin.com/in/TODO
+    url: https://www.linkedin.com/in/katherine-yut/
 
 experience:
-  - title: TODO Current Title
-    organization: TODO Organization
-    location: Remote
-    start: 2024-01-01
+  - title: Data Engineer
+    organization: Grassroots Carbon
+    location: San Antonio, TX (hybrid)
+    start: 2025-08-01
     highlights:
-      - Placeholder highlight with a measurable outcome.
-  - title: TODO Previous Title
-    organization: TODO Previous Organization
-    start: 2022-01-01
-    end: 2023-12-31
+      - >-
+        Building ETL/ELT data pipelines using Python, GitHub, and Docker containerization
+        at a company passionate about doing right for the land, the rancher, and the world.
+    skills: [pydantic, Streamlit, cron, GitHub Actions, CI/CD, APIs, code review]
+
+  - title: Carbon Technical Manager
+    organization: Grassroots Carbon
+    location: San Antonio, TX (hybrid)
+    start: 2024-08-01
+    end: 2025-08-01
     highlights:
-      - Placeholder highlight.
+      - >-
+        Automated rancher eligibility screening processes using R Shiny and Python
+        through the Salesforce API.
+      - Provided geospatial data analysis using QGIS.
+      - Supported the navigation of carbon standards.
+    skills: [R, RShiny, Salesforce API, QGIS, geospatial analysis]
+
+  - title: GIS & Energy Data Analyst
+    organization: University of Texas, Bureau of Economic Geology
+    location: Austin, TX
+    start: 2022-05-01
+    end: 2024-07-01
+    highlights:
+      - Leveraged R to clean and manipulate data tables, solve problems, and automate processes.
+      - Utilized ArcMap to aid in oil & gas research publications.
+      - Published research findings as papers, posters, and presentations.
 
 education:
-  - degree: TODO Degree
-    institution: TODO Institution
-    year: 2020
+  - degrees:
+      - "Master of Arts: Economics and Big Data"
+      - "Bachelor of Arts: Economics and Big Data"
+      - "Bachelor of Science: Geographic Information Science"
+    institution: University of Oklahoma
+    location: Norman, OK
+    start: 2016-08-01
+    end: 2021-05-01
+    honors: Summa cum laude
+
+publications:
+  - authors:
+      - "Smye, K. M."
+      - "Yut, K."
+      - "Reedy, R. C."
+      - "Scanlon, B. R."
+      - "Nicot, J. P."
+      - "Hennings, P."
+    year: 2024
+    title: >-
+      Challenges with managing unconventional water production and disposal in the
+      Permian Basin
+    venue: AAPG Bulletin 108 (12), 2215–2240
+  - authors:
+      - "Peng, S."
+      - "Maraggi, L. M. R."
+      - "Bhattacharya, S."
+      - "Yut, K."
+      - "McMahon, T."
+      - "Haddad, M."
+    year: 2023
+    title: >-
+      Feasibility of CO2 storage in depleted unconventional oil and gas reservoirs:
+      Capacity, microscale mechanism, injectivity, fault stability, and monitoring
+    venue: URTeC, 13–15 June 2023
+  - authors:
+      - "Bull, M."
+      - "Francis, T."
+      - "Yut, K."
+      - "Weber, K."
+      - "Spruce, J."
+      - "Jarnevich, C."
+    year: 2019
+    title: West Virginia Ecological Forecasting
+    venue: NASA DEVELOP National Program
+  - authors: ["Kelley, S.", "Yut, K.", "Kulkarni, R.", "Gaffin, D."]
+    year: 2019
+    title: Avoidance of rosemary oil by scorpions
+    venue: Journal of Arachnology
 
 skills:
-  - category: Languages
-    items: [Python, SQL, R]
-  - category: Data
-    items: [TODO]
-  - category: Geospatial
-    items: [TODO]
+  - category: Expert
+    items: [R, RStudio, R Shiny, ESRI ArcGIS Pro, QGIS]
+  - category: Advanced
+    items: [Python, GitHub, Salesforce backend, Big data statistical analysis & modeling]
+  - category: Intermediate
+    items: [SQL, Docker, Google Earth Engine, ENVI]
+  - category: Strengths
+    items: [Timely deliverables, Clear communication, Curiosity, Organization, Multitasking, Focus]

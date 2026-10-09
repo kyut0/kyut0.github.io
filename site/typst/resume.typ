@@ -5,19 +5,22 @@
 #let muted = luma(90)
 
 #set document(title: data.name + " – Resume", author: data.name)
-#set page(paper: "us-letter", margin: (x: 0.7in, y: 0.6in))
+#set page(paper: "us-letter", margin: (x: 0.65in, y: 0.55in))
 #set text(font: "Libertinus Serif", size: 10.5pt)
 #set par(leading: 0.55em)
 #set list(indent: 0.6em, spacing: 0.45em)
 #show link: set text(fill: accent)
 
 #let section(title) = {
-  v(0.9em)
+  v(0.8em)
   text(size: 11pt, weight: "bold", fill: accent, upper(title))
   v(-0.65em)
   line(length: 100%, stroke: 0.5pt + accent)
-  v(0.15em)
+  v(0.1em)
 }
+
+// Left-aligned main text with a muted right-aligned aside (dates, years).
+#let entry(main, aside) = grid(columns: (1fr, auto), column-gutter: 1em, main, text(fill: muted, aside))
 
 // Header
 #align(center)[
@@ -27,6 +30,7 @@
   #{
     let items = ()
     if data.location != none { items.push(data.location) }
+    if data.email != none { items.push(link("mailto:" + data.email, data.email)) }
     for l in data.links { items.push(link(l.url, l.label)) }
     items.join([ #h(0.3em)·#h(0.3em) ])
   }
@@ -37,25 +41,25 @@
 #if data.experience.len() > 0 {
   section("Experience")
   for role in data.experience {
-    grid(
-      columns: (1fr, auto),
-      [*#role.title* · #role.organization],
-      text(fill: muted, role.dates),
-    )
+    entry([*#role.title* · #role.organization], role.dates)
     if role.location != none { v(-0.4em); text(size: 9.5pt, fill: muted, role.location) }
     list(..role.highlights)
-    v(0.3em)
+    if role.skills.len() > 0 {
+      v(-0.2em)
+      text(size: 9.5pt)[#h(0.6em)_Tools:_ #role.skills.join(", ")]
+    }
+    v(0.25em)
   }
 }
 
 #if data.education.len() > 0 {
   section("Education")
   for edu in data.education {
-    grid(
-      columns: (1fr, auto),
-      [*#edu.degree*, #edu.institution],
-      text(fill: muted, str(edu.year)),
-    )
+    let place = edu.institution + if edu.location != none { " (" + edu.location + ")" }
+    let aside = edu.dates + if edu.honors != none { [ · _#edu.honors _] }
+    edu.degrees.map(d => strong(d)).join(linebreak())
+    v(-0.2em)
+    entry(place, aside)
   }
 }
 
@@ -67,4 +71,14 @@
     row-gutter: 0.6em,
     ..data.skills.map(g => ([*#g.category*], g.items.join(", "))).flatten(),
   )
+}
+
+#if data.publications.len() > 0 {
+  section("Research")
+  set par(hanging-indent: 1.2em)
+  for pub in data.publications {
+    let authors = pub.authors.map(a => if a.me { strong(a.name) } else { a.name }).join(", ")
+    let title = if pub.url != none { link(pub.url, pub.title) } else { pub.title }
+    par[#authors (#str(pub.year)). #title. #emph(pub.venue).]
+  }
 }

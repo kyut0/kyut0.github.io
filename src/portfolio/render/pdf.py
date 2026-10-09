@@ -11,14 +11,20 @@ from typing import Any
 import typst
 
 from portfolio.models import Resume
-from portfolio.render.formatting import date_range
+from portfolio.render.formatting import date_range, month_year
 
 
 def resume_data(resume: Resume) -> dict[str, Any]:
-    """Serialize the resume to JSON-ready data, with dates pre-formatted for display."""
+    """Serialize the resume to JSON-ready data, pre-formatted for display."""
     data = resume.model_dump(mode="json")
     for role, raw in zip(resume.experience, data["experience"], strict=True):
         raw["dates"] = date_range(role.start, role.end)
+    for edu, raw in zip(resume.education, data["education"], strict=True):
+        raw["dates"] = date_range(edu.start, edu.end) if edu.start else month_year(edu.end)
+    for raw in data["publications"]:
+        raw["authors"] = [
+            {"name": author, "me": author == resume.citation_name} for author in raw["authors"]
+        ]
     return data
 
 

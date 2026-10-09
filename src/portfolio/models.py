@@ -5,9 +5,16 @@ malformed date or a misspelled field fails the build (and CI) instead of shippin
 """
 
 from datetime import date
-from typing import Self
+from typing import Annotated, Self
 
-from pydantic import BaseModel, ConfigDict, Field, HttpUrl, model_validator
+from pydantic import (
+    BaseModel,
+    ConfigDict,
+    Field,
+    HttpUrl,
+    StringConstraints,
+    model_validator,
+)
 
 
 class _Model(BaseModel):
@@ -26,6 +33,7 @@ class Role(_Model):
     start: date
     end: date | None = None  # None means current role
     highlights: list[str] = Field(default_factory=list)
+    skills: list[str] = Field(default_factory=list)  # tools used in this role
 
     @model_validator(mode="after")
     def _end_after_start(self) -> Self:
@@ -35,9 +43,24 @@ class Role(_Model):
 
 
 class Education(_Model):
-    degree: str
+    degrees: list[str] = Field(min_length=1)
     institution: str
+    location: str | None = None
+    start: date | None = None
+    end: date
+    honors: str | None = None
+
+
+# "Last, F. M." -- also catches YAML flow lists like [Smye, K. M.] silently splitting names.
+Author = Annotated[str, StringConstraints(pattern=r"^[^,]+, (?:[A-Z]\.\s?)+$")]
+
+
+class Publication(_Model):
+    authors: list[Author] = Field(min_length=1)
     year: int
+    title: str
+    venue: str
+    url: HttpUrl | None = None
 
 
 class SkillGroup(_Model):
@@ -50,10 +73,24 @@ class Resume(_Model):
     headline: str
     summary: str
     location: str | None = None
+    email: str | None = None
+    # How your name appears in author lists, so renderers can bold it.
+    citation_name: str | None = None
     links: list[Link] = Field(default_factory=list)
     experience: list[Role] = Field(default_factory=list)
     education: list[Education] = Field(default_factory=list)
+    publications: list[Publication] = Field(default_factory=list)
     skills: list[SkillGroup] = Field(default_factory=list)
+
+    @model_validator(mode="after")
+    def _citation_name_is_used(self) -> Self:
+        if (
+            self.citation_name
+            and self.publications
+            and not any(self.citation_name in p.authors for p in self.publications)
+        ):
+            raise ValueError(f"citation_name '{self.citation_name}' is in no author list")
+        return self
 
 
 class Project(_Model):
