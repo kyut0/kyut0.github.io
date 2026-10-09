@@ -19,6 +19,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # full history: the resume "Updated" date comes from git log
       - run: pipx install poetry==2.2.1
       - uses: actions/setup-python@v5
         with:

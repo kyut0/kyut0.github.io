@@ -112,3 +112,4 @@ class Site(_Model):
     resume: Resume
     projects: list[Project]
     bio_html: str
+    resume_updated: date | None = None  # last commit to content/resume.yaml

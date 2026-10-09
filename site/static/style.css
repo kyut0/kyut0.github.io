@@ -41,6 +41,7 @@
   --border: #4d3b2f;
   --teal: #3dd5c3;
   --orange: #ff7a2a;
+  --orange-text: #ff7a2a;
   --on-orange: #2b1f18;
   --thumb-bg: #ffffff;
   color-scheme: dark;
@@ -54,6 +55,7 @@
   --border: #e5d8c3;
   --teal: #0b6b63;
   --orange: #ff5f0f;
+  --orange-text: #b8460b; /* neon orange is unreadable as text on cream */
   --on-orange: #2b1f18;
   --thumb-bg: #ffffff;
   color-scheme: light;
@@ -75,7 +77,10 @@ body {
 
 ::selection { background: var(--orange); color: var(--on-orange); }
 
-h1, h2, h3 { color: var(--teal); font-weight: 600; line-height: 1.3; }
+/* Main headings are orange to match their ## markers; subheadings are teal. */
+h1, h2, h3 { font-weight: 600; line-height: 1.3; }
+h1, h2 { color: var(--orange-text); }
+h3 { color: var(--teal); }
 h1 { font-size: 1.9rem; letter-spacing: -0.02em; }
 h2 { font-size: 1.25rem; margin-top: 2.5rem; }
 h3 { font-size: 1.02rem; }
@@ -152,6 +157,8 @@ code { font-family: inherit; background: var(--card); border: 1px solid var(--bo
 
 .headline { color: var(--muted); font-size: 1.05rem; margin-top: -0.5rem; }
 .muted { color: var(--muted); font-weight: normal; }
+.updated { color: var(--muted); font-size: 0.82rem; margin-top: -0.6rem; }
+.updated::before { content: "● " / ""; color: var(--teal); }
 
 .cards { list-style: none; padding: 0; display: grid; gap: 1rem; }
 .card {
@@ -218,6 +225,7 @@ code { font-family: inherit; background: var(--card); border: 1px solid var(--bo
 .publications { padding-left: 1.1rem; }
 .publications li { margin-bottom: 0.6rem; }
 .publications li::marker { color: var(--orange); }
+.publications .me { color: var(--teal); }
 ul li::marker { color: var(--orange); }
 
 .role h3 { margin-bottom: 0; }

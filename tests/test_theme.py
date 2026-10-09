@@ -6,6 +6,7 @@ import re
 import pytest
 
 from portfolio.color import TEXT_MIN, UI_MIN, contrast_ratio
+from portfolio.render.pdf import PDF_COLORS
 
 # (foreground token, background token, minimum ratio)
 PAIRS = [
@@ -13,8 +14,10 @@ PAIRS = [
     ("fg", "card", TEXT_MIN),
     ("muted", "bg", TEXT_MIN),
     ("muted", "card", TEXT_MIN),
-    ("teal", "bg", TEXT_MIN),  # links and headings
+    ("teal", "bg", TEXT_MIN),  # links, subheadings, own name in citations
     ("teal", "card", TEXT_MIN),
+    ("orange-text", "bg", TEXT_MIN),  # main headings
+    ("orange-text", "card", TEXT_MIN),
     ("on-orange", "orange", TEXT_MIN),  # button text
     ("teal", "bg", UI_MIN),  # focus ring
 ]
@@ -57,3 +60,14 @@ def test_contrast_ratio_known_values() -> None:
     assert contrast_ratio("#777777", "#777777") == pytest.approx(1.0)
     with pytest.raises(ValueError):
         contrast_ratio("teal", "#ffffff")
+
+
+def test_pdf_colors_match_site_light_theme(palettes: dict[str, dict[str, str]]) -> None:
+    """The PDF prints on white with the site's light palette; they must not drift apart."""
+    for token, value in PDF_COLORS.items():
+        assert palettes["light"][token].lower() == value.lower(), f"--{token} differs"
+
+
+@pytest.mark.parametrize("token", ["fg", "muted", "teal", "orange-text"])
+def test_pdf_text_colors_readable_on_white(token: str) -> None:
+    assert contrast_ratio(PDF_COLORS[token], "#ffffff") >= TEXT_MIN

@@ -18,6 +18,17 @@ from portfolio.render.formatting import date_range, month_year
 # body text at ~9.2pt: past that, content should be trimmed rather than shrunk further.
 SCALES = (1.0, 0.97, 0.94, 0.91, 0.88)
 
+# The site's light-theme colors (keys are the CSS custom property names in
+# site/static/style.css), since the PDF prints on white paper.
+# tests/test_theme.py fails if these drift from the stylesheet.
+PDF_COLORS = {
+    "fg": "#2b1f18",
+    "muted": "#6b5a4c",
+    "teal": "#0b6b63",
+    "orange-text": "#b8460b",
+    "orange": "#ff5f0f",
+}
+
 
 def resume_data(resume: Resume) -> dict[str, Any]:
     """Serialize the resume to JSON-ready data, pre-formatted for display."""
@@ -63,8 +74,9 @@ def build_resume_pdf(
 ) -> RenderedPdf:
     """Compile the resume at the largest scale that fits max_pages and write it to out."""
     data = json.dumps(resume_data(resume))
+    colors = json.dumps(PDF_COLORS)
     for scale in SCALES:
-        inputs = {"data": data, "scale": str(scale)}
+        inputs = {"data": data, "colors": colors, "scale": str(scale)}
         pages = _page_count(template, inputs)
         if pages <= max_pages:
             break

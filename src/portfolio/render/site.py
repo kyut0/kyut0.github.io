@@ -2,14 +2,30 @@
 
 from datetime import date
 from pathlib import Path
+import re
 import shutil
 
 from jinja2 import Environment, FileSystemLoader, StrictUndefined, select_autoescape
 
-from portfolio.models import Site
-from portfolio.render.formatting import date_range, month_year
+from portfolio.models import Resume, Site
+from portfolio.render.formatting import date_range, long_date, month_year
 
 PAGES = ("index.html", "resume.html", "projects.html")
+
+
+def resume_download_stem(resume: Resume) -> str:
+    """Saved-file prefix for the PDF, e.g. "YutK_Resume" from citation name "Yut, K."."""
+    return re.sub(r"[^A-Za-z0-9]", "", resume.citation_name or resume.name) + "_Resume"
+
+
+def resume_download_name(resume: Resume, on: date) -> str:
+    """Filename visitors' browsers save the PDF as, e.g. YutK_Resume_20261009.pdf.
+
+    The file stays at a stable /resume.pdf URL; only the saved name carries the date.
+    site/static/download.js swaps in the visitor's date at click time; this build-date
+    name is the no-JavaScript fallback.
+    """
+    return f"{resume_download_stem(resume)}_{on:%Y%m%d}.pdf"
 
 
 def _environment(templates_dir: Path) -> Environment:
@@ -21,6 +37,7 @@ def _environment(templates_dir: Path) -> Environment:
         lstrip_blocks=True,
     )
     env.filters["month_year"] = month_year
+    env.filters["long_date"] = long_date
     env.globals["date_range"] = date_range
     return env
 
@@ -29,7 +46,14 @@ def build_site(site: Site, out_dir: Path, templates_dir: Path, static_dir: Path)
     """Write every page plus static assets to out_dir and return the written page paths."""
     env = _environment(templates_dir)
     out_dir.mkdir(parents=True, exist_ok=True)
-    context = {"site": site, "resume": site.resume, "year": date.today().year}
+    today = date.today()
+    context = {
+        "site": site,
+        "resume": site.resume,
+        "year": today.year,
+        "resume_download_name": resume_download_name(site.resume, today),
+        "resume_download_stem": resume_download_stem(site.resume),
+    }
     written: list[Path] = []
 
     for page in PAGES:
