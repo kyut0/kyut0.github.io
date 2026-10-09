@@ -153,7 +153,7 @@ code {
   padding: 0 0.3em;
 }
 
-/* Header: the name ends in a blinking terminal cursor in the pop color. */
+/* Header and footer bars. */
 .site-header,
 .site-footer {
   display: flex;
@@ -249,6 +249,9 @@ code {
   color: var(--fg);
 }
 
+/* Blinking terminal cursor after the brand link, in the pop color. Disabled for now;
+   uncomment to bring it back.
+
 .brand::after {
   content: "" / "";
   display: inline-block;
@@ -271,6 +274,7 @@ code {
     animation: none;
   }
 }
+*/
 
 /* Page heading with an action pinned to the right (e.g. Resume + Download PDF).
    Wraps the button under the heading on narrow screens. */
@@ -280,6 +284,18 @@ code {
   align-items: center;
   justify-content: space-between;
   gap: 0.5rem 1rem;
+}
+
+/* Home page: pronouns tucked just under the name, in the heading color. */
+.hero h1 {
+  margin-bottom: 0;
+}
+
+.pronouns {
+  color: var(--heading);
+  font-style: italic;
+  font-size: 0.85rem;
+  margin: 0.1rem 0 1.25rem;
 }
 
 .headline {

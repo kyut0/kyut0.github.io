@@ -53,3 +53,10 @@ def test_citation_name_must_appear_in_some_publication() -> None:
 def test_project_slug_must_be_kebab_case(slug: str) -> None:
     with pytest.raises(ValidationError):
         Project(slug=slug, title="T", summary="S", date=date(2024, 1, 1))
+
+
+def test_display_name_prefers_short_name() -> None:
+    fields = {"name": "Katherine (Katy) Yut", "headline": "H", "summary": "S"}
+    assert Resume.model_validate(fields).display_name == "Katherine (Katy) Yut"
+    short = Resume.model_validate({**fields, "short_name": "Katy Yut"})
+    assert short.display_name == "Katy Yut"

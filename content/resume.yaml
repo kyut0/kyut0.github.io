@@ -1,7 +1,9 @@
 # Single source of truth for the resume. Validated by portfolio.models.Resume.
 # Dates are YYYY-MM-DD (use -01 for month-only dates); omit `end` for a current role.
 # This file is published: keep phone numbers and other private details out of it.
-name: Katherine (Katy) Yut
+name: Katherine (Katy) Yut   # full name: resume, cover letter, PDFs
+pronouns: she/her            # optional; shown under the name on the home page
+short_name: Katy Yut        # optional; casual spots like the home page and footer
 headline: Geospatial Data Engineer
 summary: >-
   Expert in geospatial analysis, data visualization, and programming using R and Python.

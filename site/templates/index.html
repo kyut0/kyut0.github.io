@@ -2,7 +2,8 @@
 {% set root = "" %}
 {% block content %}
 <section class="hero">
-  <h1>{{ resume.name }}</h1>
+  <h1>{{ resume.display_name }}</h1>
+  {% if resume.pronouns %}<p class="pronouns">{{ resume.pronouns }}</p>{% endif %}
   <p class="headline">{{ resume.headline }}</p>
 </section>
 <section class="bio">

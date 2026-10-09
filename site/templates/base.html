@@ -12,7 +12,7 @@
 </head>
 <body>
   <header class="site-header">
-    <a class="brand" href="{{ root }}index.html">{{ resume.name }}</a>
+    <a class="brand" href="{{ root }}index.html">main</a>
     <nav>
       <a href="{{ root }}resume.html">Resume</a>
       <a href="{{ root }}cover-letter.html">Cover Letter</a>
@@ -27,7 +27,7 @@
     {% block content %}{% endblock %}
   </main>
   <footer class="site-footer">
-    <span>&copy; {{ year }} {{ resume.name }}</span>
+    <span>&copy; {{ year }} {{ resume.display_name }}</span>
     {% for link in resume.links %}
     <a href="{{ link.url }}">{{ link.label }}</a>
     {% endfor %}

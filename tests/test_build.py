@@ -19,7 +19,11 @@ def test_build_writes_every_page(content_dir: Path, site_dir: Path, tmp_path: Pa
         if project.image:
             assert (tmp_path / "projects" / project.image).is_file()
     assert (tmp_path / "static" / "style.css").exists()
-    assert site.resume.name in (tmp_path / "index.html").read_text()
+    index = (tmp_path / "index.html").read_text()
+    assert f"<h1>{site.resume.display_name}</h1>" in index
+    assert f'<p class="pronouns">{site.resume.pronouns}</p>' in index
+    assert f"&copy; {date.today().year} {site.resume.display_name}" in index
+    assert '<a class="brand" href="index.html">' in index
 
 
 def test_project_pages_link_back_to_root(

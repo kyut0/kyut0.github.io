@@ -71,6 +71,9 @@ class SkillGroup(_Model):
 
 class Resume(_Model):
     name: str
+    # Shorter name for casual spots (home page, footer); falls back to name.
+    short_name: str | None = None
+    pronouns: str | None = None
     headline: str
     summary: str
     location: str | None = None
@@ -82,6 +85,10 @@ class Resume(_Model):
     education: list[Education] = Field(default_factory=list)
     publications: list[Publication] = Field(default_factory=list)
     skills: list[SkillGroup] = Field(default_factory=list)
+
+    @property
+    def display_name(self) -> str:
+        return self.short_name or self.name
 
     @model_validator(mode="after")
     def _citation_name_is_used(self) -> Self:
