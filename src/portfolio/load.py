@@ -106,7 +106,6 @@ def load_site(content_dir: Path) -> Site:
         resume=load_resume(resume_path),
         projects=projects,
         bio_html=render_markdown(bio_path.read_text(encoding="utf-8")),
-        cover_letter_html=render_markdown(cover_letter),
         cover_letter_paragraphs=plain_paragraphs(cover_letter),
         resume_updated=last_commit_date(resume_path),
     )

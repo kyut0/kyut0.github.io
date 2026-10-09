@@ -1,6 +1,8 @@
 from datetime import date
 from pathlib import Path
 
+from markupsafe import escape
+
 from portfolio.cli import main
 from portfolio.load import load_site
 from portfolio.models import Resume
@@ -12,7 +14,7 @@ def test_build_writes_every_page(content_dir: Path, site_dir: Path, tmp_path: Pa
     site = load_site(content_dir)
     build_site(site, tmp_path, site_dir / "templates", site_dir / "static")
 
-    for page in ("index.html", "resume.html", "cover-letter.html", "projects.html", ".nojekyll"):
+    for page in ("index.html", "resume.html", "projects.html", ".nojekyll"):
         assert (tmp_path / page).exists()
     for project in site.projects:
         assert (tmp_path / "projects" / f"{project.slug}.html").exists()
@@ -69,16 +71,28 @@ def test_resume_page_sets_dated_download_name(
     assert 'src="static/download.js"' in html
 
 
-def test_cover_letter_page_has_letter_and_download(
+def test_resume_page_links_cover_letter_pdf(
     content_dir: Path, site_dir: Path, tmp_path: Path
 ) -> None:
+    """The cover letter is published only as a PDF, downloaded from the resume page."""
     site = load_site(content_dir)
     build_site(site, tmp_path, site_dir / "templates", site_dir / "static")
-    html = (tmp_path / "cover-letter.html").read_text()
+    html = (tmp_path / "resume.html").read_text()
     expected = download_name(site.resume, "CoverLetter", date.today())
     assert f'href="cover-letter.pdf" download="{expected}"' in html
     assert 'data-download-stem="YutK_CoverLetter"' in html
-    assert site.cover_letter_html in html
+    assert not (tmp_path / "cover-letter.html").exists()
+
+
+def test_resume_page_renders_timeline(content_dir: Path, site_dir: Path, tmp_path: Path) -> None:
+    site = load_site(content_dir)
+    build_site(site, tmp_path, site_dir / "templates", site_dir / "static")
+    html = (tmp_path / "resume.html").read_text()
+    for role in site.resume.experience:  # including roles left out of the PDF
+        assert str(escape(role.title)) in html
+    for project in site.projects:
+        assert f'href="projects/{project.slug}.html"' in html
+    assert 'src="static/timeline.js"' in html
 
 
 def test_resume_page_shows_updated_date(content_dir: Path, site_dir: Path, tmp_path: Path) -> None:

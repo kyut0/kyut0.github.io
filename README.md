@@ -25,8 +25,10 @@ flowchart LR
 - **Validate:** `models.py` defines strict pydantic models. Unknown fields, bad dates, and
   roles that end before they start fail the build.
 - **Render:** `render/site.py` turns the validated `Site` into HTML using `site/templates/`,
-  and `render/pdf.py` compiles the same resume data into `resume.pdf` with
-  [Typst](https://typst.app/). One YAML file feeds both, so they can't drift apart.
+  and `render/pdf.py` compiles the same resume data into `resume.pdf` and
+  `cover-letter.pdf` with [Typst](https://typst.app/). One YAML file feeds both, so they
+  can't drift apart. On the site, `render/timeline.py` reshapes the resume and projects
+  into an interactive timeline that tracks where each tool was first picked up.
 - **Deploy:** `.github/workflows/deploy.yml` builds and publishes `_site/` to Pages.
 
 ## Quickstart
@@ -52,11 +54,11 @@ make serve      # build and serve at http://127.0.0.1:8000
 ├── content/              # the data: what the site says
 │   ├── resume.yaml
 │   ├── bio.md
-│   ├── cover-letter.md   # general (not company-specific) letter
+│   ├── cover-letter.md   # general letter; published as a PDF only
 │   └── projects/*.md     # one file per project; filename = URL slug
 ├── site/                 # the presentation: how it looks
 │   ├── templates/        # Jinja templates
-│   ├── typst/            # PDF resume layout
+│   ├── typst/            # PDF resume + cover letter layouts
 │   └── static/           # CSS, images
 ├── src/portfolio/        # the pipeline
 │   ├── models.py         # schemas

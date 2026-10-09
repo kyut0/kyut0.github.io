@@ -35,6 +35,7 @@ class Role(_Model):
     end: date | None = None  # None means current role
     highlights: list[str] = Field(default_factory=list)
     skills: list[str] = Field(default_factory=list)  # tools used in this role
+    in_pdf: bool = True  # False: on the site's timeline only, to keep the PDF to one page
 
     @model_validator(mode="after")
     def _end_after_start(self) -> Self:
@@ -119,6 +120,5 @@ class Site(_Model):
     resume: Resume
     projects: list[Project]
     bio_html: str
-    cover_letter_html: str
-    cover_letter_paragraphs: list[str]  # plain text, for the PDF
+    cover_letter_paragraphs: list[str]  # plain text; the letter is published only as a PDF
     resume_updated: date | None = None  # last commit to content/resume.yaml

@@ -36,6 +36,15 @@ def test_resume_data_formats_dates() -> None:
     assert data["experience"][0]["dates"] == "Mar 2023 – Present"
 
 
+def test_roles_marked_not_in_pdf_are_left_out() -> None:
+    roles = [
+        Role(title="Shown", organization="O", start=date(2023, 3, 1)),
+        Role(title="Site only", organization="O", start=date(2019, 3, 1), in_pdf=False),
+    ]
+    data = resume_data(_resume(experience=roles))
+    assert [r["title"] for r in data["experience"]] == ["Shown"]
+
+
 def test_repo_resume_is_exactly_one_page(
     content_dir: Path, site_dir: Path, tmp_path: Path
 ) -> None:

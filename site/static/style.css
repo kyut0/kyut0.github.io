@@ -71,6 +71,10 @@
   box-sizing: border-box;
 }
 
+[hidden] {
+  display: none !important;
+}
+
 body {
   margin: 0 auto;
   max-width: 48rem;
@@ -317,73 +321,9 @@ code {
   margin: 0.6rem 0 0;
 }
 
-/* Resume page intro: name + Download PDF, then job title, location and summary. */
-.resume-intro {
-  display: grid;
-  gap: 0.35rem;
-  margin-bottom: 0.5rem;
-}
-
-.resume-intro h1 {
-  margin: 0.4rem 0 0;
-}
-
-.resume-intro p {
-  margin: 0;
-}
-
-.title-suffix {
-  color: var(--muted);
-  font-weight: 400;
-  white-space: nowrap;
-}
-
-.job-title {
-  font-size: 1.3rem;
-  font-weight: 600;
-  color: var(--fg);
-}
-
-.location {
-  color: var(--muted);
-  font-size: 0.88rem;
-}
-
-.resume-intro .summary {
-  margin-top: 0.9rem;
-}
-
 .updated::before {
   content: "● " / "";
   color: var(--link);
-}
-
-/* Cover letter: a single card, like a sheet of paper on the page. */
-.letter {
-  background: var(--card);
-  border: 1px solid var(--border);
-  border-left: 3px solid var(--pop-2);
-  border-radius: 6px;
-  padding: 1.5rem 1.75rem;
-}
-
-.letter p {
-  margin: 0 0 1rem;
-}
-
-.letter .signoff {
-  margin: 1.5rem 0 0;
-}
-
-.letter .signature {
-  color: var(--heading);
-  font-weight: 600;
-}
-
-@media (max-width: 34rem) {
-  .letter {
-    padding: 1.1rem 1.1rem;
-  }
 }
 
 .cards {
@@ -488,44 +428,384 @@ code {
   box-shadow: 3px 3px 0 var(--link);
 }
 
-.publications {
-  padding-left: 1.1rem;
-}
-
-.publications li {
-  margin-bottom: 0.6rem;
-}
-
-.publications li::marker {
-  color: var(--pop);
-}
-
-.publications .me {
-  color: var(--link);
-}
-
 ul li::marker {
   color: var(--pop);
 }
 
-.role h3 {
-  margin-bottom: 0;
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
 }
 
-.role p.muted {
-  margin-top: 0;
+/* Outlined secondary button, next to a filled .button. */
+.button-alt {
+  background: transparent;
+  color: var(--fg);
+  box-shadow: inset 0 0 0 1.5px var(--pop);
 }
 
-.skills {
-  display: grid;
-  grid-template-columns: max-content 1fr;
-  gap: 0.25rem 1rem;
+.button-alt:hover {
+  color: var(--fg);
+  box-shadow: inset 0 0 0 1.5px var(--pop), 3px 3px 0 var(--link);
 }
 
-.skills dt {
+/* ---- Resume timeline ---------------------------------------------------------------
+   Each event type gets a color, used for its dot on the line and its filter button. */
+.kind-work {
+  --kind: var(--pop);
+}
+
+.kind-education {
+  --kind: var(--link);
+}
+
+.kind-project {
+  --kind: var(--pop-2);
+}
+
+.kind-research {
+  --kind: var(--heading);
+}
+
+.timeline-intro h1 {
+  margin: 0.4rem 0;
+}
+
+.downloads {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+}
+
+.lede {
+  color: var(--muted);
+  margin-top: 0.75rem;
+}
+
+/* Tool chips: "new" marks the step where a tool first appears; the active chip is the
+   tool being traced. */
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.05rem 0.55rem;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--muted);
+  font: inherit;
+  font-size: 0.76rem;
+  line-height: 1.6;
+  cursor: pointer;
+}
+
+button.chip:hover {
+  border-color: var(--pop);
+  color: var(--fg);
+}
+
+.chip.is-new {
+  border-color: var(--pop);
+  color: var(--fg);
+}
+
+.chip.is-new::before {
+  content: "+" / "";
+  color: var(--pop);
   font-weight: 600;
 }
 
-.skills dd {
+.chip.is-active {
+  background: var(--pop);
+  border-color: var(--pop);
+  color: var(--on-pop);
+}
+
+.chip.is-active::before {
+  color: var(--on-pop);
+}
+
+.chip.is-static {
+  cursor: default;
+  border-style: dashed;
+}
+
+.chip-sample {
+  cursor: default;
+}
+
+.chip-count {
+  color: var(--pop-2);
+  font-size: 0.7rem;
+}
+
+.chip.is-active .chip-count {
+  color: var(--on-pop);
+}
+
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  margin: 0.75rem 0 0;
+}
+
+.toolbox dl {
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  gap: 0.6rem 1rem;
+  align-items: baseline;
+}
+
+.toolbox dt {
+  font-weight: 600;
+  font-size: 0.85rem;
+}
+
+.toolbox dd {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
   margin: 0;
+}
+
+/* Filter bar stays in view while scrolling the timeline. */
+.timeline-controls {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem 1rem;
+  margin-top: 2.5rem;
+  padding: 0.6rem 0;
+  background: var(--bg);
+  border-bottom: 1px solid var(--border);
+}
+
+.kind-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+.kind-filter {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.15rem 0.6rem;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  background: var(--card);
+  color: var(--fg);
+  font: inherit;
+  font-size: 0.8rem;
+  cursor: pointer;
+}
+
+.kind-filter::before {
+  content: "";
+  width: 0.6rem;
+  height: 0.6rem;
+  border-radius: 50%;
+  background: var(--kind);
+}
+
+.kind-filter[aria-pressed="false"] {
+  color: var(--muted);
+  background: transparent;
+  text-decoration: line-through;
+}
+
+.kind-filter[aria-pressed="false"]::before {
+  background: transparent;
+  box-shadow: inset 0 0 0 1.5px var(--kind);
+}
+
+.tl-status {
+  margin: 0;
+  font-size: 0.8rem;
+  color: var(--fg);
+}
+
+.tl-clear {
+  margin-left: 0.4rem;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--link);
+  font: inherit;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+/* The line runs down the left of the cards; dates sit to its left on wide screens. */
+.timeline {
+  --date-col: 8.5rem;
+  --gap: 1.75rem;
+  position: relative;
+  list-style: none;
+  margin: 1.5rem 0 0;
+  padding: 0;
+}
+
+.timeline::before {
+  content: "";
+  position: absolute;
+  top: 0.5rem;
+  bottom: 0;
+  left: calc(var(--date-col) + var(--gap) / 2 - 1px);
+  width: 2px;
+  background: var(--border);
+}
+
+.tl-year,
+.tl-event {
+  display: grid;
+  grid-template-columns: var(--date-col) 1fr;
+  column-gap: var(--gap);
+}
+
+.tl-year {
+  margin: 2rem 0 0.75rem;
+  color: var(--heading);
+  font-size: 1.35rem;
+  font-weight: 600;
+  text-align: right;
+  grid-template-columns: var(--date-col);
+}
+
+.tl-year:first-child {
+  margin-top: 0.5rem;
+}
+
+.tl-event {
+  position: relative;
+  margin-bottom: 1.1rem;
+  transition:
+    opacity 0.5s ease,
+    transform 0.5s ease;
+}
+
+.tl-event::before {
+  content: "";
+  position: absolute;
+  top: 1.2rem;
+  left: calc(var(--date-col) + var(--gap) / 2 - 0.4rem);
+  width: 0.8rem;
+  height: 0.8rem;
+  border-radius: 50%;
+  background: var(--kind);
+  box-shadow: 0 0 0 4px var(--bg);
+}
+
+.tl-date {
+  margin: 1rem 0 0;
+  color: var(--muted);
+  font-size: 0.78rem;
+  text-align: right;
+}
+
+.tl-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 0.9rem 1.15rem 1rem;
+}
+
+.tl-card h3 {
+  margin: 0;
+}
+
+.tl-card h3 a {
+  text-decoration: none;
+}
+
+.tl-card h3 a:hover {
+  text-decoration: underline;
+}
+
+.tl-card p,
+.tl-card ul {
+  margin: 0.4rem 0 0;
+}
+
+.tl-card ul {
+  padding-left: 1.1rem;
+}
+
+.tl-kind {
+  color: var(--kind);
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin: 0 0 0.15rem !important;
+}
+
+.kind-work .tl-kind,
+.kind-project .tl-kind {
+  /* --pop and --pop-2 are too light to read as small text on cream. */
+  color: var(--muted);
+}
+
+.tl-sub,
+.tl-authors {
+  color: var(--muted);
+  font-size: 0.85rem;
+}
+
+.tl-authors .me {
+  color: var(--link);
+}
+
+.tl-event.is-dimmed {
+  opacity: 0.3;
+}
+
+.tl-event.will-reveal {
+  opacity: 0;
+  transform: translateY(1rem);
+}
+
+/* Narrow screens: one column, line down the far left, date above each card. */
+@media (max-width: 34rem) {
+  .timeline {
+    --date-col: 0rem;
+    --gap: 1.6rem;
+  }
+
+  .timeline::before {
+    left: 0.4rem;
+  }
+
+  .tl-year,
+  .tl-event {
+    grid-template-columns: 1fr;
+    padding-left: var(--gap);
+  }
+
+  .tl-year {
+    text-align: left;
+  }
+
+  .tl-event::before {
+    left: 0;
+    top: 0.3rem;
+  }
+
+  .tl-date {
+    margin: 0 0 0.3rem;
+    text-align: left;
+  }
+
+  .toolbox dl {
+    grid-template-columns: 1fr;
+  }
 }

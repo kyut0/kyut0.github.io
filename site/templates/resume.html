@@ -1,69 +1,93 @@
 {% extends "base.html" %}
 {% set root = "" %}
+{% set kind_label = {"work": "Work", "education": "Education", "project": "Project", "research": "Research"} %}
 {% block title %}Resume · {{ resume.name }}{% endblock %}
 {% block content %}
 {% if site.resume_updated %}
 <p class="updated">Updated <time datetime="{{ site.resume_updated.isoformat() }}">{{ site.resume_updated | long_date }}</time></p>
 {% endif %}
-<header class="resume-intro">
+<header class="timeline-intro">
   <div class="page-title">
-    <h1>{{ resume.name }} <span class="title-suffix">— Resume</span></h1>
-    <a class="button" href="resume.pdf" download="{{ downloads.resume.name }}" data-download-stem="{{ downloads.resume.stem }}">Download PDF</a>
+    <h1>Resume</h1>
+    <div class="downloads">
+      <a class="button" href="resume.pdf" download="{{ downloads.resume.name }}" data-download-stem="{{ downloads.resume.stem }}">Resume PDF</a>
+      <a class="button button-alt" href="cover-letter.pdf" download="{{ downloads.cover_letter.name }}" data-download-stem="{{ downloads.cover_letter.stem }}">Cover letter PDF</a>
+    </div>
   </div>
-  <p class="job-title">{{ resume.headline }}</p>
-  {% if resume.location %}<p class="location">{{ resume.location }}</p>{% endif %}
-  <p class="summary">{{ resume.summary }}</p>
+  <p class="lede">
+    Every role, degree, project, and paper, newest first, with the tools each one used.
+    Tools marked <span class="chip is-new chip-sample">new</span> were picked up at that step.
+    Click any tool to trace it through the timeline.
+  </p>
 </header>
 
-<h2>Experience</h2>
-{% for role in resume.experience %}
-<article class="role">
-  <h3>{{ role.title }} <span class="muted">· {{ role.organization }}</span></h3>
-  <p class="muted">
-    {{ date_range(role.start, role.end) }}
-    {% if role.location %} · {{ role.location }}{% endif %}
+<section class="toolbox" aria-labelledby="toolbox-heading">
+  <h2 id="toolbox-heading">Toolbox</h2>
+  <dl>
+    {% for group in timeline.toolbox %}
+    <dt>{{ group.category }}</dt>
+    <dd>
+      {% for skill in group.skills %}
+      {% if skill.count %}
+      <button class="chip" type="button" data-skill="{{ skill.key }}" data-label="{{ skill.label }}" aria-pressed="false">{{ skill.label }}<span class="chip-count" aria-label="{{ skill.count }} timeline steps">{{ skill.count }}</span></button>
+      {% else %}
+      <span class="chip is-static">{{ skill.label }}</span>
+      {% endif %}
+      {% endfor %}
+    </dd>
+    {% endfor %}
+  </dl>
+</section>
+
+<div class="timeline-controls" hidden>
+  <div class="kind-filters" role="group" aria-label="Show on the timeline">
+    {% for kind, label in timeline.kinds.items() %}
+    <button class="kind-filter kind-{{ kind }}" type="button" data-kind-toggle="{{ kind }}" aria-pressed="true">{{ label }}</button>
+    {% endfor %}
+  </div>
+  <p class="tl-status" aria-live="polite" hidden>
+    <span class="tl-status-text"></span>
+    <button class="tl-clear" type="button">Clear</button>
   </p>
-  <ul>
-    {% for item in role.highlights %}<li>{{ item }}</li>{% endfor %}
-  </ul>
-  {% if role.skills %}
-  <p class="tags">{% for skill in role.skills %}<span>{{ skill }}</span>{% endfor %}</p>
+</div>
+
+<ol class="timeline">
+  {% for event in timeline.events %}
+  {% set year = event.when.year %}
+  {% if loop.first or year != loop.previtem.when.year %}
+  <li class="tl-year" data-year="{{ year }}" aria-hidden="true">{{ year }}</li>
   {% endif %}
-</article>
-{% endfor %}
-
-<h2>Education</h2>
-{% for edu in resume.education %}
-<article class="role">
-  {% for degree in edu.degrees %}<h3>{{ degree }}</h3>{% endfor %}
-  <p class="muted">
-    {{ edu.institution }}{% if edu.location %} ({{ edu.location }}){% endif %}
-    · {{ date_range(edu.start, edu.end) if edu.start else edu.end | month_year }}
-    {% if edu.honors %} · <em>{{ edu.honors }}</em>{% endif %}
-  </p>
-</article>
-{% endfor %}
-
-<h2>Skills</h2>
-<dl class="skills">
-  {% for group in resume.skills %}
-  <dt>{{ group.category }}</dt>
-  <dd>{{ group.items | join(", ") }}</dd>
-  {% endfor %}
-</dl>
-
-{% if resume.publications %}
-<h2>Research</h2>
-<ul class="publications">
-  {% for pub in resume.publications %}
-  <li>
-    {% for author in pub.authors %}{% if author == resume.citation_name %}<strong class="me">{{ author }}</strong>{% else %}{{ author }}{% endif %}{{ ", " if not loop.last }}{% endfor %}
-    ({{ pub.year }}).
-    {% if pub.url %}<a href="{{ pub.url }}">{{ pub.title }}</a>{% else %}{{ pub.title }}{% endif %}.
-    <em>{{ pub.venue }}</em>.
+  <li class="tl-event kind-{{ event.kind }}" data-kind="{{ event.kind }}" data-year="{{ year }}" data-skills="{{ event.skills | map(attribute='key') | join(' ') }}">
+    <p class="tl-date">{{ event.date_label }}</p>
+    <article class="tl-card">
+      <p class="tl-kind">{{ kind_label[event.kind] }}</p>
+      <h3>{% if event.url %}<a href="{{ event.url }}">{{ event.title }}</a>{% else %}{{ event.title }}{% endif %}</h3>
+      {% if event.subtitle or event.location %}
+      <p class="tl-sub">{{ event.subtitle }}{% if event.subtitle and event.location %} · {% endif %}{{ event.location or "" }}</p>
+      {% endif %}
+      {% if event.authors %}
+      <p class="tl-authors">{% for name, me in event.authors %}{% if me %}<strong class="me">{{ name }}</strong>{% else %}{{ name }}{% endif %}{{ ", " if not loop.last }}{% endfor %}</p>
+      {% endif %}
+      {% if event.kind == "project" %}
+      {% for line in event.details %}<p>{{ line }}</p>{% endfor %}
+      {% elif event.details %}
+      <ul>
+        {% for line in event.details %}<li>{{ line }}</li>{% endfor %}
+      </ul>
+      {% endif %}
+      {% if event.skills %}
+      <p class="chips">
+        {% for skill in event.skills %}
+        <button class="chip{% if skill.new %} is-new{% endif %}" type="button" data-skill="{{ skill.key }}" data-label="{{ skill.label }}" aria-pressed="false">{{ skill.label }}{% if skill.new %}<span class="visually-hidden"> (new)</span>{% endif %}</button>
+        {% endfor %}
+      </p>
+      {% endif %}
+    </article>
   </li>
   {% endfor %}
-</ul>
-{% endif %}
+</ol>
 {% endblock %}
-{% block scripts %}<script src="static/download.js" defer></script>{% endblock %}
+{% block scripts %}
+<script src="static/download.js" defer></script>
+<script src="static/timeline.js" defer></script>
+{% endblock %}

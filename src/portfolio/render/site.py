@@ -9,8 +9,9 @@ from jinja2 import Environment, FileSystemLoader, StrictUndefined, select_autoes
 
 from portfolio.models import Resume, Site
 from portfolio.render.formatting import date_range, long_date, month_year
+from portfolio.render.timeline import build_timeline
 
-PAGES = ("index.html", "resume.html", "cover-letter.html", "projects.html")
+PAGES = ("index.html", "resume.html", "projects.html")
 
 
 # Downloadable PDFs: the file each is published as, and the label in its saved name.
@@ -54,6 +55,7 @@ def build_site(site: Site, out_dir: Path, templates_dir: Path, static_dir: Path)
     context = {
         "site": site,
         "resume": site.resume,
+        "timeline": build_timeline(site),
         "year": today.year,
         "downloads": {
             key: {

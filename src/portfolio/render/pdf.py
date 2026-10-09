@@ -35,6 +35,7 @@ def resume_data(resume: Resume) -> dict[str, Any]:
     data = resume.model_dump(mode="json")
     for role, raw in zip(resume.experience, data["experience"], strict=True):
         raw["dates"] = date_range(role.start, role.end)
+    data["experience"] = [raw for raw in data["experience"] if raw["in_pdf"]]
     for edu, raw in zip(resume.education, data["education"], strict=True):
         raw["dates"] = date_range(edu.start, edu.end) if edu.start else month_year(edu.end)
     for raw in data["publications"]:

@@ -1,6 +1,7 @@
 # Single source of truth for the resume. Validated by portfolio.models.Resume.
 # Dates are YYYY-MM-DD (use -01 for month-only dates); omit `end` for a current role.
 # This file is published: keep phone numbers and other private details out of it.
+# Roles with `in_pdf: false` appear on the site's timeline but not in the one-page PDF.
 name: Katherine (Katy) Yut   # full name: resume, cover letter, PDFs
 pronouns: she/her            # optional; shown under the name on the home page
 short_name: Katy Yut        # optional; casual spots like the home page and footer
@@ -52,6 +53,34 @@ experience:
       - Utilized ArcMap to aid in oil & gas research publications.
       - Published research findings as papers, posters, and presentations.
     skills: [R, RStudio, ArcMap, geospatial analysis, data visualization]
+
+  - title: Viticulture Research GIS Intern
+    organization: E. & J. Gallo Winery
+    location: Modesto, CA
+    start: 2020-06-01
+    end: 2020-12-01
+    in_pdf: false
+    highlights:
+      - Automated satellite data acquisition in R and organized an expansive file structure.
+      - >-
+        Built a multivariate linear model and ran remote sensing analysis in Google Earth
+        Engine to inform irrigation decisions for wine grape yield and quality.
+      - Collected in situ data with Trimble GPS and berry sampling in the vineyard.
+    skills: [R, Google Earth Engine, QGIS, kriging, Landsat, Sentinel-2, Trimble GPS]
+
+  - title: Remote Sensing Intern
+    organization: NASA DEVELOP
+    location: Pocatello, ID
+    start: 2019-05-01
+    end: 2019-08-01
+    in_pdf: false
+    highlights:
+      - >-
+        Mapped 30 years of red spruce change from Landsat imagery with classification
+        models, and scored restoration site suitability.
+      - Designed figures, maps, and slideshows to NASA's style guidelines.
+      - Wrote a tutorial to reproduce the workflow and presented the science to partners.
+    skills: [ArcGIS, ENVI, TerrSet, Google Earth Engine, Landsat, classification]
 
 education:
   - degrees:
