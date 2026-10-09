@@ -5,13 +5,14 @@
 #let scale = float(sys.inputs.at("scale", default: "1.0"))
 
 // The site's light-theme palette (portfolio.render.pdf.PDF_COLORS). Like the site:
-// section headings are orange, subheadings and links teal, bullets and rules neon orange.
+// section headings use the heading color, subheadings and links the link color, and
+// bullets and rules the pop color.
 #let colors = json(bytes(sys.inputs.colors))
 #let fg = rgb(colors.fg)
 #let muted = rgb(colors.muted)
-#let teal = rgb(colors.teal)
-#let orange-text = rgb(colors.at("orange-text"))
-#let orange = rgb(colors.orange)
+#let heading = rgb(colors.heading)
+#let link-color = rgb(colors.link)
+#let pop = rgb(colors.pop)
 
 #set document(title: data.name + " – Resume", author: data.name)
 #set page(paper: "us-letter", margin: (x: 0.65in, y: 0.55in))
@@ -20,18 +21,18 @@
 // Expose the final page count so the build can enforce a page budget.
 #context [#metadata(counter(page).final().first()) <page-count>]
 #set par(leading: 0.55em)
-#set list(indent: 0.6em, spacing: 0.45em, marker: text(fill: orange)[•])
-#show link: set text(fill: teal)
+#set list(indent: 0.6em, spacing: 0.45em, marker: text(fill: pop)[•])
+#show link: set text(fill: link-color)
 
 #let section(title) = {
   v(0.8em)
-  text(size: 1.05em, weight: "bold", fill: orange-text, upper(title))
+  text(size: 1.05em, weight: "bold", fill: heading, upper(title))
   v(-0.65em)
-  line(length: 100%, stroke: 0.75pt + orange)
+  line(length: 100%, stroke: 0.75pt + pop)
   v(0.1em)
 }
 
-#let subhead(body) = text(weight: "bold", fill: teal, body)
+#let subhead(body) = text(weight: "bold", fill: link-color, body)
 
 // Left-aligned main text with a muted right-aligned aside (dates, years).
 #let entry(main, aside) = grid(columns: (1fr, auto), column-gutter: 1em, main, text(fill: muted, aside))

@@ -22,11 +22,11 @@ SCALES = (1.0, 0.97, 0.94, 0.91, 0.88)
 # site/static/style.css), since the PDF prints on white paper.
 # tests/test_theme.py fails if these drift from the stylesheet.
 PDF_COLORS = {
-    "fg": "#2b1f18",
-    "muted": "#6b5a4c",
-    "teal": "#0b6b63",
-    "orange-text": "#b8460b",
-    "orange": "#ff5f0f",
+    "fg": "#3a1a0e",
+    "muted": "#6e4e3c",
+    "heading": "#8e1f5c",
+    "link": "#1f5fae",
+    "pop": "#ff2d95",
 }
 
 
