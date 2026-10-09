@@ -46,4 +46,4 @@ ArcMap.*
 - Red spruce stands grew **8%** from 1989 to 2018.
 - The forecast indicates the gains **won't continue without management intervention**.
 
-[Read the full project summary on NASA DEVELOP →](https://develop.larc.nasa.gov/2019/summer/MonongahelaNationalForestEco.html)
+[Read the full project paper here →](https://giscenter.isu.edu/pdf/PDF_NASA_DEVELOP/2019Summer_TechPaper.pdf)
