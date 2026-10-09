@@ -11,8 +11,9 @@ click away.
 
 ## Decision
 
-- The resume page is a vertical timeline, newest first, built by `render/timeline.py`
-  from the same validated data as the PDF: roles and education become dated events.
+- The resume page, renamed Experience (`experience.html`), is a vertical timeline,
+  newest first, built by `render/timeline.py` from the same validated data as the PDF:
+  roles and education become dated events.
 - Each step appears once. Project write-ups name the `organization` they came out of
   and are linked from that role or school's card instead of being separate events.
   When an organization has several roles, the one active at the time wins. Unknown

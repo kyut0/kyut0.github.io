@@ -14,7 +14,13 @@ def test_build_writes_every_page(content_dir: Path, site_dir: Path, tmp_path: Pa
     site = load_site(content_dir)
     build_site(site, tmp_path, site_dir / "templates", site_dir / "static")
 
-    for page in ("index.html", "resume.html", "projects.html", "publications.html", ".nojekyll"):
+    for page in (
+        "index.html",
+        "experience.html",
+        "projects.html",
+        "publications.html",
+        ".nojekyll",
+    ):
         assert (tmp_path / page).exists()
     for project in site.projects:
         assert (tmp_path / "projects" / f"{project.slug}.html").exists()
@@ -62,34 +68,36 @@ def test_download_name_uses_citation_name_and_date() -> None:
     )
 
 
-def test_resume_page_sets_dated_download_name(
+def test_experience_page_sets_dated_download_name(
     content_dir: Path, site_dir: Path, tmp_path: Path
 ) -> None:
     site = load_site(content_dir)
     build_site(site, tmp_path, site_dir / "templates", site_dir / "static")
-    html = (tmp_path / "resume.html").read_text()
+    html = (tmp_path / "experience.html").read_text()
     expected = download_name(site.resume, "Resume", date.today())
     assert f'href="resume.pdf" download="{expected}" data-download-stem="YutK_Resume"' in html
     assert 'src="static/download.js"' in html
 
 
-def test_resume_page_links_cover_letter_pdf(
+def test_experience_page_links_cover_letter_pdf(
     content_dir: Path, site_dir: Path, tmp_path: Path
 ) -> None:
-    """The cover letter is published only as a PDF, downloaded from the resume page."""
+    """The cover letter is published only as a PDF, downloaded from the Experience page."""
     site = load_site(content_dir)
     build_site(site, tmp_path, site_dir / "templates", site_dir / "static")
-    html = (tmp_path / "resume.html").read_text()
+    html = (tmp_path / "experience.html").read_text()
     expected = download_name(site.resume, "CoverLetter", date.today())
     assert f'href="cover-letter.pdf" download="{expected}"' in html
     assert 'data-download-stem="YutK_CoverLetter"' in html
     assert not (tmp_path / "cover-letter.html").exists()
 
 
-def test_resume_page_renders_timeline(content_dir: Path, site_dir: Path, tmp_path: Path) -> None:
+def test_experience_page_renders_timeline(
+    content_dir: Path, site_dir: Path, tmp_path: Path
+) -> None:
     site = load_site(content_dir)
     build_site(site, tmp_path, site_dir / "templates", site_dir / "static")
-    html = (tmp_path / "resume.html").read_text()
+    html = (tmp_path / "experience.html").read_text()
     for role in site.resume.experience:  # including roles left out of the PDF
         assert str(escape(role.title)) in html
     for project in site.projects:  # write-ups link from the role they came out of
@@ -98,19 +106,21 @@ def test_resume_page_renders_timeline(content_dir: Path, site_dir: Path, tmp_pat
     assert 'src="static/timeline.js"' in html
 
 
-def test_resume_page_shows_updated_date(content_dir: Path, site_dir: Path, tmp_path: Path) -> None:
+def test_experience_page_shows_updated_date(
+    content_dir: Path, site_dir: Path, tmp_path: Path
+) -> None:
     site = load_site(content_dir).model_copy(update={"resume_updated": date(2026, 10, 9)})
     build_site(site, tmp_path, site_dir / "templates", site_dir / "static")
-    html = (tmp_path / "resume.html").read_text()
+    html = (tmp_path / "experience.html").read_text()
     assert 'Updated <time datetime="2026-10-09">Oct 9, 2026</time>' in html
 
 
-def test_resume_page_omits_updated_line_without_history(
+def test_experience_page_omits_updated_line_without_history(
     content_dir: Path, site_dir: Path, tmp_path: Path
 ) -> None:
     site = load_site(content_dir).model_copy(update={"resume_updated": None})
     build_site(site, tmp_path, site_dir / "templates", site_dir / "static")
-    assert "Updated" not in (tmp_path / "resume.html").read_text()
+    assert "Updated" not in (tmp_path / "experience.html").read_text()
 
 
 def test_cli_validate_reports_content_errors(tmp_path: Path) -> None:
