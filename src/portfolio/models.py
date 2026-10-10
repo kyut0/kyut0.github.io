@@ -98,6 +98,9 @@ class Resume(_Model):
     # Tool tiers (the site's toolbox). When set, they must match the tools listed on roles
     # and education exactly: see _toolbox_matches_cards.
     skills: list[SkillGroup] = Field(default_factory=list)
+    # Toolbox tools whose site chips link to a page (relative to the site root) instead of
+    # tracing the timeline. Site-only: they're left off the PDF. See _skill_links_exist.
+    skill_links: dict[str, str] = Field(default_factory=dict)
     strengths: list[str] = Field(default_factory=list)  # soft skills; PDF only
 
     @property
@@ -139,6 +142,21 @@ class Resume(_Model):
         if problems:
             raise ValueError("toolbox and timeline disagree: " + "; ".join(problems))
         return self
+
+    @model_validator(mode="after")
+    def _skill_links_exist(self) -> Self:
+        """Each linked tool is in the toolbox, and links to a page on this site."""
+        toolbox = {skill_key(i) for g in self.skills for i in g.items}
+        for name, target in self.skill_links.items():
+            if skill_key(name) not in toolbox:
+                raise ValueError(f"skill_links names '{name}', which isn't in the toolbox")
+            if "://" in target or target.startswith("/") or not target.endswith(".html"):
+                raise ValueError(f"skill_links '{name}' must be a site page like 'type.html'")
+        return self
+
+    def linked_skills(self) -> dict[str, str]:
+        """skill_links keyed by skill_key, so any spelling of a tool finds its link."""
+        return {skill_key(name): target for name, target in self.skill_links.items()}
 
     def organizations(self) -> set[str]:
         return {r.organization for r in self.experience} | {e.institution for e in self.education}

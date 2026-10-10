@@ -19,7 +19,13 @@
     <dt>{{ group.category }}</dt>
     <dd>
       {% for skill in group.skills %}
+      {% if skill.link %}
+      {# A linked tool (resume.yaml skill_links) goes somewhere instead of tracing the
+         timeline; touch typing is an easter-egg breadcrumb to the typing test. #}
+      <a class="chip chip-link" href="{{ root }}{{ skill.link }}" title="Think you can out-type me?">{{ skill.label }}<span class="chip-count" aria-label="{{ skill.count }} timeline steps">{{ skill.count }}</span></a>
+      {% else %}
       <button class="chip" type="button" data-skill="{{ skill.key }}" data-label="{{ skill.label }}" aria-pressed="false">{{ skill.label }}<span class="chip-count" aria-label="{{ skill.count }} timeline steps">{{ skill.count }}</span></button>
+      {% endif %}
       {% endfor %}
     </dd>
     {% endfor %}
@@ -59,7 +65,11 @@
       {% if event.skills %}
       <p class="chips">
         {% for skill in event.skills %}
+        {% if skill.link %}
+        <a class="chip chip-link{% if skill.new %} is-new{% endif %}" href="{{ root }}{{ skill.link }}" title="Think you can out-type me?">{{ skill.label }}{% if skill.new %}<span class="visually-hidden"> (new)</span>{% endif %}</a>
+        {% else %}
         <button class="chip{% if skill.new %} is-new{% endif %}" type="button" data-skill="{{ skill.key }}" data-label="{{ skill.label }}" aria-pressed="false">{{ skill.label }}{% if skill.new %}<span class="visually-hidden"> (new)</span>{% endif %}</button>
+        {% endif %}
         {% endfor %}
       </p>
       {% endif %}

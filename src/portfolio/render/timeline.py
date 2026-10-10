@@ -18,6 +18,7 @@ class SkillUse:
     key: str
     label: str
     new: bool  # first event (oldest first) to use this tool
+    link: str | None = None  # from resume.skill_links: the chip links here instead
 
 
 @dataclass(frozen=True)
@@ -50,6 +51,7 @@ class ToolboxSkill:
     key: str
     label: str
     count: int  # timeline events that use it
+    link: str | None = None  # from resume.skill_links: the chip links here instead
 
 
 @dataclass(frozen=True)
@@ -124,6 +126,8 @@ def build_timeline(site: Site) -> Timeline:
         for name in event.raw_skills:
             labels.setdefault(skill_key(name), name)
 
+    links = site.resume.linked_skills()
+
     # Oldest first so "new" lands on the first use. Stable sort keeps file order on ties.
     seen: set[str] = set()
     counts: dict[str, int] = {}
@@ -132,7 +136,9 @@ def build_timeline(site: Site) -> Timeline:
             key = skill_key(name)
             if any(s.key == key for s in event.skills):
                 continue
-            event.skills.append(SkillUse(key=key, label=labels[key], new=key not in seen))
+            event.skills.append(
+                SkillUse(key=key, label=labels[key], new=key not in seen, link=links.get(key))
+            )
             seen.add(key)
             counts[key] = counts.get(key, 0) + 1
 
@@ -140,7 +146,8 @@ def build_timeline(site: Site) -> Timeline:
         ToolboxGroup(
             category=group.category,
             skills=[
-                ToolboxSkill(skill_key(i), i, counts.get(skill_key(i), 0)) for i in group.items
+                ToolboxSkill(skill_key(i), i, counts.get(skill_key(i), 0), links.get(skill_key(i)))
+                for i in group.items
             ],
         )
         for group in site.resume.skills

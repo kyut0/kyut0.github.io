@@ -53,7 +53,7 @@ experience:
       - Leveraged R to clean and manipulate data tables, solve problems, and automate processes.
       - Utilized ArcMap to aid in oil & gas research publications.
       - Published research findings as papers, posters, and presentations.
-    skills: [big data, R, ArcGIS, geospatial analysis, data visualization]
+    skills: [big data, R, ArcGIS, geospatial analysis, data visualization, touch typing]
 
   - title: Viticulture Research GIS Intern
     organization: E. & J. Gallo Winery
@@ -146,7 +146,7 @@ publications:
 # fails otherwise); spelling variants like "RShiny" / "RShiny" count as the same tool.
 skills:
   - category: Expert
-    items: [R, RShiny, ArcGIS, QGIS, geospatial analysis, data visualization]
+    items: [R, RShiny, ArcGIS, QGIS, geospatial analysis, data visualization, touch typing]
   - category: Advanced
     items:
       - Python
@@ -172,6 +172,12 @@ skills:
       - LULC
       - TerrSet
       - Trimble GPS
+
+# Tools whose chips on the site link to a page instead of tracing the timeline. They're
+# site-only: left off the PDF resume. "touch typing" is a breadcrumb in the easter-egg
+# hunt, pointing to the hidden typing test.
+skill_links:
+  touch typing: type.html
 
 # Soft skills: printed on the PDF resume, not part of the site's toolbox.
 strengths: [Timely deliverables, Clear communication, Curiosity, Organization, Multitasking, Focus]
