@@ -1,5 +1,6 @@
-// Light/dark toggle. Dark is the default; a visitor's choice is saved in localStorage
-// and applied before first paint by the inline script in base.html.
+// Light/dark toggle. By default the site follows the visitor's system setting
+// (prefers-color-scheme); clicking the toggle saves an explicit choice in localStorage.
+// The inline script in base.html applies either one before first paint.
 (function () {
   const root = document.documentElement;
   const button = document.querySelector(".theme-toggle");
@@ -21,6 +22,19 @@
     } catch (e) {
       // Storage blocked (private mode, etc.): the toggle still works for this page.
     }
+    sync();
+  });
+
+  // Until the visitor picks a theme, keep following their system if it changes.
+  matchMedia("(prefers-color-scheme: light)").addEventListener("change", (e) => {
+    let saved = null;
+    try {
+      saved = localStorage.getItem("theme");
+    } catch (err) {
+      // Storage blocked: treat as no saved choice.
+    }
+    if (saved === "light" || saved === "dark") return;
+    root.dataset.theme = e.matches ? "light" : "dark";
     sync();
   });
 

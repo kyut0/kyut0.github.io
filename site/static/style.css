@@ -36,7 +36,8 @@
   font-display: swap;
 }
 
-/* Dark (rust) is the default; the header toggle sets data-theme="light". */
+/* Dark (rust) tokens are the base. base.html sets data-theme="light" from the visitor's
+   system setting or saved toggle choice, so most visitors see their preferred theme. */
 :root {
   --bg: #24120b;
   --card: #311a10;
