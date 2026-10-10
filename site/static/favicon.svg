@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <!-- "KY" in the Ember theme's dark background and heading pink. The letters are drawn
+       as strokes rather than text, since favicons can't load the site's font. -->
+  <rect width="32" height="32" rx="7" fill="#24120b"/>
+  <g fill="none" stroke="#ff6ec7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M6 8v16M14 8l-6.5 8M9.6 13.6 14 24"/>
+    <path d="M18 8l4 7.5L26 8M22 15.5V24"/>
+  </g>
+</svg>
