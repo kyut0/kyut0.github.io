@@ -1,6 +1,7 @@
 """Render a validated Site to static HTML with Jinja templates."""
 
 from datetime import date
+import hashlib
 from pathlib import Path
 import re
 import shutil
@@ -14,6 +15,21 @@ from portfolio.theme import Theme, load_themes, themes_css
 
 PAGES = ("index.html", "experience.html", "projects.html", "publications.html", "about.html")
 
+
+# Old page URLs that now live elsewhere; each gets a tiny redirect page.
+REDIRECTS = {"resume.html": "experience.html"}
+
+_REDIRECT_PAGE = """<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Moved</title>
+<link rel="canonical" href="{target}">
+<meta http-equiv="refresh" content="0; url={target}">
+</head>
+<body><p>This page moved to <a href="{target}">{target}</a>.</p></body>
+</html>
+"""
 
 # Downloadable PDFs: the file each is published as, and the label in its saved name.
 DOWNLOADS = {"resume": "Resume", "cover_letter": "CoverLetter"}
@@ -48,6 +64,15 @@ def _environment(templates_dir: Path) -> Environment:
     return env
 
 
+def _fingerprints(static_out: Path) -> dict[str, str]:
+    """Short content hash of every file under static_out, keyed by its relative path."""
+    return {
+        path.relative_to(static_out).as_posix(): hashlib.sha256(path.read_bytes()).hexdigest()[:8]
+        for path in sorted(static_out.rglob("*"))
+        if path.is_file()
+    }
+
+
 def build_theme_preview(themes: list[Theme], templates_dir: Path, out: Path) -> Path:
     """Write a standalone page previewing every theme in both modes."""
     out.parent.mkdir(parents=True, exist_ok=True)
@@ -71,6 +96,21 @@ def build_site(
         themes = load_themes(templates_dir.parent / "themes.yaml")
     env = _environment(templates_dir)
     out_dir.mkdir(parents=True, exist_ok=True)
+
+    # Static assets first, so pages can link them with a content fingerprint
+    # (style.css?v=3f2a91c0): a changed file gets a new URL, so browsers never serve a
+    # stale copy from cache after a deploy.
+    static_out = out_dir / "static"
+    if static_dir.is_dir():
+        shutil.copytree(static_dir, static_out, dirs_exist_ok=True)
+    static_out.mkdir(exist_ok=True)
+    (static_out / "themes.css").write_text(themes_css(themes), encoding="utf-8")
+    versions = _fingerprints(static_out)
+
+    def asset(path: str) -> str:
+        return f"static/{path}?v={versions[path]}"
+
+    env.globals["asset"] = asset
     today = date.today()
     context = {
         "site": site,
@@ -106,10 +146,9 @@ def build_site(
     if site.about_asset_dir is not None:
         shutil.copytree(site.about_asset_dir, out_dir / "about", dirs_exist_ok=True)
 
-    if static_dir.is_dir():
-        shutil.copytree(static_dir, out_dir / "static", dirs_exist_ok=True)
-    (out_dir / "static").mkdir(exist_ok=True)
-    (out_dir / "static" / "themes.css").write_text(themes_css(themes), encoding="utf-8")
+    for old, new in REDIRECTS.items():
+        (out_dir / old).write_text(_REDIRECT_PAGE.format(target=new), encoding="utf-8")
+
     # Tell GitHub Pages to serve files as-is rather than running Jekyll.
     (out_dir / ".nojekyll").touch()
     return written

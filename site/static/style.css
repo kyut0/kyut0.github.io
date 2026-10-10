@@ -138,8 +138,17 @@ code {
   padding-block: 1.25rem;
 }
 
+/* Nav links wrap among themselves; the gear stays pinned top-right at every width. */
 .site-header {
+  flex-wrap: nowrap;
+  align-items: flex-start;
   border-bottom: 1px solid var(--border);
+}
+
+.site-header nav {
+  flex: 1;
+  min-width: 0;
+  row-gap: 0.4rem;
 }
 
 .site-header nav,
@@ -160,6 +169,7 @@ code {
 /* Header icon button: the color theme menu (gear). */
 .header-tools {
   display: flex;
+  flex-shrink: 0;
   align-items: center;
   gap: 0.5rem;
 }
@@ -560,8 +570,9 @@ button.chip:hover {
   cursor: default;
 }
 
+/* Muted, not --pop-2: the count is information, and only text tokens are contrast-checked. */
 .chip-count {
-  color: var(--pop-2);
+  color: var(--muted);
   font-size: 0.7rem;
 }
 

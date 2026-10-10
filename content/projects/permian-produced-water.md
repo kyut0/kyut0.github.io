@@ -1,5 +1,4 @@
 ---
-# TODO: add the AAPG paper's DOI link.
 title: Produced Water in the Permian Basin
 summary: >-
   Bureau of Economic Geology: mapped water cut, production, and drilling history for
@@ -48,6 +47,7 @@ The maps supported research published as papers, posters, and presentations, inc
 - Smye, K. M., **Yut, K.**, Reedy, R. C., Scanlon, B. R., Nicot, J. P., Hennings, P.
   (2024). Challenges with managing unconventional water production and disposal in the
   Permian Basin. *AAPG Bulletin* 108 (12), 2215–2240.
+  [doi:10.1306/08082424025](https://doi.org/10.1306/08082424025)
 - Peng, S., Maraggi, L. M. R., Bhattacharya, S., **Yut, K.**, McMahon, T., Haddad, M.
   (2023). Feasibility of CO2 storage in depleted unconventional oil and gas reservoirs.
   *URTeC*.

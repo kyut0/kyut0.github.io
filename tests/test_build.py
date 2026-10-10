@@ -1,5 +1,6 @@
 from datetime import date
 from pathlib import Path
+import re
 import shutil
 
 from markupsafe import escape
@@ -43,7 +44,7 @@ def test_project_pages_link_back_to_root(
     site = load_site(content_dir)
     build_site(site, tmp_path, site_dir / "templates", site_dir / "static")
     html = (tmp_path / "projects" / f"{site.projects[0].slug}.html").read_text()
-    assert 'href="../static/style.css"' in html
+    assert 'href="../static/style.css?v=' in html
 
 
 def test_publications_page_bolds_own_name(
@@ -79,7 +80,7 @@ def test_experience_page_sets_dated_download_name(
     html = (tmp_path / "experience.html").read_text()
     expected = download_name(site.resume, "Resume", date.today())
     assert f'href="resume.pdf" download="{expected}" data-download-stem="YutK_Resume"' in html
-    assert 'src="static/download.js"' in html
+    assert 'src="static/download.js?v=' in html
 
 
 def test_experience_page_links_cover_letter_pdf(
@@ -106,7 +107,7 @@ def test_experience_page_renders_timeline(
     for project in site.projects:  # write-ups link from the role they came out of
         if project.organization:
             assert f'href="projects/{project.slug}.html"' in html
-    assert 'src="static/timeline.js"' in html
+    assert 'src="static/timeline.js?v=' in html
 
 
 def test_experience_page_shows_updated_date(
@@ -158,10 +159,37 @@ def test_header_lists_every_theme(content_dir: Path, site_dir: Path, tmp_path: P
         assert f'<span class="palette-label">{label}</span>' in html
     assert 'data-palette="sage" data-mode="light"' in html
     assert "theme-toggle" not in html  # light/dark lives in the same menu now
-    assert 'href="static/themes.css"' in html
+    assert 'href="static/themes.css?v=' in html
 
 
 def test_cli_themes_writes_preview(site_dir: Path, tmp_path: Path) -> None:
     preview = tmp_path / "preview.html"
     assert main(["--site-dir", str(site_dir), "themes", "--preview", str(preview)]) == 0
     assert "Sage" in preview.read_text()
+
+
+def test_asset_links_change_when_files_change(
+    content_dir: Path, site_dir: Path, tmp_path: Path
+) -> None:
+    """Fingerprinted links bust browser caches only when a file's content changes."""
+    static = tmp_path / "static"
+    shutil.copytree(site_dir / "static", static)
+    site = load_site(content_dir)
+
+    def style_link(out: Path) -> str:
+        build_site(site, out, site_dir / "templates", static)
+        match = re.search(r'href="static/style\.css\?v=(\w+)"', (out / "index.html").read_text())
+        assert match
+        return match.group(1)
+
+    first = style_link(tmp_path / "a")
+    assert style_link(tmp_path / "b") == first
+    with (static / "style.css").open("a") as css:
+        css.write("\n/* changed */\n")
+    assert style_link(tmp_path / "c") != first
+
+
+def test_old_resume_url_redirects(content_dir: Path, site_dir: Path, tmp_path: Path) -> None:
+    build_site(load_site(content_dir), tmp_path, site_dir / "templates", site_dir / "static")
+    html = (tmp_path / "resume.html").read_text()
+    assert 'http-equiv="refresh" content="0; url=experience.html"' in html

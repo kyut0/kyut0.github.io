@@ -108,6 +108,7 @@ publications:
       Challenges with managing unconventional water production and disposal in the
       Permian Basin
     venue: AAPG Bulletin 108 (12), 2215–2240
+    url: https://doi.org/10.1306/08082424025
     organization: University of Texas, Bureau of Economic Geology
   - authors:
       - "Peng, S."
@@ -132,11 +133,13 @@ publications:
     year: 2019
     title: West Virginia Ecological Forecasting
     venue: NASA DEVELOP National Program
+    url: https://giscenter.isu.edu/pdf/PDF_NASA_DEVELOP/2019Summer_TechPaper.pdf
     organization: NASA DEVELOP
   - authors: ["Kelley, S.", "Yut, K.", "Kulkarni, R.", "Gaffin, D."]
     year: 2019
     title: Avoidance of rosemary oil by scorpions
     venue: Journal of Arachnology
+    url: https://doi.org/10.1636/0161-8202-47.1.159
     organization: University of Oklahoma
 
 # The site's toolbox. Must match the tools on roles and education exactly (the build
