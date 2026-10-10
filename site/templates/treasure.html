@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% set root = "" %}
+{% block title %}Moka Pot Magic · {{ resume.name }}{% endblock %}
+{% block content %}
+{# Easter egg: the treasure at the end of the trail. Linked from the ✨ trophy in the
+   footer and the celebration dialog (static/treasure.js), both of which only appear once
+   the visitor has found it. Each painting's image is static/treasure/<theme name>.jpg. #}
+<h1>✨ Moka Pot Magic</h1>
+<p class="treasure-locked">
+  This chest is locked. Somewhere on this site, ❌ marks the spot. Follow the breadcrumbs
+  (a peek under the hood is a good place to start).
+</p>
+<div class="treasure-only">
+  <p>
+    You found the gold. These paintings are from <em>Moka Pot Magic</em>, my art series
+    (more on it on my <a href="{{ root }}about.html">About</a> page), and each one is
+    now a color theme of its own. Try one on and see the whole site take its colors.
+  </p>
+  <div class="gallery">
+    {% for theme in themes if theme.name in treasure %}
+    <figure class="gallery-piece">
+      <img src="{{ root }}{{ asset('treasure/' ~ theme.name ~ '.jpg') }}" alt="{{ theme.label }}, a painting of a moka pot: {{ theme.description | lower }}" loading="lazy">
+      <figcaption>
+        <h2>{{ theme.label }}</h2>
+        <p>{{ theme.description }}</p>
+        <button class="button wear-theme" type="button" data-palette="{{ theme.name }}" aria-pressed="false">Wear this theme</button>
+      </figcaption>
+    </figure>
+    {% endfor %}
+  </div>
+</div>
+{% endblock %}

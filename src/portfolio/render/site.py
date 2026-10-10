@@ -13,11 +13,12 @@ from portfolio.models import Resume, Site
 from portfolio.render.formatting import date_range, long_date, month_year
 from portfolio.render.pdf import THEMED_DIR
 from portfolio.render.timeline import build_timeline
+from portfolio.themes import SiteThemes, load_themes
 
 PAGES = ("index.html", "experience.html", "projects.html", "publications.html", "about.html")
 
 # Easter-egg pages: built like the rest but linked from no menu (see static/console.js).
-HIDDEN_PAGES = ("type.html",)
+HIDDEN_PAGES = ("type.html", "treasure.html")
 
 
 # Old page URLs that now live elsewhere; each gets a tiny redirect page.
@@ -93,14 +94,15 @@ def build_site(
     out_dir: Path,
     templates_dir: Path,
     static_dir: Path,
-    themes: seedpalette.ThemeSet | None = None,
+    site_themes: SiteThemes | None = None,
 ) -> list[Path]:
     """Write every page plus static assets to out_dir and return the written page paths.
 
-    themes defaults to the ones in themes.yaml next to templates_dir (i.e. site/).
+    site_themes defaults to the ones next to templates_dir (i.e. in site/).
     """
-    if themes is None:
-        themes = seedpalette.load(templates_dir.parent / "themes.yaml")
+    if site_themes is None:
+        site_themes = load_themes(templates_dir.parent)
+    themes = site_themes.themes
     env = _environment(templates_dir)
     out_dir.mkdir(parents=True, exist_ok=True)
 
@@ -125,6 +127,7 @@ def build_site(
         "resume": site.resume,
         "timeline": build_timeline(site),
         "themes": themes.themes,
+        "treasure": sorted(site_themes.treasure),
         "year": today.year,
         "downloads": {
             key: {

@@ -1,0 +1,58 @@
+# Treasure themes: the Moka Pot Magic collection, one theme per art piece. Same format as
+# themes.yaml (and its extra_tokens apply here too), but these stay out of the color menu
+# until a visitor finds the treasure by typing "xxx" (see static/treasure.js).
+#
+# Colors are sampled from photos of each painting, then tuned by hand. Run `make themes`
+# to contrast-check them and preview them with the rest.
+
+themes:
+  # IMG_0304: a raspberry pot and cup on periwinkle, against a peach wall.
+  moka-raspberry:
+    label: Raspberry
+    description: "Raspberry and wine on peach, with periwinkle shadows."
+    light:
+      bg: "#f7e4da"
+      heading: "#841a35"
+      link: "#4f4a8a"
+      accent: "#b8264b"
+      accent-2: "#d58876"
+    dark:
+      bg: "#2a0d16"
+      heading: "#f0a890"
+      link: "#aaa3d8"
+      accent: "#e0466a"
+      accent-2: "#da9984"
+
+  # IMG_1903: a turquoise pot on a red table against an orange wall.
+  moka-turquoise:
+    label: Turquoise
+    description: "A turquoise pot against orange and oxblood, with cobalt shadows."
+    light:
+      bg: "#fbecd8"
+      heading: "#7e0401"
+      link: "#0a6f86"
+      accent: "#d9780e"
+      accent-2: "#083379"
+    dark:
+      bg: "#2a0806"
+      heading: "#4fd3e8"
+      link: "#a8d98a"
+      accent: "#e8790f"
+      accent-2: "#c0281a"
+
+  # IMG_1887: a gold pot pouring into a glass, steam curling through the black.
+  moka-midnight-pour:
+    label: Midnight Pour
+    description: "Gold pour on black, teal steam, and magenta outlines."
+    light:
+      bg: "#f8efd8"
+      heading: "#88351e"
+      link: "#1f6f80"
+      accent: "#d99a1e"
+      accent-2: "#c2367f"
+    dark:
+      bg: "#1a1310"
+      heading: "#f0b23a"
+      link: "#7fd0e0"
+      accent: "#e0408f"
+      accent-2: "#f1df91"

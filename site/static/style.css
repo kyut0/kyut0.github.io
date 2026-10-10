@@ -317,7 +317,7 @@ code {
   border-bottom: 1px solid var(--border);
 }
 
-.bio-panel > :not(.bio-photo) {
+.bio-panel> :not(.bio-photo) {
   grid-column: 2;
 }
 
@@ -1112,4 +1112,177 @@ button.chip:hover {
   padding: 0.6rem 0.9rem;
   border-left: 3px solid var(--accent-2);
   background: var(--surface);
+}
+
+/* ---- Treasure (easter-egg finale, static/treasure.js) ----------------------------- */
+/* Treasure themes and the footer trophy stay hidden until the visitor finds it. */
+:root:not([data-treasure="found"]) .treasure-only {
+  display: none !important;
+}
+
+.treasure-title {
+  margin-top: 0.5rem;
+  padding-top: 0.6rem;
+  border-top: 1px solid var(--border);
+}
+
+.treasure-mark {
+  cursor: default;
+}
+
+.treasure-dialog {
+  width: min(26rem, calc(100vw - 2rem));
+  padding: 1.75rem 1.5rem 1.5rem;
+  border: 1px solid var(--border);
+  border-top: 4px solid var(--accent-2);
+  border-radius: 8px;
+  background: var(--surface);
+  color: var(--text);
+  text-align: center;
+  box-shadow: 0 12px 40px rgb(0 0 0 / 0.35);
+}
+
+.treasure-dialog::backdrop {
+  background: rgb(0 0 0 / 0.55);
+}
+
+.treasure-dialog h2 {
+  margin: 0.5rem 0 0.75rem;
+}
+
+.treasure-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.75rem;
+  margin-top: 1.25rem;
+}
+
+.treasure-actions .button {
+  border: 0;
+  font: inherit;
+  cursor: pointer;
+}
+
+/* The ❌ stamps down, then gives way to the gold. */
+.treasure-art {
+  display: grid;
+  place-items: center;
+  height: 5rem;
+  font-size: 3.5rem;
+}
+
+.treasure-art>span {
+  grid-area: 1 / 1;
+}
+
+.treasure-x {
+  animation: treasure-x 1.4s ease-in forwards;
+}
+
+.treasure-chest {
+  opacity: 0;
+  animation: treasure-chest 0.6s 1.1s ease-out forwards;
+}
+
+@keyframes treasure-x {
+  0% {
+    transform: scale(2.5) rotate(-20deg);
+    opacity: 0;
+  }
+
+  25% {
+    transform: scale(1) rotate(0);
+    opacity: 1;
+  }
+
+  75% {
+    transform: scale(1);
+    opacity: 1;
+  }
+
+  100% {
+    transform: scale(0.4);
+    opacity: 0;
+  }
+}
+
+@keyframes treasure-chest {
+  from {
+    transform: translateY(1rem) scale(0.6);
+    opacity: 0;
+  }
+
+  to {
+    transform: none;
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .treasure-x {
+    display: none;
+  }
+
+  .treasure-chest {
+    opacity: 1;
+    animation: none;
+  }
+}
+
+/* The chest's "locked" hint on treasure.html, for visitors who haven't found it yet. */
+:root[data-treasure="found"] .treasure-locked {
+  display: none;
+}
+
+.treasure-mark {
+  text-decoration: none;
+}
+
+/* Gallery (treasure.html): each painting beside its title and try-on button. */
+.gallery {
+  display: grid;
+  gap: 2.5rem;
+  margin-top: 2rem;
+}
+
+.gallery-piece {
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+  gap: 1.5rem;
+  align-items: center;
+  margin: 0;
+}
+
+.gallery-piece img {
+  width: 100%;
+  max-height: 34rem;
+  object-fit: contain;
+  border-radius: 6px;
+  box-shadow: 0 6px 24px rgb(0 0 0 / 0.25);
+}
+
+.gallery-piece h2 {
+  margin-top: 0;
+}
+
+.gallery-piece p {
+  color: var(--muted);
+}
+
+.wear-theme {
+  border: 0;
+  font: inherit;
+  cursor: pointer;
+}
+
+.wear-theme[aria-pressed="true"] {
+  background: var(--accent);
+  color: var(--on-accent);
+}
+
+@media (max-width: 640px) {
+  .gallery-piece {
+    grid-template-columns: 1fr;
+  }
 }
