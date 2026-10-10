@@ -710,6 +710,19 @@ button.chip:hover {
   color: var(--text);
 }
 
+/* A chip that links to a page (resume.yaml skill_links) instead of tracing the timeline.
+   The dashed border is the only hint that it's different: a breadcrumb for the curious. */
+a.chip-link {
+  border-style: dashed;
+  text-decoration: none;
+}
+
+a.chip-link:hover {
+  border-color: var(--accent);
+  border-style: solid;
+  color: var(--text);
+}
+
 .chip.is-new {
   border-color: var(--accent);
   color: var(--text);

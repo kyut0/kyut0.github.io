@@ -14,7 +14,7 @@ import seedpalette
 from seedpalette.color import TEXT_MIN, UI_MIN, ensure_contrast
 import typst
 
-from portfolio.models import Resume, Site
+from portfolio.models import Resume, Site, skill_key
 from portfolio.render.formatting import date_range, month_year
 
 # Non-default themes' PDFs go in pdf/<theme name>/, next to the default theme's copies at
@@ -62,6 +62,21 @@ def resume_data(resume: Resume) -> dict[str, Any]:
         raw["authors"] = [
             {"name": author, "me": author == resume.citation_name} for author in raw["authors"]
         ]
+
+    # Linked tools (resume.skill_links) are site-only, so drop them everywhere.
+    linked = resume.linked_skills()
+
+    def keep(names: list[str]) -> list[str]:
+        return [n for n in names if skill_key(n) not in linked]
+
+    for raw in data["experience"] + data["education"]:
+        raw["skills"] = keep(raw["skills"])
+    data["skills"] = [
+        {**group, "items": keep(group["items"])}
+        for group in data["skills"]
+        if keep(group["items"])
+    ]
+    del data["skill_links"]
     return data
 
 
