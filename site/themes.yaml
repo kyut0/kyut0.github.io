@@ -1,0 +1,59 @@
+# Color themes for the site. Visitors pick one from the gear menu; the first is the default.
+#
+# Each theme has a light and a dark mode. Required per mode: bg (page background),
+# heading (h1/h2 and timeline years), link (links, subheadings, timeline titles), and pop
+# (buttons, tool chips, highlights). Optional: card, border, fg (body text), muted
+# (secondary text), pop-2 (second accent), on-pop (button text), thumb-bg, card-link
+# ("Sample work" links). Anything left out is derived from the colors given.
+#
+# Text colors that are too faint to read are darkened (light mode) or lightened (dark
+# mode) automatically. Run `make themes` to see every change and preview all themes.
+
+ember:
+  label: Ember
+  description: Cream and dark rust, with pink headings, blue links, and a hot magenta pop.
+  light:
+    bg: "#f8f1e3"
+    card: "#fffaf0"
+    border: "#e6d6b8"
+    fg: "#3a1a0e"
+    muted: "#6e4e3c"
+    heading: "#8e1f5c"
+    link: "#1f5fae"
+    pop: "#ff2d95"
+    pop-2: "#e2a400"
+    on-pop: "#24120b"
+    thumb-bg: "#ffffff"
+    card-link: "#0b7285"
+  dark:
+    bg: "#24120b"
+    card: "#311a10"
+    border: "#4d2c1d"
+    fg: "#f6ead6"
+    muted: "#c9ad94"
+    heading: "#ff6ec7"
+    link: "#86b6ff"
+    pop: "#ff2d95"
+    pop-2: "#f0bf3a"
+    on-pop: "#24120b"
+    thumb-bg: "#ffffff"
+    card-link: "#4fd8e8"
+
+sage:
+  label: Sage
+  description: Pale sage and deep forest, with dark red, neon orange, cyan, and magenta.
+  light:
+    bg: "#e3eddc"
+    fg: "#001c07"
+    heading: "#700808"
+    link: "#059ea1"
+    card-link: "#d80aad"
+    pop: "#d80aad"
+    pop-2: "#ff8800"
+  dark:
+    bg: "#001c07"
+    heading: "#ff8800"
+    link: "#00f7ff"
+    card-link: "#059ea1"
+    pop: "#d80aad"
+    pop-2: "#ff8800"

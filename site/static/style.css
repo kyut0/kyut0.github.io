@@ -1,8 +1,6 @@
-/* Theme "Ember": cream (light) / dark rust (dark), with pink (dark) or plum (light)
-   headings, blue links and subheadings, a hot magenta pop and a gold second pop.
-   Contrast and saturation for every color pair are checked in tests/test_theme.py.
-   Hot magenta is too light to read as text on cream, so in light mode it is only ever a
-   fill behind dark text or decoration; light-mode headings use the deeper plum instead. */
+/* Site styles. Colors are theme tokens (var(--bg), var(--link), ...) defined per theme in
+   site/themes.yaml and generated into static/themes.css, where contrast is checked for
+   every theme in both light and dark mode. */
 
 @font-face {
   font-family: "IBM Plex Mono";
@@ -36,40 +34,8 @@
   font-display: swap;
 }
 
-/* Dark (rust) tokens are the base. base.html sets data-theme="light" from the visitor's
-   system setting or saved toggle choice, so most visitors see their preferred theme. */
-:root {
-  --bg: #24120b;
-  --card: #311a10;
-  --border: #4d2c1d;
-  --fg: #f6ead6;
-  --muted: #c9ad94;
-  --heading: #ff6ec7;
-  --link: #86b6ff;
-  --pop: #ff2d95;
-  --pop-2: #f0bf3a;
-  --on-pop: #24120b;
-  --thumb-bg: #ffffff;
-  /* Links inside resume timeline cards, whose titles are already --link blue. */
-  --card-link: #4fd8e8;
-  color-scheme: dark;
-}
-
-:root[data-theme="light"] {
-  --bg: #f8f1e3;
-  --card: #fffaf0;
-  --border: #e6d6b8;
-  --fg: #3a1a0e;
-  --muted: #6e4e3c;
-  --heading: #8e1f5c;
-  --link: #1f5fae;
-  --pop: #ff2d95;
-  --pop-2: #e2a400;
-  --on-pop: #24120b;
-  --thumb-bg: #ffffff;
-  --card-link: #0b7285;
-  color-scheme: light;
-}
+/* Color tokens (--bg, --fg, --link, ...) come from static/themes.css, generated from
+   site/themes.yaml. */
 
 * {
   box-sizing: border-box;
@@ -191,8 +157,14 @@ code {
   text-decoration: none;
 }
 
-/* Sun shows in dark mode (click for light), moon in light mode. */
-.theme-toggle {
+/* Header icon button: the color theme menu (gear). */
+.header-tools {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.icon-button {
   display: inline-grid;
   place-items: center;
   width: 2rem;
@@ -205,15 +177,12 @@ code {
   cursor: pointer;
 }
 
-.theme-toggle[hidden] {
-  display: none;
-}
-
-.theme-toggle:hover {
+.icon-button:hover,
+.icon-button[aria-expanded="true"] {
   border-color: var(--pop);
 }
 
-.theme-toggle svg {
+.icon-button svg {
   width: 1.05rem;
   height: 1.05rem;
   fill: none;
@@ -223,20 +192,84 @@ code {
   stroke-linejoin: round;
 }
 
-.theme-toggle .icon-moon {
-  display: none;
-}
-
-:root[data-theme="light"] .theme-toggle {
+:root[data-theme="light"] .icon-button {
   color: var(--link);
 }
 
-:root[data-theme="light"] .theme-toggle .icon-sun {
-  display: none;
+/* Theme menu: drops down under the gear, right-aligned with it. */
+.settings {
+  position: relative;
 }
 
-:root[data-theme="light"] .theme-toggle .icon-moon {
-  display: block;
+.settings-menu {
+  position: absolute;
+  top: calc(100% + 0.5rem);
+  right: 0;
+  z-index: 10;
+  min-width: 14rem;
+  padding: 0.75rem;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  box-shadow: 0 6px 20px rgb(0 0 0 / 0.25);
+}
+
+.settings-title {
+  margin: 0 0 0.5rem;
+  color: var(--muted);
+  font-size: 0.75rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.settings-menu ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 0.25rem;
+}
+
+.palette-option {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  width: 100%;
+  padding: 0.35rem 0.5rem;
+  border: 1px solid transparent;
+  border-radius: 4px;
+  background: none;
+  color: var(--fg);
+  font: inherit;
+  font-size: 0.85rem;
+  text-align: left;
+  cursor: pointer;
+}
+
+.palette-option:hover {
+  border-color: var(--border);
+}
+
+.palette-option[aria-pressed="true"] {
+  border-color: var(--pop);
+}
+
+.palette-option[aria-pressed="true"] .palette-label::after {
+  content: " ✓" / "";
+  color: var(--pop);
+}
+
+/* Each option previews its own colors: background, heading, link, and accent. */
+.swatches {
+  display: inline-flex;
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.swatches span {
+  width: 0.8rem;
+  height: 1.1rem;
 }
 
 .site-header nav a:hover {

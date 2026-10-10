@@ -29,6 +29,7 @@ def test_build_writes_every_page(content_dir: Path, site_dir: Path, tmp_path: Pa
         if project.image:
             assert (tmp_path / "projects" / project.image).is_file()
     assert (tmp_path / "static" / "style.css").exists()
+    assert ":root {" in (tmp_path / "static" / "themes.css").read_text()
     index = (tmp_path / "index.html").read_text()
     assert f"<h1>{site.resume.display_name}</h1>" in index
     assert f'<p class="pronouns">{site.resume.pronouns}</p>' in index
@@ -148,3 +149,19 @@ def test_about_page_copies_its_photos(content_dir: Path, site_dir: Path, tmp_pat
     build_site(load_site(content), out, site_dir / "templates", site_dir / "static")
     assert 'src="about/kiddo.jpg"' in (out / "about.html").read_text()
     assert (out / "about" / "kiddo.jpg").is_file()
+
+
+def test_header_lists_every_theme(content_dir: Path, site_dir: Path, tmp_path: Path) -> None:
+    build_site(load_site(content_dir), tmp_path, site_dir / "templates", site_dir / "static")
+    html = (tmp_path / "index.html").read_text()
+    for label in ("Ember (dark)", "Ember (light)", "Sage (dark)", "Sage (light)"):
+        assert f'<span class="palette-label">{label}</span>' in html
+    assert 'data-palette="sage" data-mode="light"' in html
+    assert "theme-toggle" not in html  # light/dark lives in the same menu now
+    assert 'href="static/themes.css"' in html
+
+
+def test_cli_themes_writes_preview(site_dir: Path, tmp_path: Path) -> None:
+    preview = tmp_path / "preview.html"
+    assert main(["--site-dir", str(site_dir), "themes", "--preview", str(preview)]) == 0
+    assert "Sage" in preview.read_text()

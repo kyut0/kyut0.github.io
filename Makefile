@@ -1,4 +1,4 @@
-.PHONY: install lint format typecheck test check validate build serve clean
+.PHONY: install lint format typecheck test check validate build serve themes clean
 
 install:  ## Install dependencies and git hooks
 	poetry install
@@ -30,6 +30,9 @@ build:  ## Fresh build, so deleted pages don't linger
 serve:
 	rm -rf _site
 	poetry run portfolio serve
+
+themes:  ## Check site/themes.yaml and write _site/themes-preview.html
+	poetry run portfolio themes
 
 clean:
 	rm -rf _site .pytest_cache .mypy_cache .ruff_cache .coverage

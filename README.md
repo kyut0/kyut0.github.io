@@ -45,6 +45,7 @@ make serve      # build and serve at http://127.0.0.1:8000
 | `make validate` | Validate content without writing anything     |
 | `make build`    | Validate and render site + PDF into `_site/`  |
 | `make check`    | Lint, type-check, and test (same as CI)       |
+| `make themes`   | Check color themes and write a preview page   |
 | `make format`   | Auto-fix lint issues and format               |
 | `make clean`    | Remove build output and tool caches           |
 
@@ -60,6 +61,7 @@ make serve      # build and serve at http://127.0.0.1:8000
 ├── site/                 # the presentation: how it looks
 │   ├── templates/        # Jinja templates
 │   ├── typst/            # PDF resume + cover letter layouts
+│   ├── themes.yaml       # named color themes (see ADR 0004)
 │   └── static/           # CSS, images
 ├── src/portfolio/        # the pipeline
 │   ├── models.py         # schemas

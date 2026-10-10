@@ -1,4 +1,4 @@
-"""Command-line entry point: `portfolio validate | build | serve`."""
+"""Command-line entry point: `portfolio validate | build | serve | themes`."""
 
 import argparse
 import contextlib
@@ -12,6 +12,8 @@ from pydantic import ValidationError
 from portfolio.load import ContentError, load_site
 from portfolio.render import build_cover_letter_pdf, build_resume_pdf, build_site
 from portfolio.render.pdf import PdfOverflowError
+from portfolio.render.site import build_theme_preview
+from portfolio.theme import Theme, load_themes, report
 
 
 def _parser() -> argparse.ArgumentParser:
@@ -24,11 +26,39 @@ def _parser() -> argparse.ArgumentParser:
     sub.add_parser("build", help="validate content and render the site and PDFs")
     serve = sub.add_parser("serve", help="build, then serve the site locally")
     serve.add_argument("--port", type=int, default=8000)
+    themes = sub.add_parser(
+        "themes", help="check every color theme and write a preview page of them all"
+    )
+    themes.add_argument("--preview", type=Path, default=Path("_site/themes-preview.html"))
     return parser
+
+
+def _load_themes(site_dir: Path) -> list[Theme] | None:
+    """Load site/themes.yaml, printing why it failed if it did."""
+    try:
+        themes = load_themes(site_dir / "themes.yaml")
+    except (OSError, ValidationError) as exc:
+        print(f"theme error:\n{exc}", file=sys.stderr)
+        return None
+    failing = [t.name for t in themes if not t.ok]
+    if failing:
+        print(report(themes), file=sys.stderr)
+        print(f"theme error: {', '.join(failing)} fail contrast", file=sys.stderr)
+        return None
+    return themes
 
 
 def main(argv: list[str] | None = None) -> int:
     args = _parser().parse_args(argv)
+
+    themes = _load_themes(args.site_dir)
+    if themes is None:
+        return 1
+    if args.command == "themes":
+        print(report(themes))
+        preview = build_theme_preview(themes, args.site_dir / "templates", args.preview)
+        print(f"wrote {preview}")
+        return 0
 
     try:
         site = load_site(args.content)
@@ -40,7 +70,9 @@ def main(argv: list[str] | None = None) -> int:
         print(f"ok: resume + {len(site.projects)} project(s) are valid")
         return 0
 
-    pages = build_site(site, args.out, args.site_dir / "templates", args.site_dir / "static")
+    pages = build_site(
+        site, args.out, args.site_dir / "templates", args.site_dir / "static", themes
+    )
     typst_dir = args.site_dir / "typst"
     try:
         pdfs = [
