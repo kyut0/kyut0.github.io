@@ -46,9 +46,6 @@
     </div>
   </header>
   <div class="layout">
-    <main>
-      {% block content %}{% endblock %}
-    </main>
     <aside class="bio-panel" aria-label="About {{ resume.display_name }}">
       <img class="bio-photo" src="{{ root }}{{ asset('profile.png') }}" alt="{{ resume.display_name }}" width="144" height="144">
       <p class="bio-name"><a href="{{ root }}index.html">{{ resume.display_name }}</a></p>
@@ -78,6 +75,9 @@
         </div>
       </details>
     </aside>
+    <main>
+      {% block content %}{% endblock %}
+    </main>
   </div>
   <footer class="site-footer">
     <span>&copy; {{ year }} {{ resume.display_name }}</span>
