@@ -1155,8 +1155,8 @@ pyyaml = ">=6.0,<7.0"
 [package.source]
 type = "git"
 url = "https://github.com/kyut0/seedpalette.git"
-reference = "ee583b6"
-resolved_reference = "ee583b63b6428d818cab48d5ac58395e58876b9e"
+reference = "e1e0da6"
+resolved_reference = "e1e0da6d52ee1940790a67e4a47cb167a7dc6ee1"
 
 [[package]]
 name = "types-pyyaml"
@@ -1247,4 +1247,4 @@ python-discovery = ">=1.6.1"
 [metadata]
 lock-version = "2.1"
 python-versions = ">=3.13"
-content-hash = "51e45148278f6c620b99ccf5d54d417c1b7657debaf4cae2a9e0671e25a0e805"
+content-hash = "917a5d06165bcd8853c8f9cd4ec5e6b55c314f6d1e1f91169fe5a525274bbd0a"

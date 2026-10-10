@@ -64,3 +64,59 @@ themes:
       card-link: "#059ea1"
       accent: "#d80aad"
       accent-2: "#ff8800"
+
+  # Imported from Omarchy (MIT license, https://github.com/omacom/omarchy) at commit
+  # 7cc6a55f24fa with `seedpalette import-omarchy NAME --ref 7cc6a55f24fa`. Each is one
+  # mode in Omarchy; the other mode is derived. Re-run that command to refresh them.
+
+  tokyo-night:
+    label: Tokyo Night
+    description: "Imported from Omarchy: tokyo-night (dark), light mode derived."
+    light:
+      bg: "#f3f4ff"
+      surface: "#fbfcff"
+      border: "#d1d7ec"
+      text: "#1d2030"
+      muted: "#505466"
+      heading: "#ad8ee6"
+      link: "#7aa2f7"
+      accent: "#7aa2f7"
+      accent-2: "#e0af68"
+    dark:
+      bg: "#1a1b26"
+      surface: "#24283b"
+      border: "#292e42"
+      text: "#a9b1d6"
+      muted: "#565f89"
+      heading: "#ad8ee6"
+      link: "#7aa2f7"
+      accent: "#7aa2f7"
+      accent-2: "#e0af68"
+
+  # Rose Pine's light mode is Omarchy's import above. Omarchy only ships the light
+  # (dawn) variant, so the dark mode uses the official Rose Pine "main" palette instead
+  # (MIT license, https://github.com/rose-pine/rose-pine-palette), mapped to the same
+  # roles: base, surface, overlay, text, muted, iris, foam, gold.
+  rose-pine:
+    label: Rose Pine
+    description: "Light mode imported from Omarchy (rose-pine); dark mode is Rose Pine's official main palette."
+    light:
+      bg: "#faf4ed"
+      surface: "#f2e9e1"
+      border: "#dfdad9"
+      text: "#575279"
+      muted: "#9893a5"
+      heading: "#907aa9"
+      link: "#56949f"
+      accent: "#56949f"
+      accent-2: "#ea9d34"
+    dark:
+      bg: "#191724"
+      surface: "#1f1d2e"
+      border: "#26233a"
+      text: "#e0def4"
+      muted: "#6e6a86"
+      heading: "#c4a7e7"
+      link: "#9ccfd8"
+      accent: "#9ccfd8"
+      accent-2: "#f6c177"

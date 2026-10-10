@@ -216,7 +216,9 @@ code {
   top: calc(100% + 0.5rem);
   right: 0;
   z-index: 10;
+  width: max-content;
   min-width: 14rem;
+  max-width: calc(100vw - 2.5rem);
   padding: 0.75rem;
   background: var(--surface);
   border: 1px solid var(--border);
@@ -253,6 +255,7 @@ code {
   font: inherit;
   font-size: 0.85rem;
   text-align: left;
+  white-space: nowrap;
   cursor: pointer;
 }
 

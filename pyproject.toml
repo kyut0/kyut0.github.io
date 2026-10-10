@@ -14,7 +14,7 @@ dependencies = [
     "jinja2 (>=3.1,<4.0)",
     "markdown-it-py (>=3.0,<4.0)",
     "typst (>=0.15.0,<0.16.0)",
-    "seedpalette @ git+https://github.com/kyut0/seedpalette.git@ee583b6",
+    "seedpalette @ git+https://github.com/kyut0/seedpalette.git@e1e0da6",
 ]
 
 [project.scripts]
