@@ -295,3 +295,17 @@ def test_footer_without_git_info_has_no_commit(
     build_site(site, tmp_path, site_dir / "templates", site_dir / "static")
     index = (tmp_path / "index.html").read_text()
     assert "built from" not in index
+
+
+def test_theme_menu_swatches_are_real_colors(
+    content_dir: Path, site_dir: Path, tmp_path: Path
+) -> None:
+    """A swatch naming a token the theme doesn't have once rendered as
+    "background: <built-in method pop of dict ...>", which browsers show as blank."""
+    build_site(load_site(content_dir), tmp_path, site_dir / "templates", site_dir / "static")
+    index = (tmp_path / "index.html").read_text()
+    swatches = re.findall(r'<span class="swatches"[^>]*>(.*?)</span></span>', index)
+    assert swatches
+    for group in swatches:
+        colors = re.findall(r'style="background: ([^"]*)"', group)
+        assert len(colors) == 4 and all(re.fullmatch(r"#[0-9a-fA-F]{6}", c) for c in colors), group
