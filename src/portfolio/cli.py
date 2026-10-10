@@ -12,7 +12,7 @@ import seedpalette
 import yaml
 
 from portfolio.load import ContentError, load_site
-from portfolio.render import build_cover_letter_pdf, build_resume_pdf, build_site
+from portfolio.render import build_cover_letter_pdf, build_resume_pdf, build_site, combine_pdfs
 from portfolio.render.pdf import PdfOverflowError
 from portfolio.render.site import build_theme_preview
 
@@ -76,22 +76,29 @@ def main(argv: list[str] | None = None) -> int:
     )
     typst_dir = args.site_dir / "typst"
     try:
-        pdfs = [
-            build_resume_pdf(site.resume, typst_dir / "resume.typ", args.out / "resume.pdf"),
-            build_cover_letter_pdf(
-                site.resume,
-                site.cover_letter_paragraphs,
-                typst_dir / "cover-letter.typ",
-                args.out / "cover-letter.pdf",
-            ),
-        ]
+        resume_pdf = build_resume_pdf(
+            site.resume, typst_dir / "resume.typ", args.out / "resume.pdf"
+        )
+        letter_pdf = build_cover_letter_pdf(
+            site.resume,
+            site.cover_letter_paragraphs,
+            typst_dir / "cover-letter.typ",
+            args.out / "cover-letter.pdf",
+        )
     except PdfOverflowError as exc:
         print(f"pdf error: {exc}", file=sys.stderr)
         return 1
+    # The "Both" download: cover letter first, then resume.
+    combined = combine_pdfs(
+        [letter_pdf.path, resume_pdf.path],
+        args.out / "cover-letter-and-resume.pdf",
+        title=f"{site.resume.name} – Cover Letter and Resume",
+    )
     print(f"built {len(pages)} page(s) into {args.out}/")
-    for pdf in pdfs:
+    for pdf in (resume_pdf, letter_pdf):
         scaled = "" if pdf.scale == 1.0 else f", scaled to {pdf.scale:.0%} to fit"
         print(f"built {pdf.path} ({pdf.pages} page{scaled})")
+    print(f"built {combined} (cover letter + resume)")
 
     if args.command == "serve":
         handler = partial(http.server.SimpleHTTPRequestHandler, directory=str(args.out))

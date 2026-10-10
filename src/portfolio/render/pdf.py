@@ -1,4 +1,4 @@
-"""Render the resume and cover letter to PDF with Typst.
+"""Render the resume and cover letter to PDF with Typst, and combine them into one.
 
 The validated content is handed to the Typst template as JSON through `sys.inputs`, so
 content is always treated as plain text and never interpreted as Typst markup.
@@ -9,6 +9,7 @@ import json
 from pathlib import Path
 from typing import Any
 
+from pypdf import PdfWriter
 import typst
 
 from portfolio.models import Resume
@@ -118,3 +119,15 @@ def build_cover_letter_pdf(
     return _compile_to_fit(
         data, template, out, max_pages=max_pages, source="content/cover-letter.md"
     )
+
+
+def combine_pdfs(parts: list[Path], out: Path, *, title: str) -> Path:
+    """Concatenate parts, in order, into one PDF titled title and write it to out."""
+    writer = PdfWriter()
+    for part in parts:
+        writer.append(part)
+    writer.add_metadata({"/Title": title})
+    out.parent.mkdir(parents=True, exist_ok=True)
+    with out.open("wb") as f:
+        writer.write(f)
+    return out

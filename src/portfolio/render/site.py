@@ -32,7 +32,11 @@ _REDIRECT_PAGE = """<!doctype html>
 """
 
 # Downloadable PDFs: the file each is published as, and the label in its saved name.
-DOWNLOADS = {"resume": "Resume", "cover_letter": "CoverLetter"}
+DOWNLOADS = {
+    "resume": "Resume",
+    "cover_letter": "CoverLetter",
+    "both": "CoverLetter_and_Resume",
+}
 
 
 def download_stem(resume: Resume, label: str) -> str:

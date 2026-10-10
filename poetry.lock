@@ -953,7 +953,7 @@ version = "6.19.0"
 description = "A pure-python PDF library capable of splitting, merging, cropping, and transforming PDF files"
 optional = false
 python-versions = ">=3.9"
-groups = ["dev"]
+groups = ["main"]
 files = [
     {file = "pypdf-6.19.0-py3-none-any.whl", hash = "sha256:7e5d6e730e7dae87d560a2cee218b852f6498c8be61966f3cd02ead971e48d14"},
     {file = "pypdf-6.19.0.tar.gz", hash = "sha256:bbc43aca292369ccc6cbc8a921991ecf2538a3587ab5a116eff06c321d647155"},
@@ -1247,4 +1247,4 @@ python-discovery = ">=1.6.1"
 [metadata]
 lock-version = "2.1"
 python-versions = ">=3.13"
-content-hash = "917a5d06165bcd8853c8f9cd4ec5e6b55c314f6d1e1f91169fe5a525274bbd0a"
+content-hash = "3b81adb20ccf4719b0a75afee81c1328142898e489ff76cabfb59098e42c8cc1"

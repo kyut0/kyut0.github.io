@@ -332,22 +332,39 @@ code {
   color: var(--muted);
 }
 
-.bio-facts {
-  list-style: none;
-  padding: 0;
+.bio-location {
   margin-top: 0.9rem !important;
   font-size: 0.85rem;
 }
 
-.bio-facts li {
-  overflow-wrap: anywhere;
+/* Download dropdown: a solid button that opens outlined choices beneath it. */
+.download-menu {
+  margin-top: 1.1rem;
 }
 
-.downloads {
+.download-menu summary {
+  list-style: none;
+  cursor: pointer;
+  user-select: none;
+}
+
+.download-menu summary::-webkit-details-marker {
+  display: none;
+}
+
+.download-menu summary::after {
+  content: " ▾" / "";
+}
+
+.download-menu[open] summary::after {
+  content: " ▴" / "";
+}
+
+.download-options {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.6rem;
-  margin-top: 1.1rem;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
 }
 
 @media (min-width: 68rem) {
@@ -377,12 +394,13 @@ code {
     border-top: 0;
   }
 
-  .downloads {
-    flex-direction: column;
+  .download-menu .button {
+    display: block;
+    text-align: center;
   }
 
-  .downloads .button {
-    text-align: center;
+  .download-options {
+    flex-direction: column;
   }
 }
 
@@ -521,18 +539,31 @@ code {
   color: var(--accent-2);
 }
 
+/* Outlined in the pop color; a hard offset shadow on hover. */
 .button {
   display: inline-block;
   padding: 0.35rem 0.9rem;
   border-radius: 4px;
-  background: var(--accent);
-  color: var(--on-accent);
+  background: transparent;
+  color: var(--text);
+  box-shadow: inset 0 0 0 1.5px var(--accent);
   font-weight: 600;
   text-decoration: none;
 }
 
 .button:hover {
+  color: var(--text);
+  box-shadow: inset 0 0 0 1.5px var(--accent), 3px 3px 0 var(--link);
+}
+
+/* Filled in the pop color, for the main action. */
+.button-solid,
+.button-solid:hover {
+  background: var(--accent);
   color: var(--on-accent);
+}
+
+.button-solid:hover {
   box-shadow: 3px 3px 0 var(--link);
 }
 
@@ -547,18 +578,6 @@ ul li::marker {
   overflow: hidden;
   clip-path: inset(50%);
   white-space: nowrap;
-}
-
-/* Outlined secondary button, next to a filled .button. */
-.button-alt {
-  background: transparent;
-  color: var(--text);
-  box-shadow: inset 0 0 0 1.5px var(--accent);
-}
-
-.button-alt:hover {
-  color: var(--text);
-  box-shadow: inset 0 0 0 1.5px var(--accent), 3px 3px 0 var(--link);
 }
 
 /* ---- Resume timeline ---------------------------------------------------------------

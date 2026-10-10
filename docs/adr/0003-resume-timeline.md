@@ -31,8 +31,10 @@ click away.
   lets visitors click a tool to trace it and fades events in on scroll. Without JavaScript the full timeline still renders.
 - Roles can set `in_pdf: false` to appear on the timeline but not in the one-page PDF,
   so early internships don't push the PDF onto a second page.
-- The cover letter is published only as `cover-letter.pdf`, downloaded from the
-  bio panel on every page. `content/cover-letter.md` stays the source.
+- The cover letter is published only as a PDF: on its own as `cover-letter.pdf`, and
+  followed by the resume in `cover-letter-and-resume.pdf`. All three PDFs are offered
+  from the bio panel's Download menu on every page. `content/cover-letter.md` stays the
+  source.
 
 ## Consequences
 

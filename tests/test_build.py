@@ -4,6 +4,7 @@ import re
 import shutil
 
 from markupsafe import escape
+from pypdf import PdfReader
 
 from portfolio.cli import main
 from portfolio.load import load_site
@@ -136,7 +137,21 @@ def test_bio_panel_links_pdfs_from_every_page(
     assert '<aside class="bio-panel"' in project
     assert 'href="../resume.pdf"' in project
     assert 'href="../cover-letter.pdf"' in project
+    assert 'href="../cover-letter-and-resume.pdf"' in project
+    assert 'data-download-stem="YutK_CoverLetter_and_Resume"' in project
     assert 'src="../static/download.js?v=' in project
+
+
+def test_footer_email_link_copies_address(
+    content_dir: Path, site_dir: Path, tmp_path: Path
+) -> None:
+    site = load_site(content_dir)
+    build_site(site, tmp_path, site_dir / "templates", site_dir / "static")
+    html = (tmp_path / "index.html").read_text()
+    email = site.resume.email
+    assert f'<a href="mailto:{email}" data-copy-email="{email}"' in html
+    assert ">Email</a>" in html
+    assert 'src="static/copy-email.js?v=' in html
 
 
 def test_cli_validate_reports_content_errors(tmp_path: Path) -> None:
@@ -150,6 +165,11 @@ def test_cli_build(content_dir: Path, site_dir: Path, tmp_path: Path) -> None:
     assert (out / "index.html").exists()
     assert (out / "resume.pdf").exists()
     assert (out / "cover-letter.pdf").exists()
+    both = PdfReader(out / "cover-letter-and-resume.pdf")
+    letter, resume = PdfReader(out / "cover-letter.pdf"), PdfReader(out / "resume.pdf")
+    assert [p.extract_text() for p in both.pages] == [
+        p.extract_text() for p in (*letter.pages, *resume.pages)
+    ]
 
 
 def test_about_page_copies_its_photos(content_dir: Path, site_dir: Path, tmp_path: Path) -> None:
