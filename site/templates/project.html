@@ -3,7 +3,15 @@
 {% block title %}{{ project.title }} · {{ resume.name }}{% endblock %}
 {% block content %}
 <article class="project">
+  {% if project.logo %}
+  <h1 class="project-title">
+    <img class="project-logo{% if project.logo_dark %} light-only{% endif %}" src="{{ project.logo }}" alt="{{ project.title }} logo">
+    {% if project.logo_dark %}<img class="project-logo dark-only" src="{{ project.logo_dark }}" alt="{{ project.title }} logo">{% endif %}
+    {{ project.title }}
+  </h1>
+  {% else %}
   <h1>{{ project.title }}</h1>
+  {% endif %}
   <p class="muted">{{ project.date | month_year }}{% if project.repo %} · <a href="{{ project.repo }}">Source</a>{% endif %}</p>
   <p class="tags">{% for tag in project.tags %}<span>{{ tag }}</span>{% endfor %}</p>
   {{ project.body_html | safe }}

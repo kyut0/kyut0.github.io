@@ -241,3 +241,11 @@ def test_old_resume_url_redirects(content_dir: Path, site_dir: Path, tmp_path: P
     build_site(load_site(content_dir), tmp_path, site_dir / "templates", site_dir / "static")
     html = (tmp_path / "resume.html").read_text()
     assert 'http-equiv="refresh" content="0; url=experience.html"' in html
+
+
+def test_project_logo_swaps_with_mode(content_dir: Path, site_dir: Path, tmp_path: Path) -> None:
+    build_site(load_site(content_dir), tmp_path, site_dir / "templates", site_dir / "static")
+    html = (tmp_path / "projects" / "seedpalette.html").read_text()
+    assert 'class="project-logo light-only" src="seedpalette/logo.png"' in html
+    assert 'class="project-logo dark-only" src="seedpalette/logo-dark.png"' in html
+    assert (tmp_path / "projects" / "seedpalette" / "logo-dark.png").is_file()

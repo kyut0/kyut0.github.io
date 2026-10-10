@@ -91,8 +91,9 @@ def load_project(path: Path) -> Project:
     where the page and its asset folder land in the built site."""
     meta, body = parse_front_matter(path.read_text(encoding="utf-8"))
     images = _local_image_paths(body)
-    if isinstance(meta.get("image"), str):
-        images.append(meta["image"])
+    images += [
+        meta[key] for key in ("image", "logo", "logo_dark") if isinstance(meta.get(key), str)
+    ]
     _check_images(path, images)
 
     asset_dir = path.parent / path.stem

@@ -38,10 +38,11 @@ def test_load_project_uses_filename_as_slug(tmp_path: Path) -> None:
 def test_load_project_rejects_missing_images(tmp_path: Path) -> None:
     path = tmp_path / "maps.md"
     path.write_text(
-        "---\ntitle: T\nsummary: S\ndate: 2024-05-01\nimage: maps/thumb.jpg\n---\n"
+        "---\ntitle: T\nsummary: S\ndate: 2024-05-01\nimage: maps/thumb.jpg\n"
+        "logo: maps/logo.png\n---\n"
         "![fig](maps/fig.jpg)\n![remote](https://example.com/x.png)\n"
     )
-    with pytest.raises(ContentError, match=r"maps/fig\.jpg, maps/thumb\.jpg"):
+    with pytest.raises(ContentError, match=r"maps/fig\.jpg, maps/thumb\.jpg, maps/logo\.png"):
         load_project(path)
 
 

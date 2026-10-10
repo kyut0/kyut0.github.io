@@ -167,6 +167,10 @@ class Project(_Model):
     organization: str | None = None
     # Card thumbnail, relative to the project's Markdown file (e.g. "my-project/thumb.png").
     image: str | None = None
+    # Logo shown beside the project page's title, e.g. a repo's own logo; logo_dark, if
+    # given, replaces it in dark mode. Both relative to the Markdown file, like image.
+    logo: str | None = None
+    logo_dark: str | None = None
     body_html: str = ""
     # content/projects/<slug>/, if it exists; copied next to the rendered page.
     asset_dir: Path | None = Field(default=None, exclude=True)
