@@ -249,3 +249,19 @@ def test_project_logo_swaps_with_mode(content_dir: Path, site_dir: Path, tmp_pat
     assert 'class="project-logo light-only" src="seedpalette/logo.png"' in html
     assert 'class="project-logo dark-only" src="seedpalette/logo-dark.png"' in html
     assert (tmp_path / "projects" / "seedpalette" / "logo-dark.png").is_file()
+
+
+def test_every_page_declares_the_favicon(
+    content_dir: Path, site_dir: Path, tmp_path: Path
+) -> None:
+    pages = build_site(
+        load_site(content_dir), tmp_path, site_dir / "templates", site_dir / "static"
+    )
+    for page in pages:
+        html = page.read_text()
+        assert 'rel="icon" href="' in html and "favicon.svg?v=" in html, page.name
+        assert "apple-touch-icon.png?v=" in html, page.name
+    project = (
+        tmp_path / "projects" / f"{load_site(content_dir).projects[0].slug}.html"
+    ).read_text()
+    assert 'href="../static/favicon.svg?v=' in project

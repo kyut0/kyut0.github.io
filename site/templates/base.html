@@ -5,6 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>{% block title %}{{ resume.name }}{% endblock %}</title>
   <meta name="description" content="{{ resume.headline }}">
+  {# "KY" tab icon. Declaring it also stops browsers requesting a missing /favicon.ico. #}
+  <link rel="icon" href="{{ root }}{{ asset('favicon.svg') }}" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="{{ root }}{{ asset('apple-touch-icon.png') }}">
   {# Before first paint: light/dark from the visitor's saved choice, else their system
      setting; whether they've found the treasure (static/treasure.js); and their saved
      color theme, if it still exists and, for a treasure theme, they've unlocked it. #}
