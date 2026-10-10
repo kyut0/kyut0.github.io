@@ -102,8 +102,15 @@
     <span class="visually-hidden" role="status" data-copy-status></span>
     {% endif %}
     <a class="treasure-only treasure-mark" href="{{ root }}treasure.html" title="Your treasure" aria-label="Your treasure: the Moka Pot Magic collection">✨</a>
-    {% if site.updated %}
-    <span class="updated">Updated <time datetime="{{ site.updated.isoformat() }}">{{ site.updated | long_date }}</time></span>
+    {% if site.updated or site.commit %}
+    {# Pushed to the footer's right end: when the site last changed, and the exact commit
+       it was built from, linked on GitHub for anyone curious enough to click. #}
+    {% set short = site.commit[:7] if site.commit else "" %}
+    <span class="updated">
+      {%- if site.updated %}Updated <time datetime="{{ site.updated.isoformat() }}">{{ site.updated | long_date }}</time>{% endif %}
+      {%- if site.updated and site.commit %} · {% endif %}
+      {%- if site.commit %}<span class="built">built from {% if site.commit_url %}<a class="commit" href="{{ site.commit_url }}" title="See commit {{ short }} on GitHub"><code>{{ short }}</code></a>{% else %}<code class="commit">{{ short }}</code>{% endif %}</span>{% endif -%}
+    </span>
     {% endif %}
   </footer>
   <script src="{{ root }}{{ asset('theme.js') }}" defer></script>

@@ -215,6 +215,10 @@ class Site(_Model):
     about_asset_dir: Path | None = Field(default=None, exclude=True)
     cover_letter_paragraphs: list[str]  # plain text; the letter is published only as a PDF
     updated: date | None = None  # newest commit to the site's repo
+    # The commit the site is built from (full hash), and its page on GitHub if the repo is
+    # hosted there; the footer shows "built from <short hash>".
+    commit: str | None = Field(default=None, pattern=r"^[0-9a-f]{40}$")
+    commit_url: HttpUrl | None = None
     typing: Typing | None = None  # content/typing.yaml, if present
 
     @model_validator(mode="after")

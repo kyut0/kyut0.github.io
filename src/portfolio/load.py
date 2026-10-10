@@ -6,7 +6,7 @@ from typing import Any
 from markdown_it import MarkdownIt
 import yaml
 
-from portfolio.gitinfo import last_commit_date
+from portfolio.gitinfo import github_repo_url, last_commit_date, last_commit_hash
 from portfolio.models import Project, Resume, Site, Typing
 
 _md = MarkdownIt("commonmark")
@@ -127,6 +127,8 @@ def load_site(content_dir: Path) -> Site:
     projects = [load_project(p) for p in sorted((content_dir / "projects").glob("*.md"))]
     projects.sort(key=lambda p: p.date, reverse=True)
 
+    commit = last_commit_hash(content_dir)
+    repo_url = github_repo_url(content_dir)
     cover_letter = cover_letter_path.read_text(encoding="utf-8")
     about_html, about_asset_dir = load_page(about_path)
     return Site(
@@ -137,5 +139,7 @@ def load_site(content_dir: Path) -> Site:
         about_asset_dir=about_asset_dir,
         cover_letter_paragraphs=plain_paragraphs(cover_letter),
         updated=last_commit_date(content_dir),
+        commit=commit,
+        commit_url=f"{repo_url}/commit/{commit}" if commit and repo_url else None,
         typing=load_typing(content_dir / "typing.yaml"),
     )
