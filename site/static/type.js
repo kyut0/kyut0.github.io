@@ -15,6 +15,7 @@
   const seconds = Number(test.dataset.seconds) || 15;
   const best = Number(test.dataset.best) || null;
   const profile = test.dataset.profile;
+  const blog = test.dataset.blog;
 
   // Common English words, with a few of Katy's own (cats, chickens, roller derby, moka
   // pots, soil) and some treasure-hunt loot mixed in.
@@ -144,6 +145,16 @@
       a.href = profile;
       a.textContent = "See my Monkeytype profile";
       p.append(a);
+      lines.push(p);
+    }
+    // The next breadcrumb, for finishing the trial (win or lose).
+    if (blog) {
+      const p = document.createElement("p");
+      p.className = "type-breadcrumb";
+      const a = document.createElement("a");
+      a.href = blog;
+      a.textContent = "The Examined Life";
+      p.append("Breadcrumb #2: every adventurer keeps a logbook. Mine is ", a, ".");
       lines.push(p);
     }
     result.replaceChildren(...lines);

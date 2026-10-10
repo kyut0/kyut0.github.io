@@ -60,6 +60,7 @@ def test_type_page_is_built_but_hidden(content_dir: Path, site_dir: Path, tmp_pa
 
     page = (tmp_path / "type.html").read_text()
     assert 'src="static/type.js?v=' in page
+    assert 'data-blog="https://blog.the-examined-life.com/"' in page
     if site.typing and (best := site.typing.best("time", 15)):
         assert f'data-best="{best.wpm}"' in page
     index = (tmp_path / "index.html").read_text()

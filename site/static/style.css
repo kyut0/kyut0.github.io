@@ -1107,3 +1107,9 @@ button.chip:hover {
   font-size: 1.25rem;
   font-weight: 600;
 }
+
+.type-breadcrumb {
+  padding: 0.6rem 0.9rem;
+  border-left: 3px solid var(--accent-2);
+  background: var(--surface);
+}
