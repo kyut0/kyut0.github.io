@@ -1,6 +1,6 @@
 // Resume timeline: click a tool to trace it through every step that used it, and fade
-// events in as they scroll into view. Without
-// JavaScript the full timeline still renders; only these extras are missing.
+// events in as they scroll into view. Without JavaScript the full timeline still
+// renders; only these extras are missing.
 (function () {
   const timeline = document.querySelector(".timeline");
   if (!timeline) return;

@@ -45,7 +45,7 @@
             {% for mode in ("dark", "light") %}
             <li{% if is_treasure %} class="treasure-only"{% endif %}>
               <button class="palette-option" type="button" data-palette="{{ theme.name }}" data-mode="{{ mode }}" data-default="{{ 'true' if is_default else 'false' }}" aria-pressed="false">
-                <span class="swatches" aria-hidden="true">{% for token in ("bg", "heading", "link", "pop") %}<span style="background: {{ theme.palette(mode)[token] }}"></span>{% endfor %}</span>
+                <span class="swatches" aria-hidden="true">{% for token in ("bg", "heading", "link", "accent") %}<span style="background: {{ theme.palette(mode)[token] }}"></span>{% endfor %}</span>
                 <span class="palette-label">{{ theme.label }} ({{ mode }})</span>
               </button>
             </li>

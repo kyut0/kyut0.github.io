@@ -49,3 +49,15 @@ The theme engine moved out of this repo into its own package,
 - The color-math and derivation tests live in seedpalette; `tests/test_theme.py` keeps
   only what this site relies on (every theme readable, the default calm and used as
   given, the PDF colors in sync).
+
+## Update: PDFs in every theme, and hidden treasure themes (2026-10-10)
+
+- The PDFs are no longer default-theme only. `build_pdfs` compiles the resume, cover
+  letter, and both-in-one PDF once per theme: the default theme's at the site root, the
+  rest in `pdf/<theme>/`. `pdf_colors` takes each theme's light palette and darkens any
+  color too faint against white paper, keeping its hue. `static/download.js` serves the
+  visitor's current theme. `tests/test_theme.py` checks every theme's PDF colors are
+  readable on white, and that the default theme's are used as given.
+- `site/treasure-themes.yaml` adds themes in the same format that stay out of the menu
+  until a visitor finds the easter egg. `themes.py` merges them into the one theme set,
+  so nothing above changes for them. See ADR 0005.

@@ -156,6 +156,7 @@ code {
   flex: 1;
   min-width: 0;
   row-gap: 0.4rem;
+  align-items: center;
 }
 
 .site-header nav,
@@ -163,10 +164,6 @@ code {
   gap: 1.25rem;
   display: flex;
   flex-wrap: wrap;
-}
-
-.site-header nav {
-  align-items: center;
 }
 
 .site-header nav a {
@@ -479,7 +476,7 @@ code {
   color: var(--text);
 }
 
-/* Blinking terminal cursor after the brand link, in the pop color. Disabled for now;
+/* Blinking terminal cursor after the brand link, in the accent color. Disabled for now;
    uncomment to bring it back.
 
 .brand::after {
@@ -631,7 +628,7 @@ code {
   color: var(--accent-2);
 }
 
-/* Outlined in the pop color; a hard offset shadow on hover. */
+/* Outlined in the accent color; a hard offset shadow on hover. */
 .button {
   display: inline-block;
   padding: 0.35rem 0.9rem;
@@ -643,12 +640,19 @@ code {
   text-decoration: none;
 }
 
+/* <button class="button">: drop the browser's button border and font. */
+button.button {
+  border: 0;
+  font: inherit;
+  cursor: pointer;
+}
+
 .button:hover {
   color: var(--text);
   box-shadow: inset 0 0 0 1.5px var(--accent), 3px 3px 0 var(--link);
 }
 
-/* Filled in the pop color, for the main action. */
+/* Filled in the accent color, for the main action. */
 .button-solid,
 .button-solid:hover {
   background: var(--accent);
@@ -675,10 +679,6 @@ ul li::marker {
 /* ---- Resume timeline ---------------------------------------------------------------
    Work and education share one color (blue) for dots, labels, titles, and bullets.
    Pink is reserved for years and tool chips. */
-.timeline {
-  --kind: var(--link);
-}
-
 .timeline-intro h1 {
   margin: 0.4rem 0;
 }
@@ -821,6 +821,7 @@ a.chip-link:hover {
 
 /* The line runs down the left of the cards; dates sit to its left on wide screens. */
 .timeline {
+  --kind: var(--link);
   --date-col: 8.5rem;
   --gap: 1.75rem;
   position: relative;
@@ -1029,15 +1030,6 @@ a.chip-link:hover {
   color: var(--link);
 }
 
-/* ---- About page ------------------------------------------------------------------ */
-/* <img class="portrait">: a square photo shown as a circle. */
-.about .portrait {
-  display: block;
-  width: 12rem;
-  height: auto;
-  aspect-ratio: 1;
-  border-radius: 50%;
-}
 
 /* ---- Hidden /type page (easter egg) ----------------------------------------------- */
 .type-board {
@@ -1049,12 +1041,6 @@ a.chip-link:hover {
   align-items: center;
   justify-content: space-between;
   margin-bottom: 0.5rem;
-}
-
-.type-status .button {
-  border: 0;
-  font: inherit;
-  cursor: pointer;
 }
 
 .type-timer {
@@ -1144,10 +1130,6 @@ a.chip-link:hover {
   border-top: 1px solid var(--border);
 }
 
-.treasure-mark {
-  cursor: default;
-}
-
 .treasure-dialog {
   width: min(26rem, calc(100vw - 2rem));
   padding: 1.75rem 1.5rem 1.5rem;
@@ -1174,12 +1156,6 @@ a.chip-link:hover {
   justify-content: center;
   gap: 0.75rem;
   margin-top: 1.25rem;
-}
-
-.treasure-actions .button {
-  border: 0;
-  font: inherit;
-  cursor: pointer;
 }
 
 /* The ❌ stamps down, then gives way to the gold. */
@@ -1286,12 +1262,6 @@ a.chip-link:hover {
 
 .gallery-piece p {
   color: var(--muted);
-}
-
-.wear-theme {
-  border: 0;
-  font: inherit;
-  cursor: pointer;
 }
 
 .wear-theme[aria-pressed="true"] {
