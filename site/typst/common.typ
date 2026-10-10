@@ -5,7 +5,7 @@
 // gap in the templates is in `em`, so this one number scales the whole layout.
 #let scale = float(sys.inputs.at("scale", default: "1.0"))
 
-// The site's light-theme palette (portfolio.render.pdf.PDF_COLORS). Like the site:
+// A site theme's light palette on white paper (portfolio.render.pdf.pdf_colors). Like the site:
 // section headings use the heading color, subheadings and links the link color, and
 // bullets and rules the accent color. (`fg` because `text` is a Typst function.)
 #let colors = json(bytes(sys.inputs.colors))

@@ -10,25 +10,44 @@ from pathlib import Path
 from typing import Any
 
 from pypdf import PdfWriter
+import seedpalette
+from seedpalette.color import TEXT_MIN, UI_MIN, ensure_contrast
 import typst
 
-from portfolio.models import Resume
+from portfolio.models import Resume, Site
 from portfolio.render.formatting import date_range, month_year
+
+# Non-default themes' PDFs go in pdf/<theme name>/, next to the default theme's copies at
+# the site root. site/static/download.js links the visitor's selected theme.
+THEMED_DIR = "pdf"
 
 # Layout scales tried in order until the resume fits its page budget. The floor keeps the
 # body text at ~9.2pt: past that, content should be trimmed rather than shrunk further.
 SCALES = (1.0, 0.97, 0.94, 0.91, 0.88)
 
-# The default theme's light palette (keys are seedpalette token names, as in
-# site/themes.yaml), since the PDF prints on white paper.
-# tests/test_theme.py fails if these drift from the theme file.
-PDF_COLORS = {
-    "text": "#3a1a0e",
-    "muted": "#6e4e3c",
-    "heading": "#8e1f5c",
-    "link": "#1f5fae",
-    "accent": "#ff2d95",
+# Theme tokens the Typst templates use, and the contrast each needs on white paper:
+# text tokens must be readable; the accent only colors bullets and rules.
+PDF_TOKENS = {
+    "text": TEXT_MIN,
+    "muted": TEXT_MIN,
+    "heading": TEXT_MIN,
+    "link": TEXT_MIN,
+    "accent": UI_MIN,
 }
+PAPER = "#ffffff"
+
+
+def pdf_colors(theme: seedpalette.Theme) -> dict[str, str]:
+    """A theme's colors for a PDF, which always prints on white.
+
+    Uses the theme's light palette (even for visitors browsing in dark mode), darkening
+    any color too faint against white while keeping its hue.
+    """
+    palette = theme.palette("light")
+    return {
+        token: ensure_contrast(palette[token], [PAPER], minimum, darker=True)
+        for token, minimum in PDF_TOKENS.items()
+    }
 
 
 def resume_data(resume: Resume) -> dict[str, Any]:
@@ -72,13 +91,19 @@ def _page_count(template: Path, inputs: dict[str, str]) -> int:
 
 
 def _compile_to_fit(
-    data: dict[str, Any], template: Path, out: Path, *, max_pages: int, source: str
+    data: dict[str, Any],
+    template: Path,
+    out: Path,
+    *,
+    colors: dict[str, str],
+    max_pages: int,
+    source: str,
 ) -> RenderedPdf:
     """Compile at the largest scale that fits max_pages and write the PDF to out.
 
     source names the content file to trim if nothing fits, for the error message.
     """
-    base = {"data": json.dumps(data), "colors": json.dumps(PDF_COLORS)}
+    base = {"data": json.dumps(data), "colors": json.dumps(colors)}
     for scale in SCALES:
         inputs = {**base, "scale": str(scale)}
         pages = _page_count(template, inputs)
@@ -103,21 +128,32 @@ def _compile_to_fit(
 
 
 def build_resume_pdf(
-    resume: Resume, template: Path, out: Path, *, max_pages: int = 1
+    resume: Resume, template: Path, out: Path, *, colors: dict[str, str], max_pages: int = 1
 ) -> RenderedPdf:
     """Compile the resume at the largest scale that fits max_pages and write it to out."""
     return _compile_to_fit(
-        resume_data(resume), template, out, max_pages=max_pages, source="content/resume.yaml"
+        resume_data(resume),
+        template,
+        out,
+        colors=colors,
+        max_pages=max_pages,
+        source="content/resume.yaml",
     )
 
 
 def build_cover_letter_pdf(
-    resume: Resume, paragraphs: list[str], template: Path, out: Path, *, max_pages: int = 1
+    resume: Resume,
+    paragraphs: list[str],
+    template: Path,
+    out: Path,
+    *,
+    colors: dict[str, str],
+    max_pages: int = 1,
 ) -> RenderedPdf:
     """Compile the cover letter under the resume's letterhead and write it to out."""
     data = {**resume_data(resume), "paragraphs": paragraphs}
     return _compile_to_fit(
-        data, template, out, max_pages=max_pages, source="content/cover-letter.md"
+        data, template, out, colors=colors, max_pages=max_pages, source="content/cover-letter.md"
     )
 
 
@@ -131,3 +167,43 @@ def combine_pdfs(parts: list[Path], out: Path, *, title: str) -> Path:
     with out.open("wb") as f:
         writer.write(f)
     return out
+
+
+@dataclass(frozen=True)
+class ThemedPdfs:
+    theme: str
+    resume: RenderedPdf
+    cover_letter: RenderedPdf
+    both: Path
+
+
+def build_pdfs(
+    site: Site, typst_dir: Path, out_dir: Path, themes: seedpalette.ThemeSet
+) -> list[ThemedPdfs]:
+    """Build the resume, cover letter, and both-in-one PDF in every theme's colors.
+
+    The default (first) theme's go in out_dir itself, at the URLs the site links;
+    the rest go in out_dir/pdf/<theme name>/.
+    """
+    built = []
+    for i, theme in enumerate(themes.themes):
+        folder = out_dir if i == 0 else out_dir / THEMED_DIR / theme.name
+        colors = pdf_colors(theme)
+        resume = build_resume_pdf(
+            site.resume, typst_dir / "resume.typ", folder / "resume.pdf", colors=colors
+        )
+        letter = build_cover_letter_pdf(
+            site.resume,
+            site.cover_letter_paragraphs,
+            typst_dir / "cover-letter.typ",
+            folder / "cover-letter.pdf",
+            colors=colors,
+        )
+        # The "Both" download: cover letter first, then resume.
+        both = combine_pdfs(
+            [letter.path, resume.path],
+            folder / "cover-letter-and-resume.pdf",
+            title=f"{site.resume.name} – Cover Letter and Resume",
+        )
+        built.append(ThemedPdfs(theme.name, resume, letter, both))
+    return built

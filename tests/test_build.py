@@ -139,6 +139,7 @@ def test_bio_panel_links_pdfs_from_every_page(
     assert 'href="../cover-letter.pdf"' in project
     assert 'href="../cover-letter-and-resume.pdf"' in project
     assert 'data-download-stem="YutK_CoverLetter_and_Resume"' in project
+    assert '<details class="download-menu" data-themed-dir="../pdf/">' in project
     assert 'src="../static/download.js?v=' in project
 
 
@@ -180,6 +181,11 @@ def test_cli_build(content_dir: Path, site_dir: Path, tmp_path: Path) -> None:
     assert [p.extract_text() for p in both.pages] == [
         p.extract_text() for p in (*letter.pages, *resume.pages)
     ]
+    # Every other theme gets its own copies, which download.js links when it's selected.
+    for theme in ("sage", "tokyo-night", "rose-pine"):
+        for name in ("resume.pdf", "cover-letter.pdf", "cover-letter-and-resume.pdf"):
+            assert (out / "pdf" / theme / name).is_file(), f"{theme}/{name}"
+    assert (out / "pdf" / "sage" / "resume.pdf").read_bytes() != (out / "resume.pdf").read_bytes()
 
 
 def test_about_page_copies_its_photos(content_dir: Path, site_dir: Path, tmp_path: Path) -> None:

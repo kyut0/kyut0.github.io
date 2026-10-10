@@ -12,8 +12,8 @@ import seedpalette
 import yaml
 
 from portfolio.load import ContentError, load_site
-from portfolio.render import build_cover_letter_pdf, build_resume_pdf, build_site, combine_pdfs
-from portfolio.render.pdf import PdfOverflowError
+from portfolio.render import build_pdfs, build_site
+from portfolio.render.pdf import THEMED_DIR, PdfOverflowError
 from portfolio.render.site import build_theme_preview
 
 
@@ -74,31 +74,20 @@ def main(argv: list[str] | None = None) -> int:
     pages = build_site(
         site, args.out, args.site_dir / "templates", args.site_dir / "static", themes
     )
-    typst_dir = args.site_dir / "typst"
     try:
-        resume_pdf = build_resume_pdf(
-            site.resume, typst_dir / "resume.typ", args.out / "resume.pdf"
-        )
-        letter_pdf = build_cover_letter_pdf(
-            site.resume,
-            site.cover_letter_paragraphs,
-            typst_dir / "cover-letter.typ",
-            args.out / "cover-letter.pdf",
-        )
+        pdfs = build_pdfs(site, args.site_dir / "typst", args.out, themes)
     except PdfOverflowError as exc:
         print(f"pdf error: {exc}", file=sys.stderr)
         return 1
-    # The "Both" download: cover letter first, then resume.
-    combined = combine_pdfs(
-        [letter_pdf.path, resume_pdf.path],
-        args.out / "cover-letter-and-resume.pdf",
-        title=f"{site.resume.name} – Cover Letter and Resume",
-    )
     print(f"built {len(pages)} page(s) into {args.out}/")
-    for pdf in (resume_pdf, letter_pdf):
+    default = pdfs[0]
+    for pdf in (default.resume, default.cover_letter):
         scaled = "" if pdf.scale == 1.0 else f", scaled to {pdf.scale:.0%} to fit"
         print(f"built {pdf.path} ({pdf.pages} page{scaled})")
-    print(f"built {combined} (cover letter + resume)")
+    print(f"built {default.both} (cover letter + resume)")
+    if len(pdfs) > 1:
+        others = ", ".join(p.theme for p in pdfs[1:])
+        print(f"built the same PDFs in {args.out}/{THEMED_DIR}/ for: {others}")
 
     if args.command == "serve":
         handler = partial(http.server.SimpleHTTPRequestHandler, directory=str(args.out))

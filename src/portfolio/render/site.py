@@ -11,6 +11,7 @@ import seedpalette
 
 from portfolio.models import Resume, Site
 from portfolio.render.formatting import date_range, long_date, month_year
+from portfolio.render.pdf import THEMED_DIR
 from portfolio.render.timeline import build_timeline
 
 PAGES = ("index.html", "experience.html", "projects.html", "publications.html", "about.html")
@@ -129,6 +130,7 @@ def build_site(
             }
             for key, label in DOWNLOADS.items()
         },
+        "themed_dir": THEMED_DIR,
     }
     written: list[Path] = []
 

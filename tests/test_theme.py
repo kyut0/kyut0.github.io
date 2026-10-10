@@ -5,10 +5,10 @@ from pathlib import Path
 
 import pytest
 import seedpalette
-from seedpalette.color import TEXT_MIN, chroma, contrast_ratio
+from seedpalette.color import chroma, contrast_ratio, to_oklch
 from seedpalette.palette import CHROMA_MAX
 
-from portfolio.render.pdf import PDF_COLORS
+from portfolio.render.pdf import PAPER, PDF_TOKENS, pdf_colors
 
 
 @pytest.fixture(scope="module")
@@ -44,12 +44,24 @@ def test_default_theme_is_used_as_given(themes: seedpalette.ThemeSet) -> None:
     assert themes.themes[0].notes == []
 
 
-def test_pdf_colors_match_default_light_theme(themes: seedpalette.ThemeSet) -> None:
-    """The PDF prints on white with the default theme's light palette."""
-    for token, value in PDF_COLORS.items():
+def test_pdf_colors_are_default_light_theme_as_given(themes: seedpalette.ThemeSet) -> None:
+    """Ember's light palette already reads well on white, so its PDFs use it unchanged."""
+    for token, value in pdf_colors(themes.themes[0]).items():
         assert themes.themes[0].light[token].lower() == value.lower(), f"--{token} differs"
 
 
-@pytest.mark.parametrize("token", ["text", "muted", "link", "heading"])
-def test_pdf_text_colors_readable_on_white(token: str) -> None:
-    assert contrast_ratio(PDF_COLORS[token], "#ffffff") >= TEXT_MIN
+def test_pdf_colors_readable_on_white(themes: seedpalette.ThemeSet) -> None:
+    for theme in themes.themes:
+        colors = pdf_colors(theme)
+        for token, minimum in PDF_TOKENS.items():
+            ratio = contrast_ratio(colors[token], PAPER)
+            assert ratio >= minimum, f"{theme.name} --{token}: {ratio:.2f}"
+
+
+def test_faint_pdf_accent_is_darkened_keeping_its_hue(themes: seedpalette.ThemeSet) -> None:
+    """Tokyo Night's light accent is too pale for white paper on its own."""
+    tokyo = next(t for t in themes.themes if t.name == "tokyo-night")
+    given, used = tokyo.palette("light")["accent"], pdf_colors(tokyo)["accent"]
+    assert contrast_ratio(given, PAPER) < PDF_TOKENS["accent"]
+    assert used != given
+    assert abs(to_oklch(used).h - to_oklch(given).h) < 5

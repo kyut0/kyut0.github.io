@@ -65,8 +65,9 @@
         {% endif %}
       </ul>
       {# A native <details> dropdown, so it works without JavaScript; download.js closes
-         it on an outside click, Escape, or a pick. #}
-      <details class="download-menu">
+         it on an outside click, Escape, or a pick, and swaps in the PDFs drawn in the
+         visitor's color theme (the links below are the default theme's). #}
+      <details class="download-menu" data-themed-dir="{{ root }}{{ themed_dir }}/">
         <summary class="button button-solid">Download</summary>
         <div class="download-options">
           <a class="button" href="{{ root }}resume.pdf" download="{{ downloads.resume.name }}" data-download-stem="{{ downloads.resume.stem }}">Resume</a>

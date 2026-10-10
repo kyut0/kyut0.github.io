@@ -14,6 +14,9 @@ from portfolio.render.pdf import (
     resume_data,
 )
 
+# Colors don't affect layout; any valid set will do.
+COLORS = dict.fromkeys(("text", "muted", "heading", "link", "accent"), "#000000")
+
 
 def _resume(**overrides: object) -> Resume:
     fields: dict[str, object] = {"name": "Test Person", "headline": "H", "summary": "S"}
@@ -50,7 +53,9 @@ def test_repo_resume_is_exactly_one_page(
 ) -> None:
     """The published resume must fit on one page: CI fails if content outgrows it."""
     resume = load_resume(content_dir / "resume.yaml")
-    pdf = build_resume_pdf(resume, site_dir / "typst" / "resume.typ", tmp_path / "resume.pdf")
+    pdf = build_resume_pdf(
+        resume, site_dir / "typst" / "resume.typ", tmp_path / "resume.pdf", colors=COLORS
+    )
 
     reader = PdfReader(pdf.path)
     assert len(reader.pages) == pdf.pages == 1
@@ -62,7 +67,9 @@ def test_repo_resume_is_exactly_one_page(
 
 
 def test_short_resume_renders_at_full_scale(site_dir: Path, tmp_path: Path) -> None:
-    pdf = build_resume_pdf(_resume(), site_dir / "typst" / "resume.typ", tmp_path / "r.pdf")
+    pdf = build_resume_pdf(
+        _resume(), site_dir / "typst" / "resume.typ", tmp_path / "r.pdf", colors=COLORS
+    )
     assert pdf.scale == 1.0
     assert pdf.path.read_bytes().startswith(b"%PDF")
 
@@ -71,7 +78,7 @@ def test_slightly_long_resume_is_scaled_to_fit(site_dir: Path, tmp_path: Path) -
     """Grow the resume until it no longer fits at full scale; it should shrink to one page."""
     template = site_dir / "typst" / "resume.typ"
     for n_roles in range(1, 20):
-        pdf = build_resume_pdf(_long_resume(n_roles), template, tmp_path / "r.pdf")
+        pdf = build_resume_pdf(_long_resume(n_roles), template, tmp_path / "r.pdf", colors=COLORS)
         if pdf.scale < 1.0:
             assert len(PdfReader(pdf.path).pages) == 1
             return
@@ -80,7 +87,9 @@ def test_slightly_long_resume_is_scaled_to_fit(site_dir: Path, tmp_path: Path) -
 
 def test_resume_too_long_at_min_scale_raises(site_dir: Path, tmp_path: Path) -> None:
     with pytest.raises(PdfOverflowError, match=f"{SCALES[-1]:.0%}"):
-        build_resume_pdf(_long_resume(40), site_dir / "typst" / "resume.typ", tmp_path / "r.pdf")
+        build_resume_pdf(
+            _long_resume(40), site_dir / "typst" / "resume.typ", tmp_path / "r.pdf", colors=COLORS
+        )
     assert not (tmp_path / "r.pdf").exists()
 
 
@@ -88,7 +97,9 @@ def test_markup_characters_are_rendered_literally(site_dir: Path, tmp_path: Path
     """Content is passed as data, so Typst syntax in it must not be interpreted."""
     tricky = "C# & *bold* #let x = 1 $math$ [brackets] // not a comment"
     resume = _resume(summary=tricky)
-    pdf = build_resume_pdf(resume, site_dir / "typst" / "resume.typ", tmp_path / "resume.pdf")
+    pdf = build_resume_pdf(
+        resume, site_dir / "typst" / "resume.typ", tmp_path / "resume.pdf", colors=COLORS
+    )
     text = PdfReader(pdf.path).pages[0].extract_text()
     assert "#let x = 1" in text
     assert "// not a comment" in text
@@ -103,6 +114,7 @@ def test_repo_cover_letter_is_exactly_one_page(
         site.cover_letter_paragraphs,
         site_dir / "typst" / "cover-letter.typ",
         tmp_path / "cover-letter.pdf",
+        colors=COLORS,
     )
     reader = PdfReader(pdf.path)
     assert len(reader.pages) == pdf.pages == 1
@@ -117,13 +129,19 @@ def test_cover_letter_too_long_raises(site_dir: Path, tmp_path: Path) -> None:
     paragraphs = ["A long paragraph of cover letter text that keeps going. " * 12] * 20
     with pytest.raises(PdfOverflowError, match=r"cover-letter\.md"):
         build_cover_letter_pdf(
-            _resume(), paragraphs, site_dir / "typst" / "cover-letter.typ", tmp_path / "c.pdf"
+            _resume(),
+            paragraphs,
+            site_dir / "typst" / "cover-letter.typ",
+            tmp_path / "c.pdf",
+            colors=COLORS,
         )
 
 
 def test_strengths_print_in_skills_section(site_dir: Path, tmp_path: Path) -> None:
     resume = _resume(strengths=["Curiosity", "Focus"])
-    pdf = build_resume_pdf(resume, site_dir / "typst" / "resume.typ", tmp_path / "r.pdf")
+    pdf = build_resume_pdf(
+        resume, site_dir / "typst" / "resume.typ", tmp_path / "r.pdf", colors=COLORS
+    )
     text = PdfReader(pdf.path).pages[0].extract_text()
     assert "Strengths" in text
     assert "Curiosity, Focus" in text

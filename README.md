@@ -27,7 +27,10 @@ flowchart LR
 - **Render:** `render/site.py` turns the validated `Site` into HTML using `site/templates/`,
   and `render/pdf.py` compiles the same resume data into `resume.pdf` and
   `cover-letter.pdf` with [Typst](https://typst.app/), plus `cover-letter-and-resume.pdf`
-  joining the two. One YAML file feeds both, so they can't drift apart. On the site,
+  joining the two. One YAML file feeds both, so they can't drift apart. The PDFs are built
+  once per color theme (on white paper, in the theme's light colors); the default theme's
+  sit at the site root and the rest in `pdf/<theme>/`, and the Download menu serves the
+  visitor's selected theme. On the site,
   `render/timeline.py` reshapes the resume and projects into an interactive timeline that
   tracks where each tool was first picked up.
 - **Deploy:** `.github/workflows/deploy.yml` builds and publishes `_site/` to Pages.
