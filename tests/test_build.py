@@ -32,8 +32,8 @@ def test_build_writes_every_page(content_dir: Path, site_dir: Path, tmp_path: Pa
     assert (tmp_path / "static" / "style.css").exists()
     assert ":root {" in (tmp_path / "static" / "themes.css").read_text()
     index = (tmp_path / "index.html").read_text()
-    assert f"<h1>{site.resume.display_name}</h1>" in index
-    assert f'<p class="pronouns">{site.resume.pronouns}</p>' in index
+    assert "<h1>Howdy!</h1>" in index
+    assert f'<p class="pronouns">{site.resume.pronouns}</p>' in index  # in the bio panel
     assert f"&copy; {date.today().year} {site.resume.display_name}" in index
     assert '<a class="brand" href="index.html">' in index
 
@@ -110,21 +110,33 @@ def test_experience_page_renders_timeline(
     assert 'src="static/timeline.js?v=' in html
 
 
-def test_experience_page_shows_updated_date(
+def test_footer_shows_updated_date_on_every_page(
     content_dir: Path, site_dir: Path, tmp_path: Path
 ) -> None:
-    site = load_site(content_dir).model_copy(update={"resume_updated": date(2026, 10, 9)})
-    build_site(site, tmp_path, site_dir / "templates", site_dir / "static")
-    html = (tmp_path / "experience.html").read_text()
-    assert 'Updated <time datetime="2026-10-09">Oct 9, 2026</time>' in html
+    site = load_site(content_dir).model_copy(update={"updated": date(2026, 10, 9)})
+    pages = build_site(site, tmp_path, site_dir / "templates", site_dir / "static")
+    for page in pages:
+        assert 'Updated <time datetime="2026-10-09">Oct 9, 2026</time>' in page.read_text()
 
 
-def test_experience_page_omits_updated_line_without_history(
+def test_footer_omits_updated_date_without_history(
     content_dir: Path, site_dir: Path, tmp_path: Path
 ) -> None:
-    site = load_site(content_dir).model_copy(update={"resume_updated": None})
+    site = load_site(content_dir).model_copy(update={"updated": None})
     build_site(site, tmp_path, site_dir / "templates", site_dir / "static")
-    assert "Updated" not in (tmp_path / "experience.html").read_text()
+    assert 'class="updated"' not in (tmp_path / "index.html").read_text()
+
+
+def test_bio_panel_links_pdfs_from_every_page(
+    content_dir: Path, site_dir: Path, tmp_path: Path
+) -> None:
+    site = load_site(content_dir)
+    build_site(site, tmp_path, site_dir / "templates", site_dir / "static")
+    project = (tmp_path / "projects" / f"{site.projects[0].slug}.html").read_text()
+    assert '<aside class="bio-panel"' in project
+    assert 'href="../resume.pdf"' in project
+    assert 'href="../cover-letter.pdf"' in project
+    assert 'src="../static/download.js?v=' in project
 
 
 def test_cli_validate_reports_content_errors(tmp_path: Path) -> None:

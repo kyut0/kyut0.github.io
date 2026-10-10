@@ -21,12 +21,12 @@ def _git(repo: Path, *args: str, when: str = "2026-01-15T12:00:00") -> None:
 
 @pytest.fixture
 def repo(tmp_path: Path) -> Path:
-    """A repo where resume.yaml last changed on 2026-01-15 and other.txt on 2026-03-01."""
+    """A repo committed to on 2026-01-15 and last on 2026-03-01, outside content/."""
     root = tmp_path / "repo"
-    root.mkdir()
+    (root / "content").mkdir(parents=True)
     _git(root, "init", "-q")
-    (root / "resume.yaml").write_text("v1")
-    _git(root, "add", "resume.yaml")
+    (root / "content" / "resume.yaml").write_text("v1")
+    _git(root, "add", ".")
     _git(root, "commit", "-qm", "resume", when="2026-01-15T12:00:00")
     (root / "other.txt").write_text("x")
     _git(root, "add", "other.txt")
@@ -34,26 +34,24 @@ def repo(tmp_path: Path) -> Path:
     return root
 
 
-def test_uses_last_commit_that_touched_the_file(repo: Path) -> None:
-    assert last_commit_date(repo / "resume.yaml") == date(2026, 1, 15)
+def test_uses_newest_commit_anywhere_in_the_repo(repo: Path) -> None:
+    assert last_commit_date(repo / "content") == date(2026, 3, 1)
 
 
-def test_uncommitted_file_has_no_date(repo: Path) -> None:
-    (repo / "new.yaml").write_text("x")
-    assert last_commit_date(repo / "new.yaml") is None
+def test_repo_without_commits_has_no_date(tmp_path: Path) -> None:
+    _git(tmp_path, "init", "-q")
+    assert last_commit_date(tmp_path) is None
 
 
 def test_outside_a_repo_has_no_date(tmp_path: Path) -> None:
-    (tmp_path / "resume.yaml").write_text("x")
-    assert last_commit_date(tmp_path / "resume.yaml") is None
+    assert last_commit_date(tmp_path) is None
 
 
-def test_shallow_clone_has_no_date(repo: Path, tmp_path: Path) -> None:
-    """A depth-1 clone would wrongly report the newest commit's date for every file."""
+def test_shallow_clone_still_has_newest_commit(repo: Path, tmp_path: Path) -> None:
     clone = tmp_path / "shallow"
     subprocess.run(
         ["git", "clone", "-q", "--depth", "1", f"file://{repo}", str(clone)],
         check=True,
         capture_output=True,
     )
-    assert last_commit_date(clone / "resume.yaml") is None
+    assert last_commit_date(clone) == date(2026, 3, 1)

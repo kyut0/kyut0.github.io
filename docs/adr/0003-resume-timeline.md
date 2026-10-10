@@ -28,12 +28,11 @@ click away.
   first event that uses it. Spellings are matched by `skill_key` ("R Shiny" = "RShiny" =
   "r-shiny"), and labels prefer the resume's spelling over project tag slugs.
 - A toolbox (the resume's skill tiers) sits above the timeline. `site/static/timeline.js`
-  lets visitors click a tool to trace it, filter event types, and fades events in on
-  scroll. Without JavaScript the full timeline still renders.
+  lets visitors click a tool to trace it and fades events in on scroll. Without JavaScript the full timeline still renders.
 - Roles can set `in_pdf: false` to appear on the timeline but not in the one-page PDF,
   so early internships don't push the PDF onto a second page.
-- The cover letter is published only as `cover-letter.pdf`, downloaded from the resume
-  page. `content/cover-letter.md` stays the source.
+- The cover letter is published only as `cover-letter.pdf`, downloaded from the
+  bio panel on every page. `content/cover-letter.md` stays the source.
 
 ## Consequences
 

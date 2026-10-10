@@ -71,7 +71,6 @@ def test_events_are_newest_first_without_projects_or_papers() -> None:
     )
     timeline = build_timeline(site)
     assert [e.title for e in timeline.events] == ["New", "Old", "U"]
-    assert timeline.kinds == {"work": "Work", "education": "Education"}
 
 
 def test_write_up_after_role_ends_links_from_nearest_role() -> None:

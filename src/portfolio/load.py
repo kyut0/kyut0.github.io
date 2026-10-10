@@ -128,5 +128,5 @@ def load_site(content_dir: Path) -> Site:
         about_html=about_html,
         about_asset_dir=about_asset_dir,
         cover_letter_paragraphs=plain_paragraphs(cover_letter),
-        resume_updated=last_commit_date(resume_path),
+        updated=last_commit_date(content_dir),
     )

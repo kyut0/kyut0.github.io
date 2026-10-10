@@ -1,13 +1,9 @@
 {% extends "base.html" %}
 {% set root = "" %}
 {% block content %}
-<section class="hero">
-  <h1>{{ resume.display_name }}</h1>
-  {% if resume.pronouns %}<p class="pronouns">{{ resume.pronouns }}</p>{% endif %}
-  <p class="headline">{{ resume.headline }}</p>
-</section>
+{# Name, pronouns, and headline live in the bio panel on every page. #}
 <section class="bio">
-  <h2>Howdy!</h2>
+  <h1>Howdy!</h1>
   {{ site.bio_html | safe }}
 </section>
 {% endblock %}

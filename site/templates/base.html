@@ -45,16 +45,38 @@
       </div>
     </div>
   </header>
-  <main>
-    {% block content %}{% endblock %}
-  </main>
+  <div class="layout">
+    <main>
+      {% block content %}{% endblock %}
+    </main>
+    <aside class="bio-panel" aria-label="About {{ resume.display_name }}">
+      <p class="bio-name"><a href="{{ root }}index.html">{{ resume.display_name }}</a></p>
+      {% if resume.pronouns %}<p class="pronouns">{{ resume.pronouns }}</p>{% endif %}
+      <p class="bio-headline">{{ resume.headline }}</p>
+      <ul class="bio-facts">
+        {% if resume.location %}<li>{{ resume.location }}</li>{% endif %}
+        {% if resume.email %}<li><a href="mailto:{{ resume.email }}">{{ resume.email }}</a></li>{% endif %}
+        {% for link in resume.links %}
+        <li><a href="{{ link.url }}">{{ link.label }}</a></li>
+        {% endfor %}
+      </ul>
+      <div class="downloads">
+        <a class="button" href="{{ root }}resume.pdf" download="{{ downloads.resume.name }}" data-download-stem="{{ downloads.resume.stem }}">Resume PDF</a>
+        <a class="button button-alt" href="{{ root }}cover-letter.pdf" download="{{ downloads.cover_letter.name }}" data-download-stem="{{ downloads.cover_letter.stem }}">Cover letter PDF</a>
+      </div>
+    </aside>
+  </div>
   <footer class="site-footer">
     <span>&copy; {{ year }} {{ resume.display_name }}</span>
     {% for link in resume.links %}
     <a href="{{ link.url }}">{{ link.label }}</a>
     {% endfor %}
+    {% if site.updated %}
+    <span class="updated">Updated <time datetime="{{ site.updated.isoformat() }}">{{ site.updated | long_date }}</time></span>
+    {% endif %}
   </footer>
   <script src="{{ root }}{{ asset('theme.js') }}" defer></script>
+  <script src="{{ root }}{{ asset('download.js') }}" defer></script>
   {% block scripts %}{% endblock %}
 </body>
 </html>

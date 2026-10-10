@@ -3,15 +3,15 @@
 # This file is published: keep phone numbers and other private details out of it.
 # Roles with `in_pdf: false` appear on the site's timeline but not in the one-page PDF.
 name: Katherine (Katy) Yut   # full name: resume, cover letter, PDFs
-pronouns: she/her            # optional; shown under the name on the home page
-short_name: Katy Yut        # optional; casual spots like the home page and footer
+pronouns: she/her            # optional; shown under the name in the bio panel
+short_name: Katy Yut        # optional; casual spots like the bio panel and footer
 headline: Geospatial Data Engineer
 summary: >-
   Expert in geospatial analysis, data visualization, and programming using R and Python.
   Passionate about efficiency and optimization. Seeking to solve complex problems to make
   the world a better place. Meticulous, intrinsically motivated, and a quick learner.
 location: Austin, TX
-email: katy.yut@gmail.com   # optional; shown in the PDF and site header if set
+email: katy.yut@gmail.com   # optional; shown in the PDF and site bio panel if set
 citation_name: Yut, K.
 links:
   - label: GitHub
@@ -53,7 +53,7 @@ experience:
       - Leveraged R to clean and manipulate data tables, solve problems, and automate processes.
       - Utilized ArcMap to aid in oil & gas research publications.
       - Published research findings as papers, posters, and presentations.
-    skills: [R, ArcGIS, geospatial analysis, data visualization]
+    skills: [big data, R, ArcGIS, geospatial analysis, data visualization]
 
   - title: Viticulture Research GIS Intern
     organization: E. & J. Gallo Winery

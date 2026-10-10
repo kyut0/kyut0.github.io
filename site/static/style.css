@@ -291,10 +291,99 @@ code {
 }
 
 .site-footer {
+  justify-content: flex-start;
   border-top: 1px solid var(--border);
   margin-top: 3rem;
   color: var(--muted);
   font-size: 0.85rem;
+}
+
+/* Bio panel: who I am, where to find me, and the PDF downloads. Sits after the page
+   content on narrow screens; on wide ones it becomes a sticky column left of it. */
+.bio-panel {
+  margin-top: 3rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--border);
+}
+
+.bio-panel p,
+.bio-panel ul {
+  margin: 0;
+}
+
+.bio-name {
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+
+.bio-name a {
+  color: var(--heading);
+  text-decoration: none;
+}
+
+/* Pronouns tucked just under the name, in the heading color. */
+.pronouns {
+  color: var(--heading);
+  font-style: italic;
+  font-size: 0.85rem;
+}
+
+.bio-headline {
+  color: var(--muted);
+}
+
+.bio-facts {
+  list-style: none;
+  padding: 0;
+  margin-top: 0.9rem !important;
+  font-size: 0.85rem;
+}
+
+.bio-facts li {
+  overflow-wrap: anywhere;
+}
+
+.downloads {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  margin-top: 1.1rem;
+}
+
+@media (min-width: 68rem) {
+  body {
+    max-width: 66rem;
+  }
+
+  .layout {
+    display: grid;
+    grid-template-columns: 14rem minmax(0, 1fr);
+    column-gap: 3.5rem;
+  }
+
+  .layout > main {
+    grid-column: 2;
+    grid-row: 1;
+  }
+
+  .bio-panel {
+    grid-column: 1;
+    grid-row: 1;
+    align-self: start;
+    position: sticky;
+    top: 0;
+    margin: 0;
+    padding: 2rem 0 0;
+    border-top: 0;
+  }
+
+  .downloads {
+    flex-direction: column;
+  }
+
+  .downloads .button {
+    text-align: center;
+  }
 }
 
 .brand {
@@ -330,45 +419,14 @@ code {
 }
 */
 
-/* Page heading with an action pinned to the right (e.g. Resume + Download PDF).
-   Wraps the button under the heading on narrow screens. */
-.page-title {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: space-between;
-  gap: 0.5rem 1rem;
-}
-
-/* Home page: pronouns tucked just under the name, in the heading color. */
-.hero h1 {
-  margin-bottom: 0;
-}
-
-.pronouns {
-  color: var(--heading);
-  font-style: italic;
-  font-size: 0.85rem;
-  margin: 0.1rem 0 1.25rem;
-}
-
-.headline {
-  color: var(--muted);
-  font-size: 1.05rem;
-  margin-top: -0.5rem;
-}
-
 .muted {
   color: var(--muted);
   font-weight: normal;
 }
 
-/* Sits at the top right, just under the header's divider line. */
+/* Last commit to the site's repo, pushed to the footer's right end. */
 .updated {
-  color: var(--muted);
-  font-size: 0.78rem;
-  text-align: right;
-  margin: 0.6rem 0 0;
+  margin-left: auto;
 }
 
 .updated::before {
@@ -506,19 +564,12 @@ ul li::marker {
 /* ---- Resume timeline ---------------------------------------------------------------
    Work and education share one color (blue) for dots, labels, titles, and bullets.
    Pink is reserved for years and tool chips. */
-.timeline-controls,
 .timeline {
   --kind: var(--link);
 }
 
 .timeline-intro h1 {
   margin: 0.4rem 0;
-}
-
-.downloads {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.6rem;
 }
 
 .lede {
@@ -609,59 +660,22 @@ button.chip:hover {
   margin: 0;
 }
 
-/* Filter bar stays in view while scrolling the timeline. */
+/* While a tool is traced, its status bar stays in view while scrolling the timeline.
+   Otherwise the bar is empty and takes no space; it stays in the page (rather than
+   [hidden]) so screen readers still announce the status as it appears. */
 .timeline-controls {
   position: sticky;
   top: 0;
   z-index: 1;
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: space-between;
-  gap: 0.5rem 1rem;
   margin-top: 2.5rem;
   padding: 0.6rem 0;
   background: var(--bg);
   border-bottom: 1px solid var(--border);
 }
 
-.kind-filters {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.4rem;
-}
-
-.kind-filter {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.4rem;
-  padding: 0.15rem 0.6rem;
-  border: 1px solid var(--border);
-  border-radius: 4px;
-  background: var(--surface);
-  color: var(--text);
-  font: inherit;
-  font-size: 0.8rem;
-  cursor: pointer;
-}
-
-.kind-filter::before {
-  content: "";
-  width: 0.6rem;
-  height: 0.6rem;
-  border-radius: 50%;
-  background: var(--kind);
-}
-
-.kind-filter[aria-pressed="false"] {
-  color: var(--muted);
-  background: transparent;
-  text-decoration: line-through;
-}
-
-.kind-filter[aria-pressed="false"]::before {
-  background: transparent;
-  box-shadow: inset 0 0 0 1.5px var(--kind);
+.timeline-controls:has(> .tl-status[hidden]) {
+  padding: 0;
+  border-bottom: 0;
 }
 
 .tl-status {

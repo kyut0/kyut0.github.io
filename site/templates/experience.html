@@ -3,17 +3,8 @@
 {% set kind_label = {"work": "Work", "education": "Education"} %}
 {% block title %}Experience · {{ resume.name }}{% endblock %}
 {% block content %}
-{% if site.resume_updated %}
-<p class="updated">Updated <time datetime="{{ site.resume_updated.isoformat() }}">{{ site.resume_updated | long_date }}</time></p>
-{% endif %}
 <header class="timeline-intro">
-  <div class="page-title">
-    <h1>Experience</h1>
-    <div class="downloads">
-      <a class="button" href="resume.pdf" download="{{ downloads.resume.name }}" data-download-stem="{{ downloads.resume.stem }}">Resume PDF</a>
-      <a class="button button-alt" href="cover-letter.pdf" download="{{ downloads.cover_letter.name }}" data-download-stem="{{ downloads.cover_letter.stem }}">Cover letter PDF</a>
-    </div>
-  </div>
+  <h1>Experience</h1>
   <p class="lede">
     Every role and degree, newest first, with the tools each step used.
     Tools marked <span class="chip is-new chip-sample">new</span> were picked up at that step.
@@ -35,12 +26,8 @@
   </dl>
 </section>
 
-<div class="timeline-controls" hidden>
-  <div class="kind-filters" role="group" aria-label="Show on the timeline">
-    {% for kind, label in timeline.kinds.items() %}
-    <button class="kind-filter kind-{{ kind }}" type="button" data-kind-toggle="{{ kind }}" aria-pressed="true">{{ label }}</button>
-    {% endfor %}
-  </div>
+{# Sticky bar that appears while a tool is being traced. #}
+<div class="timeline-controls">
   <p class="tl-status" aria-live="polite" hidden>
     <span class="tl-status-text"></span>
     <button class="tl-clear" type="button">Clear</button>
@@ -82,6 +69,5 @@
 </ol>
 {% endblock %}
 {% block scripts %}
-<script src="{{ asset('download.js') }}" defer></script>
 <script src="{{ asset('timeline.js') }}" defer></script>
 {% endblock %}

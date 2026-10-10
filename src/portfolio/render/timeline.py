@@ -12,11 +12,6 @@ from datetime import date
 from portfolio.models import Site, skill_key
 from portfolio.render.formatting import date_range, month_year
 
-KINDS = {
-    "work": "Work",
-    "education": "Education",
-}
-
 
 @dataclass(frozen=True)
 class SkillUse:
@@ -67,7 +62,6 @@ class ToolboxGroup:
 class Timeline:
     events: list[Event]  # newest first
     toolbox: list[ToolboxGroup]
-    kinds: dict[str, str]  # kinds present, in KINDS order: key -> label
 
 
 def _host(events: list[Event], organization: str, on: date) -> Event:
@@ -151,9 +145,4 @@ def build_timeline(site: Site) -> Timeline:
         )
         for group in site.resume.skills
     ]
-    present = {e.kind for e in events}
-    return Timeline(
-        events=sorted(events, key=lambda e: e.when, reverse=True),
-        toolbox=toolbox,
-        kinds={k: v for k, v in KINDS.items() if k in present},
-    )
+    return Timeline(events=sorted(events, key=lambda e: e.when, reverse=True), toolbox=toolbox)

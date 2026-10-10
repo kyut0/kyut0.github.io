@@ -5,23 +5,21 @@ from pathlib import Path
 import subprocess
 
 
-def _git(path: Path, *args: str) -> str:
-    result = subprocess.run(
-        ["git", *args], cwd=path.parent, capture_output=True, text=True, check=True
-    )
-    return result.stdout.strip()
+def last_commit_date(directory: Path) -> date | None:
+    """Date of the newest commit in the git repo containing directory, or None if there
+    isn't one (outside a repo, or before the first commit).
 
-
-def last_commit_date(path: Path) -> date | None:
-    """Date of the last commit that changed path, or None if it can't be known.
-
-    Returns None outside a git repo, for uncommitted files, and in shallow clones, where
-    the history is cut off and every file looks like it changed in the newest commit.
+    Shallow clones are fine: they always include the newest commit.
     """
     try:
-        if _git(path, "rev-parse", "--is-shallow-repository") == "true":
-            return None
-        stamp = _git(path, "log", "-1", "--format=%cs", "--", path.name)
+        result = subprocess.run(
+            ["git", "log", "-1", "--format=%cs"],
+            cwd=directory,
+            capture_output=True,
+            text=True,
+            check=True,
+        )
     except (OSError, subprocess.CalledProcessError):
         return None
+    stamp = result.stdout.strip()
     return date.fromisoformat(stamp) if stamp else None
