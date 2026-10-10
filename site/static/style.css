@@ -119,6 +119,13 @@ strong {
   font-weight: 600;
 }
 
+/* **Bold** in the home page bio and About page: emphasis in the heading color (pink in
+   the default theme), which is contrast-checked for text in every theme. */
+.bio strong,
+.about strong {
+  color: var(--heading);
+}
+
 code {
   font-family: inherit;
   background: var(--surface);
