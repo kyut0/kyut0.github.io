@@ -2,7 +2,9 @@ The fun stuff: who I am outside of pipelines and maps.
 
 ## Little Katy
 
-Placeholder: a photo of me as a kiddo, and a line or two about growing up in Coppell, TX.
+<img class="portrait" src="about/little-katy.jpg" alt="Me as a toddler, soaked and laughing in the backyard" width="192" height="192">
+
+Placeholder: a line or two about growing up in Coppell, TX.
 
 ## Art
 

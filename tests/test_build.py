@@ -154,6 +154,16 @@ def test_footer_email_link_copies_address(
     assert 'src="static/copy-email.js?v=' in html
 
 
+def test_bio_panel_shows_logo_links(content_dir: Path, site_dir: Path, tmp_path: Path) -> None:
+    site = load_site(content_dir)
+    build_site(site, tmp_path, site_dir / "templates", site_dir / "static")
+    project = (tmp_path / "projects" / f"{site.projects[0].slug}.html").read_text()
+    for link in site.resume.links:
+        assert f'<a href="{link.url}" title="{link.label}"><img src="../static/icons/' in project
+    assert 'alt="Email"' in project
+    assert '<img class="bio-photo" src="../static/profile.png?v=' in project
+
+
 def test_cli_validate_reports_content_errors(tmp_path: Path) -> None:
     assert main(["--content", str(tmp_path), "validate"]) == 1
 

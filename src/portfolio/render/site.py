@@ -114,6 +114,7 @@ def build_site(
         return f"static/{path}?v={versions[path]}"
 
     env.globals["asset"] = asset
+    env.globals["has_asset"] = lambda path: path in versions
     today = date.today()
     context = {
         "site": site,

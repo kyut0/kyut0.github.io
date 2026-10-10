@@ -311,6 +311,16 @@ code {
   margin: 0;
 }
 
+/* Square photo shown as a circle. */
+.bio-photo {
+  display: block;
+  width: 9rem;
+  height: auto;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  margin-bottom: 1rem;
+}
+
 .bio-name {
   font-size: 1.1rem;
   font-weight: 600;
@@ -335,6 +345,52 @@ code {
 .bio-location {
   margin-top: 0.9rem !important;
   font-size: 0.85rem;
+}
+
+/* Logo links (black PNGs, flipped to white in dark mode). An email logo that was just
+   clicked shows "Copied!" under it. */
+.social-links {
+  display: flex;
+  gap: 1rem;
+  list-style: none;
+  padding: 0;
+  margin-top: 1rem !important;
+}
+
+.social-links a {
+  position: relative;
+  display: block;
+}
+
+.social-links img {
+  display: block;
+  width: 22px;
+  height: 22px;
+  border-radius: 0;
+  opacity: 0.85;
+}
+
+.social-links a:hover img {
+  opacity: 1;
+}
+
+:root[data-theme="dark"] .social-links img {
+  filter: invert(1);
+}
+
+.social-links a.is-copied::after {
+  content: "Copied!";
+  position: absolute;
+  top: calc(100% + 0.3rem);
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 0 0.4rem;
+  border-radius: 4px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  color: var(--text);
+  font-size: 0.72rem;
+  white-space: nowrap;
 }
 
 /* Download dropdown: a solid button that opens outlined choices beneath it. */
@@ -922,4 +978,14 @@ button.chip:hover {
 
 .pub-authors .me {
   color: var(--link);
+}
+
+/* ---- About page ------------------------------------------------------------------ */
+/* <img class="portrait">: a square photo shown as a circle. */
+.about .portrait {
+  display: block;
+  width: 12rem;
+  height: auto;
+  aspect-ratio: 1;
+  border-radius: 50%;
 }

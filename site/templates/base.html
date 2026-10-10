@@ -50,10 +50,23 @@
       {% block content %}{% endblock %}
     </main>
     <aside class="bio-panel" aria-label="About {{ resume.display_name }}">
+      <img class="bio-photo" src="{{ root }}{{ asset('profile.png') }}" alt="{{ resume.display_name }}" width="144" height="144">
       <p class="bio-name"><a href="{{ root }}index.html">{{ resume.display_name }}</a></p>
       {% if resume.pronouns %}<p class="pronouns">{{ resume.pronouns }}</p>{% endif %}
       <p class="bio-headline">{{ resume.headline }}</p>
       {% if resume.location %}<p class="bio-location">{{ resume.location }}</p>{% endif %}
+      {# Logo links: each resume link whose label has a static/icons/<label>.png, then email. #}
+      <ul class="social-links">
+        {% for link in resume.links %}
+        {% set icon = "icons/" ~ (link.label | lower) ~ ".png" %}
+        {% if has_asset(icon) %}
+        <li><a href="{{ link.url }}" title="{{ link.label }}"><img src="{{ root }}{{ asset(icon) }}" alt="{{ link.label }}" width="22" height="22"></a></li>
+        {% endif %}
+        {% endfor %}
+        {% if resume.email %}
+        <li><a href="mailto:{{ resume.email }}" data-copy-email="{{ resume.email }}" title="Copy {{ resume.email }}"><img src="{{ root }}{{ asset('icons/gmail.png') }}" alt="Email" width="22" height="22"></a></li>
+        {% endif %}
+      </ul>
       {# A native <details> dropdown, so it works without JavaScript; download.js closes
          it on an outside click, Escape, or a pick. #}
       <details class="download-menu">
