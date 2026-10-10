@@ -1,4 +1,4 @@
-.PHONY: install lint format typecheck test check validate build serve themes clean
+.PHONY: install lint format typecheck test check validate build serve themes typing clean
 
 install:  ## Install dependencies and git hooks
 	poetry install
@@ -33,6 +33,9 @@ serve:
 
 themes:  ## Check site/themes.yaml and write _site/themes-preview.html
 	poetry run portfolio themes
+
+typing:  ## Refresh content/typing.yaml from Monkeytype
+	poetry run portfolio typing
 
 clean:
 	rm -rf _site .pytest_cache .mypy_cache .ruff_cache .coverage

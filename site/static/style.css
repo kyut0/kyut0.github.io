@@ -1020,3 +1020,90 @@ button.chip:hover {
   aspect-ratio: 1;
   border-radius: 50%;
 }
+
+/* ---- Hidden /type page (easter egg) ----------------------------------------------- */
+.type-board {
+  margin-top: 1.5rem;
+}
+
+.type-status {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.5rem;
+}
+
+.type-status .button {
+  border: 0;
+  font: inherit;
+  cursor: pointer;
+}
+
+.type-timer {
+  color: var(--accent-2);
+  font-size: 1.6rem;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Three lines of words; type.js scrolls the current one into view. */
+.type-words {
+  position: relative;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0 0.7em;
+  height: 6.6em;
+  overflow: hidden;
+  padding: 0.3em 0.5em;
+  font-size: 1.2rem;
+  line-height: 2;
+  color: var(--muted);
+}
+
+.type-word {
+  border-radius: 3px;
+}
+
+.type-word.is-current {
+  color: var(--text);
+  text-decoration: underline;
+  text-decoration-color: var(--accent);
+  text-decoration-thickness: 2px;
+}
+
+.type-word.is-typo {
+  background: var(--surface);
+  color: var(--accent);
+}
+
+.type-word.is-correct {
+  color: var(--text);
+}
+
+.type-word.is-wrong {
+  color: var(--accent);
+  text-decoration: line-through;
+}
+
+.type-input {
+  width: 100%;
+  margin-top: 0.75rem;
+  padding: 0.5rem 0.75rem;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  background: var(--surface);
+  color: var(--text);
+  font: inherit;
+  font-size: 1.1rem;
+}
+
+.type-input:focus {
+  border-color: var(--accent);
+  outline: none;
+}
+
+.type-score {
+  color: var(--heading);
+  font-size: 1.25rem;
+  font-weight: 600;
+}

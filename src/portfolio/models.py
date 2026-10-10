@@ -176,6 +176,36 @@ class Project(_Model):
     asset_dir: Path | None = Field(default=None, exclude=True)
 
 
+class TypingBest(_Model):
+    """One Monkeytype personal best, e.g. 74.4 wpm on the 15-second English test."""
+
+    mode: str = Field(pattern=r"^(time|words)$")
+    length: int = Field(gt=0)  # seconds for "time" tests, word count for "words" tests
+    language: str
+    wpm: float = Field(gt=0)
+    accuracy: float = Field(ge=0, le=100)
+    set_on: date
+
+
+class Typing(_Model):
+    """A snapshot of a Monkeytype profile (content/typing.yaml), for the hidden /type page.
+
+    `portfolio typing` refreshes it from Monkeytype's public API; the build itself never
+    goes online, so it stays reproducible.
+    """
+
+    username: str
+    profile: HttpUrl
+    bests: list[TypingBest] = Field(min_length=1)
+
+    def best(self, mode: str, length: int) -> TypingBest | None:
+        """Fastest English personal best for one test, e.g. best("time", 15)."""
+        matches = [
+            b for b in self.bests if (b.mode, b.length, b.language) == (mode, length, "english")
+        ]
+        return max(matches, key=lambda b: b.wpm, default=None)
+
+
 class Site(_Model):
     resume: Resume
     projects: list[Project]
@@ -185,6 +215,7 @@ class Site(_Model):
     about_asset_dir: Path | None = Field(default=None, exclude=True)
     cover_letter_paragraphs: list[str]  # plain text; the letter is published only as a PDF
     updated: date | None = None  # newest commit to the site's repo
+    typing: Typing | None = None  # content/typing.yaml, if present
 
     @model_validator(mode="after")
     def _project_organizations_exist(self) -> Self:

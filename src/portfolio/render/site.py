@@ -16,6 +16,9 @@ from portfolio.render.timeline import build_timeline
 
 PAGES = ("index.html", "experience.html", "projects.html", "publications.html", "about.html")
 
+# Easter-egg pages: built like the rest but linked from no menu (see static/console.js).
+HIDDEN_PAGES = ("type.html",)
+
 
 # Old page URLs that now live elsewhere; each gets a tiny redirect page.
 REDIRECTS = {"resume.html": "experience.html"}
@@ -134,7 +137,7 @@ def build_site(
     }
     written: list[Path] = []
 
-    for page in PAGES:
+    for page in PAGES + HIDDEN_PAGES:
         target = out_dir / page
         target.write_text(env.get_template(page).render(**context), encoding="utf-8")
         written.append(target)

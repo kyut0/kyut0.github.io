@@ -1,0 +1,52 @@
+# Monkeytype snapshot for the hidden /type page. Refresh with `portfolio typing`.
+username: yutbutt
+profile: https://monkeytype.com/profile/yutbutt
+bests:
+- mode: time
+  length: 15
+  language: english
+  wpm: 128.8
+  accuracy: 100.0
+  set_on: '2022-10-04'
+- mode: time
+  length: 30
+  language: english
+  wpm: 116.0
+  accuracy: 100.0
+  set_on: '2022-11-28'
+- mode: time
+  length: 60
+  language: english
+  wpm: 108.38
+  accuracy: 97.84
+  set_on: '2022-10-05'
+- mode: time
+  length: 120
+  language: english
+  wpm: 100.09
+  accuracy: 98.35
+  set_on: '2022-10-19'
+- mode: words
+  length: 10
+  language: english
+  wpm: 144.66
+  accuracy: 100.0
+  set_on: '2022-10-04'
+- mode: words
+  length: 25
+  language: english
+  wpm: 125.51
+  accuracy: 100.0
+  set_on: '2022-09-29'
+- mode: words
+  length: 50
+  language: english
+  wpm: 120.96
+  accuracy: 100.0
+  set_on: '2022-09-22'
+- mode: words
+  length: 100
+  language: english
+  wpm: 108.01
+  accuracy: 97.68
+  set_on: '2022-10-04'

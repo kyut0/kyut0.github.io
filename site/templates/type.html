@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% set root = "" %}
+{% block title %}Type · {{ resume.name }}{% endblock %}
+{% block content %}
+{# Easter egg: linked from nowhere but the devtools console (static/console.js). #}
+<!-- Ahoy! You read page source too? A true adventurer. -->
+{% set best = site.typing.best("time", 15) if site.typing else none %}
+<h1>Can you out-type me?</h1>
+<section class="type-test"
+  data-seconds="15"
+  {% if best %}data-best="{{ best.wpm }}" data-profile="{{ site.typing.profile }}"{% endif %}>
+  <p>
+    You found the hidden pathway. Your first trial: 15 seconds of typing.
+    {% if best %}
+    My best is <strong>{{ best.wpm | round | int }} wpm</strong> on
+    <a href="{{ site.typing.profile }}">Monkeytype</a>.
+    {% endif %}
+    The clock starts on your first keystroke.
+  </p>
+  <noscript><p>This trial needs JavaScript. Even pirates use computers.</p></noscript>
+  <div class="type-board" hidden>
+    <div class="type-status">
+      <span class="type-timer" aria-label="Seconds left">15</span>
+      <button class="button type-restart" type="button">Restart</button>
+    </div>
+    <div class="type-words" aria-hidden="true"></div>
+    <label class="visually-hidden" for="type-input">Type the words shown</label>
+    <input class="type-input" id="type-input" type="text" autocomplete="off" autocorrect="off"
+      autocapitalize="off" spellcheck="false" placeholder="start typing…">
+    <div class="type-result" role="status" aria-live="polite"></div>
+  </div>
+</section>
+{% endblock %}
+{% block scripts %}
+  <script src="{{ root }}{{ asset('type.js') }}" defer></script>
+{% endblock %}

@@ -1,4 +1,4 @@
-"""Command-line entry point: `portfolio validate | build | serve | themes`."""
+"""Command-line entry point: `portfolio validate | build | serve | themes | typing`."""
 
 import argparse
 import contextlib
@@ -6,12 +6,14 @@ from functools import partial
 import http.server
 from pathlib import Path
 import sys
+from urllib.error import URLError
 
 from pydantic import ValidationError
 import seedpalette
 import yaml
 
 from portfolio.load import ContentError, load_site
+from portfolio.monkeytype import fetch_profile, typing_from_profile, write_typing
 from portfolio.render import build_pdfs, build_site
 from portfolio.render.pdf import THEMED_DIR, PdfOverflowError
 from portfolio.render.site import build_theme_preview
@@ -31,7 +33,23 @@ def _parser() -> argparse.ArgumentParser:
         "themes", help="check every color theme and write a preview page of them all"
     )
     themes.add_argument("--preview", type=Path, default=Path("_site/themes-preview.html"))
+    typing = sub.add_parser(
+        "typing", help="refresh content/typing.yaml from a public Monkeytype profile"
+    )
+    typing.add_argument("--user", default="yutbutt", help="Monkeytype username")
     return parser
+
+
+def _refresh_typing(username: str, content_dir: Path) -> int:
+    try:
+        typing = typing_from_profile(fetch_profile(username))
+    except (URLError, KeyError, ValueError) as exc:
+        print(f"monkeytype error: {exc}", file=sys.stderr)
+        return 1
+    path = content_dir / "typing.yaml"
+    write_typing(typing, path)
+    print(f"wrote {path} ({len(typing.bests)} personal best(s) for {typing.username})")
+    return 0
 
 
 def _load_themes(site_dir: Path) -> seedpalette.ThemeSet | None:
@@ -51,6 +69,8 @@ def _load_themes(site_dir: Path) -> seedpalette.ThemeSet | None:
 
 def main(argv: list[str] | None = None) -> int:
     args = _parser().parse_args(argv)
+    if args.command == "typing":
+        return _refresh_typing(args.user, args.content)
 
     themes = _load_themes(args.site_dir)
     if themes is None:

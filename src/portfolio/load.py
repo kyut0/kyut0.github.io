@@ -7,7 +7,7 @@ from markdown_it import MarkdownIt
 import yaml
 
 from portfolio.gitinfo import last_commit_date
-from portfolio.models import Project, Resume, Site
+from portfolio.models import Project, Resume, Site, Typing
 
 _md = MarkdownIt("commonmark")
 
@@ -74,6 +74,13 @@ def _check_images(path: Path, images: list[str]) -> None:
         raise ContentError(f"{path}: image(s) not found: {', '.join(missing)}")
 
 
+def load_typing(path: Path) -> Typing | None:
+    """Load the Monkeytype snapshot, if there is one (it's optional)."""
+    if not path.is_file():
+        return None
+    return Typing.model_validate(yaml.safe_load(path.read_text(encoding="utf-8")))
+
+
 def load_page(path: Path) -> tuple[str, Path | None]:
     """Render a standalone Markdown page (like about.md) and find its asset folder.
 
@@ -130,4 +137,5 @@ def load_site(content_dir: Path) -> Site:
         about_asset_dir=about_asset_dir,
         cover_letter_paragraphs=plain_paragraphs(cover_letter),
         updated=last_commit_date(content_dir),
+        typing=load_typing(content_dir / "typing.yaml"),
     )
