@@ -521,6 +521,11 @@ code {
   color: var(--link);
 }
 
+/* "built from 1c410bb" wraps as one piece, never leaving the hash alone on a line. */
+.built {
+  white-space: nowrap;
+}
+
 .cards {
   list-style: none;
   padding: 0;

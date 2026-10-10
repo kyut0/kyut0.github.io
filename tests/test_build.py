@@ -125,6 +125,11 @@ def test_footer_omits_updated_date_without_history(
 ) -> None:
     site = load_site(content_dir).model_copy(update={"updated": None})
     build_site(site, tmp_path, site_dir / "templates", site_dir / "static")
+    index = (tmp_path / "index.html").read_text()
+    assert "Updated <time" not in index
+    assert " · built from" not in index  # no separator without a date before it
+    no_git = site.model_copy(update={"commit": None, "commit_url": None})
+    build_site(no_git, tmp_path, site_dir / "templates", site_dir / "static")
     assert 'class="updated"' not in (tmp_path / "index.html").read_text()
 
 
@@ -265,3 +270,28 @@ def test_every_page_declares_the_favicon(
         tmp_path / "projects" / f"{load_site(content_dir).projects[0].slug}.html"
     ).read_text()
     assert 'href="../static/favicon.svg?v=' in project
+
+
+def test_footer_links_the_commit_it_was_built_from(
+    content_dir: Path, site_dir: Path, tmp_path: Path
+) -> None:
+    site = load_site(content_dir)
+    build_site(site, tmp_path, site_dir / "templates", site_dir / "static")
+    index = (tmp_path / "index.html").read_text()
+    if site.commit is None:  # e.g. building from an exported tarball
+        assert "built from" not in index
+        return
+    short = site.commit[:7]
+    if site.commit_url:
+        assert f'href="{site.commit_url}"' in index
+        assert str(site.commit_url).endswith(f"/commit/{site.commit}")
+    assert "built from" in index and f"<code>{short}</code>" in index
+
+
+def test_footer_without_git_info_has_no_commit(
+    content_dir: Path, site_dir: Path, tmp_path: Path
+) -> None:
+    site = load_site(content_dir).model_copy(update={"commit": None, "commit_url": None})
+    build_site(site, tmp_path, site_dir / "templates", site_dir / "static")
+    index = (tmp_path / "index.html").read_text()
+    assert "built from" not in index

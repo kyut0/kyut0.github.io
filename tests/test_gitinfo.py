@@ -5,7 +5,7 @@ import subprocess
 
 import pytest
 
-from portfolio.gitinfo import last_commit_date
+from portfolio.gitinfo import github_repo_url, last_commit_date, last_commit_hash
 
 
 def _git(repo: Path, *args: str, when: str = "2026-01-15T12:00:00") -> None:
@@ -55,3 +55,38 @@ def test_shallow_clone_still_has_newest_commit(repo: Path, tmp_path: Path) -> No
         capture_output=True,
     )
     assert last_commit_date(clone) == date(2026, 3, 1)
+
+
+def test_commit_hash_is_heads_full_hash(repo: Path) -> None:
+    head = subprocess.run(
+        ["git", "rev-parse", "HEAD"], cwd=repo, capture_output=True, text=True, check=True
+    ).stdout.strip()
+    assert last_commit_hash(repo / "content") == head
+    assert len(head) == 40
+
+
+def test_no_commit_hash_without_commits(tmp_path: Path) -> None:
+    assert last_commit_hash(tmp_path) is None  # outside a repo
+    _git(tmp_path, "init", "-q")
+    assert last_commit_hash(tmp_path) is None  # no commits yet
+
+
+@pytest.mark.parametrize(
+    "remote",
+    [
+        "git@github.com:kyut0/kyut0.github.io.git",
+        "https://github.com/kyut0/kyut0.github.io.git",
+        "https://github.com/kyut0/kyut0.github.io",
+        "https://x-access-token:secret@github.com/kyut0/kyut0.github.io",
+        "ssh://git@github.com/kyut0/kyut0.github.io.git",
+    ],
+)
+def test_github_repo_url_from_any_remote_form(repo: Path, remote: str) -> None:
+    _git(repo, "remote", "add", "origin", remote)
+    assert github_repo_url(repo) == "https://github.com/kyut0/kyut0.github.io"
+
+
+def test_no_repo_url_for_missing_or_non_github_remote(repo: Path) -> None:
+    assert github_repo_url(repo) is None  # no origin
+    _git(repo, "remote", "add", "origin", "https://gitlab.com/kyut0/site.git")
+    assert github_repo_url(repo) is None
