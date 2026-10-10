@@ -61,7 +61,7 @@ make serve      # build and serve at http://127.0.0.1:8000
 ├── site/                 # the presentation: how it looks
 │   ├── templates/        # Jinja templates
 │   ├── typst/            # PDF resume + cover letter layouts
-│   ├── themes.yaml       # named color themes (see ADR 0004)
+│   ├── themes.yaml       # color themes, built with seedpalette (ADR 0004)
 │   └── static/           # CSS, images
 ├── src/portfolio/        # the pipeline
 │   ├── models.py         # schemas

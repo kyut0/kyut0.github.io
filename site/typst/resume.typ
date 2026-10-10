@@ -2,13 +2,13 @@
 #import "common.typ": *
 #show: setup.with("Resume")
 
-#set list(indent: 0.6em, spacing: 0.45em, marker: text(fill: pop)[•])
+#set list(indent: 0.6em, spacing: 0.45em, marker: text(fill: accent)[•])
 
 #let section(title) = {
   v(0.8em)
   text(size: 1.05em, weight: "bold", fill: heading, upper(title))
   v(-0.65em)
-  line(length: 100%, stroke: 0.75pt + pop)
+  line(length: 100%, stroke: 0.75pt + accent)
   v(0.1em)
 }
 

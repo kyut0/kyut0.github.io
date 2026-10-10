@@ -8,7 +8,7 @@
 
 #letterhead()
 #v(0.2em)
-#line(length: 100%, stroke: 0.75pt + pop)
+#line(length: 100%, stroke: 0.75pt + accent)
 #v(1.2em)
 
 #for paragraph in data.paragraphs {

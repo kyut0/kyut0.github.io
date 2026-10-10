@@ -8,12 +8,13 @@ from pathlib import Path
 import sys
 
 from pydantic import ValidationError
+import seedpalette
+import yaml
 
 from portfolio.load import ContentError, load_site
 from portfolio.render import build_cover_letter_pdf, build_resume_pdf, build_site
 from portfolio.render.pdf import PdfOverflowError
 from portfolio.render.site import build_theme_preview
-from portfolio.theme import Theme, load_themes, report
 
 
 def _parser() -> argparse.ArgumentParser:
@@ -33,16 +34,16 @@ def _parser() -> argparse.ArgumentParser:
     return parser
 
 
-def _load_themes(site_dir: Path) -> list[Theme] | None:
-    """Load site/themes.yaml, printing why it failed if it did."""
+def _load_themes(site_dir: Path) -> seedpalette.ThemeSet | None:
+    """Load site/themes.yaml with seedpalette, printing why it failed if it did."""
     try:
-        themes = load_themes(site_dir / "themes.yaml")
-    except (OSError, ValidationError) as exc:
+        themes = seedpalette.load(site_dir / "themes.yaml")
+    except (OSError, yaml.YAMLError, ValidationError) as exc:
         print(f"theme error:\n{exc}", file=sys.stderr)
         return None
-    failing = [t.name for t in themes if not t.ok]
+    failing = [t.name for t in themes.themes if not t.ok]
     if failing:
-        print(report(themes), file=sys.stderr)
+        print(seedpalette.report(themes), file=sys.stderr)
         print(f"theme error: {', '.join(failing)} fail contrast", file=sys.stderr)
         return None
     return themes
@@ -55,8 +56,8 @@ def main(argv: list[str] | None = None) -> int:
     if themes is None:
         return 1
     if args.command == "themes":
-        print(report(themes))
-        preview = build_theme_preview(themes, args.site_dir / "templates", args.preview)
+        print(seedpalette.report(themes))
+        preview = build_theme_preview(themes, args.preview)
         print(f"wrote {preview}")
         return 0
 

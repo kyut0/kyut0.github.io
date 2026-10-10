@@ -7,11 +7,11 @@ import re
 import shutil
 
 from jinja2 import Environment, FileSystemLoader, StrictUndefined, select_autoescape
+import seedpalette
 
 from portfolio.models import Resume, Site
 from portfolio.render.formatting import date_range, long_date, month_year
 from portfolio.render.timeline import build_timeline
-from portfolio.theme import Theme, load_themes, themes_css
 
 PAGES = ("index.html", "experience.html", "projects.html", "publications.html", "about.html")
 
@@ -73,11 +73,10 @@ def _fingerprints(static_out: Path) -> dict[str, str]:
     }
 
 
-def build_theme_preview(themes: list[Theme], templates_dir: Path, out: Path) -> Path:
-    """Write a standalone page previewing every theme in both modes."""
+def build_theme_preview(themes: seedpalette.ThemeSet, out: Path) -> Path:
+    """Write seedpalette's standalone page previewing every theme in both modes."""
     out.parent.mkdir(parents=True, exist_ok=True)
-    html = _environment(templates_dir).get_template("themes-preview.html").render(themes=themes)
-    out.write_text(html, encoding="utf-8")
+    out.write_text(seedpalette.preview_html(themes, "Portfolio themes"), encoding="utf-8")
     return out
 
 
@@ -86,14 +85,14 @@ def build_site(
     out_dir: Path,
     templates_dir: Path,
     static_dir: Path,
-    themes: list[Theme] | None = None,
+    themes: seedpalette.ThemeSet | None = None,
 ) -> list[Path]:
     """Write every page plus static assets to out_dir and return the written page paths.
 
     themes defaults to the ones in themes.yaml next to templates_dir (i.e. site/).
     """
     if themes is None:
-        themes = load_themes(templates_dir.parent / "themes.yaml")
+        themes = seedpalette.load(templates_dir.parent / "themes.yaml")
     env = _environment(templates_dir)
     out_dir.mkdir(parents=True, exist_ok=True)
 
@@ -104,7 +103,7 @@ def build_site(
     if static_dir.is_dir():
         shutil.copytree(static_dir, static_out, dirs_exist_ok=True)
     static_out.mkdir(exist_ok=True)
-    (static_out / "themes.css").write_text(themes_css(themes), encoding="utf-8")
+    (static_out / "themes.css").write_text(seedpalette.to_css(themes), encoding="utf-8")
     versions = _fingerprints(static_out)
 
     def asset(path: str) -> str:
@@ -116,7 +115,7 @@ def build_site(
         "site": site,
         "resume": site.resume,
         "timeline": build_timeline(site),
-        "themes": themes,
+        "themes": themes.themes,
         "year": today.year,
         "downloads": {
             key: {

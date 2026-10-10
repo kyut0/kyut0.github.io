@@ -7,13 +7,13 @@
 
 // The site's light-theme palette (portfolio.render.pdf.PDF_COLORS). Like the site:
 // section headings use the heading color, subheadings and links the link color, and
-// bullets and rules the pop color.
+// bullets and rules the accent color. (`fg` because `text` is a Typst function.)
 #let colors = json(bytes(sys.inputs.colors))
-#let fg = rgb(colors.fg)
+#let fg = rgb(colors.text)
 #let muted = rgb(colors.muted)
 #let heading = rgb(colors.heading)
 #let link-color = rgb(colors.link)
-#let pop = rgb(colors.pop)
+#let accent = rgb(colors.accent)
 
 // Page, text, and link styling for a document titled `title` (e.g. "Resume").
 #let setup(title, body) = {

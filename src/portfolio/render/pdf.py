@@ -18,15 +18,15 @@ from portfolio.render.formatting import date_range, month_year
 # body text at ~9.2pt: past that, content should be trimmed rather than shrunk further.
 SCALES = (1.0, 0.97, 0.94, 0.91, 0.88)
 
-# The site's light-theme colors (keys are the CSS custom property names in
-# site/static/style.css), since the PDF prints on white paper.
-# tests/test_theme.py fails if these drift from the stylesheet.
+# The default theme's light palette (keys are seedpalette token names, as in
+# site/themes.yaml), since the PDF prints on white paper.
+# tests/test_theme.py fails if these drift from the theme file.
 PDF_COLORS = {
-    "fg": "#3a1a0e",
+    "text": "#3a1a0e",
     "muted": "#6e4e3c",
     "heading": "#8e1f5c",
     "link": "#1f5fae",
-    "pop": "#ff2d95",
+    "accent": "#ff2d95",
 }
 
 

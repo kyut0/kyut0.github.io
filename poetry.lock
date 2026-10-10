@@ -1138,6 +1138,27 @@ files = [
 ]
 
 [[package]]
+name = "seedpalette"
+version = "0.1.0"
+description = "Grow a few seed colors into full, readable light and dark website themes, with a report of every color it had to fix."
+optional = false
+python-versions = ">=3.13"
+groups = ["main"]
+files = []
+develop = false
+
+[package.dependencies]
+jinja2 = ">=3.1,<4.0"
+pydantic = ">=2.9,<3.0"
+pyyaml = ">=6.0,<7.0"
+
+[package.source]
+type = "git"
+url = "https://github.com/kyut0/seedpalette.git"
+reference = "ee583b6"
+resolved_reference = "ee583b63b6428d818cab48d5ac58395e58876b9e"
+
+[[package]]
 name = "types-pyyaml"
 version = "6.0.12.20260906"
 description = "Typing stubs for PyYAML"
@@ -1226,4 +1247,4 @@ python-discovery = ">=1.6.1"
 [metadata]
 lock-version = "2.1"
 python-versions = ">=3.13"
-content-hash = "e40058ac9c14a350cba70258e40af2ec69950eead13d5741fdf2969f55e4f99b"
+content-hash = "51e45148278f6c620b99ccf5d54d417c1b7657debaf4cae2a9e0671e25a0e805"
