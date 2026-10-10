@@ -1,6 +1,7 @@
 from pathlib import Path
 import re
 import shutil
+from typing import Literal
 
 import pytest
 
@@ -51,3 +52,57 @@ def test_treasure_themes_are_hidden_until_found(
     assert 'src="static/treasure.js?v=' in index
     css = (tmp_path / "static" / "style.css").read_text()
     assert ':root:not([data-treasure="found"]) .treasure-only' in css
+
+
+def test_every_treasure_theme_has_its_painting(site_dir: Path) -> None:
+    art = site_dir / "static" / "treasure"
+    for name in load_themes(site_dir).treasure:
+        assert (art / f"{name}.jpg").is_file(), f"{name}: missing painting"
+
+
+def _has_gps(jpeg: bytes) -> bool:
+    """Whether a JPEG's EXIF block points to GPS data (tag 0x8825 in its first IFD)."""
+    i = 2  # skip the SOI marker
+    while i + 4 <= len(jpeg) and jpeg[i] == 0xFF:
+        marker, size = jpeg[i + 1], int.from_bytes(jpeg[i + 2 : i + 4], "big")
+        segment = jpeg[i + 4 : i + 2 + size]
+        if marker == 0xE1 and segment.startswith(b"Exif\x00\x00"):
+            tiff = segment[6:]
+            order: Literal["little", "big"] = "little" if tiff[:2] == b"II" else "big"
+            ifd = int.from_bytes(tiff[4:8], order)
+            count = int.from_bytes(tiff[ifd : ifd + 2], order)
+            tags = (
+                int.from_bytes(tiff[ifd + 2 + 12 * n : ifd + 4 + 12 * n], order)
+                for n in range(count)
+            )
+            return 0x8825 in tags
+        if marker == 0xDA:  # image data starts; no more metadata
+            break
+        i += 2 + size
+    return False
+
+
+def test_published_photos_carry_no_location(site_dir: Path, content_dir: Path) -> None:
+    """Phone photos can embed where they were taken (EXIF GPS); those must be stripped."""
+    photos = [
+        p
+        for folder in (site_dir / "static", content_dir)
+        for p in folder.rglob("*")
+        if p.suffix.lower() in (".jpg", ".jpeg")
+    ]
+    located = [str(p) for p in photos if _has_gps(p.read_bytes())]
+    assert not located, f"strip location data from: {', '.join(located)}"
+
+
+def test_gallery_page_shows_each_painting_once_found(
+    content_dir: Path, site_dir: Path, tmp_path: Path
+) -> None:
+    site_themes = load_themes(site_dir)
+    build_site(load_site(content_dir), tmp_path, site_dir / "templates", site_dir / "static")
+    gallery = (tmp_path / "treasure.html").read_text()
+    assert 'class="treasure-locked"' in gallery  # what visitors see before finding it
+    for name in site_themes.treasure:
+        assert f'src="static/treasure/{name}.jpg?v=' in gallery
+        assert f'class="button wear-theme" type="button" data-palette="{name}"' in gallery
+    index = (tmp_path / "index.html").read_text()
+    assert 'class="treasure-only treasure-mark" href="treasure.html"' in index

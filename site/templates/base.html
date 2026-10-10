@@ -36,7 +36,7 @@
             {% set is_treasure = theme.name in treasure %}
             {% if is_treasure and not ns.titled %}
             {# Treasure themes: hidden by CSS until the visitor finds the treasure. #}
-            <li class="treasure-only"><p class="settings-title treasure-title">💰 Moka Pot Magic</p></li>
+            <li class="treasure-only"><p class="settings-title treasure-title">✨ Moka Pot Magic</p></li>
             {% set ns.titled = true %}
             {% endif %}
             {% for mode in ("dark", "light") %}
@@ -98,7 +98,7 @@
     <a href="mailto:{{ resume.email }}" data-copy-email="{{ resume.email }}" title="Copy {{ resume.email }}">Email</a>
     <span class="visually-hidden" role="status" data-copy-status></span>
     {% endif %}
-    <span class="treasure-only treasure-mark" title="Treasure found">💰</span>
+    <a class="treasure-only treasure-mark" href="{{ root }}treasure.html" title="Your treasure" aria-label="Your treasure: the Moka Pot Magic collection">✨</a>
     {% if site.updated %}
     <span class="updated">Updated <time datetime="{{ site.updated.isoformat() }}">{{ site.updated | long_date }}</time></span>
     {% endif %}

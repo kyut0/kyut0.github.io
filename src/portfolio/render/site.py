@@ -18,7 +18,7 @@ from portfolio.themes import SiteThemes, load_themes
 PAGES = ("index.html", "experience.html", "projects.html", "publications.html", "about.html")
 
 # Easter-egg pages: built like the rest but linked from no menu (see static/console.js).
-HIDDEN_PAGES = ("type.html",)
+HIDDEN_PAGES = ("type.html", "treasure.html")
 
 
 # Old page URLs that now live elsewhere; each gets a tiny redirect page.

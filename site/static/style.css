@@ -317,7 +317,7 @@ code {
   border-bottom: 1px solid var(--border);
 }
 
-.bio-panel > :not(.bio-photo) {
+.bio-panel> :not(.bio-photo) {
   grid-column: 2;
 }
 
@@ -1172,7 +1172,7 @@ button.chip:hover {
   font-size: 3.5rem;
 }
 
-.treasure-art > span {
+.treasure-art>span {
   grid-area: 1 / 1;
 }
 
@@ -1190,14 +1190,17 @@ button.chip:hover {
     transform: scale(2.5) rotate(-20deg);
     opacity: 0;
   }
+
   25% {
     transform: scale(1) rotate(0);
     opacity: 1;
   }
+
   75% {
     transform: scale(1);
     opacity: 1;
   }
+
   100% {
     transform: scale(0.4);
     opacity: 0;
@@ -1209,6 +1212,7 @@ button.chip:hover {
     transform: translateY(1rem) scale(0.6);
     opacity: 0;
   }
+
   to {
     transform: none;
     opacity: 1;
@@ -1223,5 +1227,62 @@ button.chip:hover {
   .treasure-chest {
     opacity: 1;
     animation: none;
+  }
+}
+
+/* The chest's "locked" hint on treasure.html, for visitors who haven't found it yet. */
+:root[data-treasure="found"] .treasure-locked {
+  display: none;
+}
+
+.treasure-mark {
+  text-decoration: none;
+}
+
+/* Gallery (treasure.html): each painting beside its title and try-on button. */
+.gallery {
+  display: grid;
+  gap: 2.5rem;
+  margin-top: 2rem;
+}
+
+.gallery-piece {
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+  gap: 1.5rem;
+  align-items: center;
+  margin: 0;
+}
+
+.gallery-piece img {
+  width: 100%;
+  max-height: 34rem;
+  object-fit: contain;
+  border-radius: 6px;
+  box-shadow: 0 6px 24px rgb(0 0 0 / 0.25);
+}
+
+.gallery-piece h2 {
+  margin-top: 0;
+}
+
+.gallery-piece p {
+  color: var(--muted);
+}
+
+.wear-theme {
+  border: 0;
+  font: inherit;
+  cursor: pointer;
+}
+
+.wear-theme[aria-pressed="true"] {
+  background: var(--accent);
+  color: var(--on-accent);
+}
+
+@media (max-width: 640px) {
+  .gallery-piece {
+    grid-template-columns: 1fr;
   }
 }

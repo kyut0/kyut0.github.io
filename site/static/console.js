@@ -16,7 +16,7 @@
   // separately pushed "X marks the spot" onto a new line whenever the text wrapped.
   console.log(
     "%cWelcome to the hidden pathway. Stay on the trail of breadcrumbs to find all the " +
-      "easter eggs. There is gold where ❌ marks the spot.",
+    "easter eggs. There is gold where ❌ marks the spot.",
     "font-size: 1.1em; line-height: 1.6;",
   );
   const here = location.href.split(/[?#]/)[0] === typePage;
@@ -27,6 +27,6 @@
     // A badge on the site's own background, since devtools may be dark or light: the
     // theme's heading color is contrast-checked against --bg, not against the console.
     `color: ${heading}; background: ${bg}; border-left: 4px solid ${gold}; ` +
-      "padding: 6px 10px; font-size: 1.2em; font-weight: 700;",
+    "padding: 6px 10px; font-size: 1.2em; font-weight: 700;",
   );
 })();

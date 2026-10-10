@@ -4,10 +4,11 @@
 //
 // Finding it saves "treasure" = "found" in localStorage and sets data-treasure="found" on
 // <html> (the inline script in base.html restores that before first paint), which CSS
-// uses to reveal everything marked .treasure-only: the themes in the gear menu and a 💰
-// trophy in the footer.
+// uses to reveal everything marked .treasure-only: the themes in the gear menu, a ✨
+// trophy in the footer, and the paintings on the gallery page (treasure.html).
 (function () {
   const root = document.documentElement;
+  const gallery = new URL("../treasure.html", document.currentScript.src).href;
   const SECRETS = [
     ["x", "x", "x"],
     ["arrowup", "arrowup", "arrowdown", "arrowdown"]
@@ -50,23 +51,23 @@
   function celebrate(already) {
     if (document.querySelector(".treasure-dialog")) return;
     const close = el("button", { className: "button", type: "button", textContent: "Close" });
-    const open = el("button", {
+    const open = el("a", {
       className: "button button-solid",
-      type: "button",
-      textContent: "Open the color menu",
+      href: gallery,
+      textContent: "See the collection",
     });
     const dialog = el("dialog", { className: "treasure-dialog" }, [
       el("div", { className: "treasure-art" }, [
-        el("span", { className: "treasure-x", textContent: "❌" }),
-        el("span", { className: "treasure-chest", textContent: "💰" }),
+        el("span", { className: "treasure-x", textContent: "❌❌❌" }),
+        el("span", { className: "treasure-chest", textContent: "✨" }),
       ]),
       el("h2", {
         textContent: already ? "Back for more gold?" : "You found the gold, adventurer!",
       }),
       el("p", {
         textContent:
-          "The Moka Pot Magic collection is yours: color themes drawn from my art " +
-          "series. Find them in the color menu (the gear, top right).",
+          "The Moka Pot Magic collection is yours: paintings from my art series, " +
+          "each one a color theme. Try them on, or find them anytime in the color menu.",
       }),
       el("div", { className: "treasure-actions" }, [open, close]),
     ]);
@@ -75,15 +76,6 @@
     dialog.querySelector("h2").id = "treasure-title";
 
     close.addEventListener("click", () => dialog.close());
-    open.addEventListener("click", (e) => {
-      // Keep this click from reaching theme.js's outside-click handler, which would
-      // close the menu right after it opens.
-      e.stopPropagation();
-      dialog.close();
-      const toggle = document.querySelector(".settings-toggle");
-      if (toggle && toggle.getAttribute("aria-expanded") !== "true") toggle.click();
-      document.querySelector(".treasure-only .palette-option")?.focus();
-    });
     dialog.addEventListener("click", (e) => {
       if (e.target === dialog) dialog.close(); // a click on the backdrop
     });
@@ -91,6 +83,29 @@
 
     document.body.append(dialog);
     dialog.showModal();
-    console.log("%c💰 Treasure found. Well sailed, adventurer.", "font-size: 1.2em; font-weight: 700;");
+    console.log("%c✨ Treasure found. Well sailed, adventurer.", "font-size: 1.2em; font-weight: 700;");
   }
+
+  // Gallery page: "Wear this theme" picks that theme, in the visitor's current light or
+  // dark mode, through the gear menu (theme.js), so both stay in step.
+  const wear = [...document.querySelectorAll(".wear-theme")];
+  if (!wear.length) return;
+  function syncWear() {
+    for (const button of wear) {
+      const on = root.dataset.palette === button.dataset.palette;
+      button.setAttribute("aria-pressed", String(on));
+      button.textContent = on ? "Wearing it ✓" : "Wear this theme";
+    }
+  }
+  for (const button of wear) {
+    button.addEventListener("click", () => {
+      const mode = root.dataset.theme === "light" ? "light" : "dark";
+      const option = document.querySelector(
+        `.palette-option[data-palette="${button.dataset.palette}"][data-mode="${mode}"]`,
+      );
+      option?.click();
+    });
+  }
+  new MutationObserver(syncWear).observe(root, { attributeFilter: ["data-palette"] });
+  syncWear();
 })();
