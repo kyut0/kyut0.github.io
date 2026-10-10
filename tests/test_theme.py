@@ -9,12 +9,14 @@ from seedpalette.color import chroma, contrast_ratio, to_oklch
 from seedpalette.palette import CHROMA_MAX
 
 from portfolio.render.pdf import PAPER, PDF_TOKENS, pdf_colors
+from portfolio.themes import load_themes
 
 
 @pytest.fixture(scope="module")
 def themes() -> seedpalette.ThemeSet:
+    """Every theme, the hidden treasure themes included."""
     site_dir = Path(__file__).resolve().parent.parent / "site"
-    return seedpalette.load(site_dir / "themes.yaml")
+    return load_themes(site_dir).themes
 
 
 def test_every_theme_passes_contrast(themes: seedpalette.ThemeSet) -> None:

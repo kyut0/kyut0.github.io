@@ -1,0 +1,24 @@
+# Treasure themes: the Moka Pot Magic collection, one theme per art piece. Same format as
+# themes.yaml (and its extra_tokens apply here too), but these stay out of the color menu
+# until a visitor finds the treasure by typing "xxx" (see static/treasure.js).
+#
+# Run `make themes` to contrast-check them and preview them with the rest.
+
+themes:
+  # Placeholder until the palettes are pulled from the art itself: espresso, crema,
+  # stovetop flame, and brushed aluminum.
+  moka-espresso:
+    label: "Moka Pot Magic: Espresso"
+    description: Placeholder treasure theme in moka pot colors, to be replaced by the art's palettes.
+    light:
+      bg: "#f4efe8"
+      heading: "#6b3a1f"
+      link: "#1f5f8b"
+      accent: "#c4502a"
+      accent-2: "#8a9096"
+    dark:
+      bg: "#17110d"
+      heading: "#e9b872"
+      link: "#8ec5e8"
+      accent: "#d9643a"
+      accent-2: "#c0c4c8"

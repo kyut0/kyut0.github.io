@@ -6,8 +6,9 @@
   <title>{% block title %}{{ resume.name }}{% endblock %}</title>
   <meta name="description" content="{{ resume.headline }}">
   {# Before first paint: light/dark from the visitor's saved choice, else their system
-     setting; and their saved color theme, if it still exists. #}
-  <script>(function () { var d = document.documentElement, t, p; try { t = localStorage.getItem("theme"); p = localStorage.getItem("palette"); } catch (e) {} if (t !== "light" && t !== "dark") t = matchMedia("(prefers-color-scheme: light)").matches ? "light" : "dark"; d.dataset.theme = t; if ({{ themes[1:] | map(attribute="name") | list | tojson }}.indexOf(p) >= 0) d.dataset.palette = p; })();</script>
+     setting; whether they've found the treasure (static/treasure.js); and their saved
+     color theme, if it still exists and, for a treasure theme, they've unlocked it. #}
+  <script>(function () { var d = document.documentElement, t, p, x; try { t = localStorage.getItem("theme"); p = localStorage.getItem("palette"); x = localStorage.getItem("treasure"); } catch (e) {} if (t !== "light" && t !== "dark") t = matchMedia("(prefers-color-scheme: light)").matches ? "light" : "dark"; d.dataset.theme = t; if (x === "found") d.dataset.treasure = "found"; if ({{ themes[1:] | map(attribute="name") | list | tojson }}.indexOf(p) >= 0 && (x === "found" || {{ treasure | tojson }}.indexOf(p) < 0)) d.dataset.palette = p; })();</script>
   <link rel="preload" href="{{ root }}static/fonts/ibm-plex-mono-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="{{ root }}{{ asset('themes.css') }}">
   <link rel="stylesheet" href="{{ root }}{{ asset('style.css') }}">
@@ -29,10 +30,17 @@
         <div class="settings-menu" id="settings-menu" hidden>
           <p class="settings-title">Color theme</p>
           <ul>
+            {% set ns = namespace(titled=false) %}
             {% for theme in themes %}
             {% set is_default = loop.first %}
+            {% set is_treasure = theme.name in treasure %}
+            {% if is_treasure and not ns.titled %}
+            {# Treasure themes: hidden by CSS until the visitor finds the treasure. #}
+            <li class="treasure-only"><p class="settings-title treasure-title">💰 Moka Pot Magic</p></li>
+            {% set ns.titled = true %}
+            {% endif %}
             {% for mode in ("dark", "light") %}
-            <li>
+            <li{% if is_treasure %} class="treasure-only"{% endif %}>
               <button class="palette-option" type="button" data-palette="{{ theme.name }}" data-mode="{{ mode }}" data-default="{{ 'true' if is_default else 'false' }}" aria-pressed="false">
                 <span class="swatches" aria-hidden="true">{% for token in ("bg", "heading", "link", "pop") %}<span style="background: {{ theme.palette(mode)[token] }}"></span>{% endfor %}</span>
                 <span class="palette-label">{{ theme.label }} ({{ mode }})</span>
@@ -90,6 +98,7 @@
     <a href="mailto:{{ resume.email }}" data-copy-email="{{ resume.email }}" title="Copy {{ resume.email }}">Email</a>
     <span class="visually-hidden" role="status" data-copy-status></span>
     {% endif %}
+    <span class="treasure-only treasure-mark" title="Treasure found">💰</span>
     {% if site.updated %}
     <span class="updated">Updated <time datetime="{{ site.updated.isoformat() }}">{{ site.updated | long_date }}</time></span>
     {% endif %}
@@ -98,6 +107,7 @@
   <script src="{{ root }}{{ asset('download.js') }}" defer></script>
   <script src="{{ root }}{{ asset('copy-email.js') }}" defer></script>
   <script src="{{ root }}{{ asset('console.js') }}" defer></script>
+  <script src="{{ root }}{{ asset('treasure.js') }}" defer></script>
   {% block scripts %}{% endblock %}
 </body>
 </html>

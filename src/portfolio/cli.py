@@ -17,6 +17,7 @@ from portfolio.monkeytype import fetch_profile, typing_from_profile, write_typin
 from portfolio.render import build_pdfs, build_site
 from portfolio.render.pdf import THEMED_DIR, PdfOverflowError
 from portfolio.render.site import build_theme_preview
+from portfolio.themes import SiteThemes, load_themes
 
 
 def _parser() -> argparse.ArgumentParser:
@@ -52,19 +53,21 @@ def _refresh_typing(username: str, content_dir: Path) -> int:
     return 0
 
 
-def _load_themes(site_dir: Path) -> seedpalette.ThemeSet | None:
-    """Load site/themes.yaml with seedpalette, printing why it failed if it did."""
+def _load_themes(site_dir: Path) -> SiteThemes | None:
+    """Load site/themes.yaml (plus the treasure themes) with seedpalette, printing why it
+    failed if it did."""
     try:
-        themes = seedpalette.load(site_dir / "themes.yaml")
-    except (OSError, yaml.YAMLError, ValidationError) as exc:
+        site_themes = load_themes(site_dir)
+    except (OSError, yaml.YAMLError, ValueError) as exc:  # ValidationError is a ValueError
         print(f"theme error:\n{exc}", file=sys.stderr)
         return None
+    themes = site_themes.themes
     failing = [t.name for t in themes.themes if not t.ok]
     if failing:
         print(seedpalette.report(themes), file=sys.stderr)
         print(f"theme error: {', '.join(failing)} fail contrast", file=sys.stderr)
         return None
-    return themes
+    return site_themes
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -72,9 +75,10 @@ def main(argv: list[str] | None = None) -> int:
     if args.command == "typing":
         return _refresh_typing(args.user, args.content)
 
-    themes = _load_themes(args.site_dir)
-    if themes is None:
+    site_themes = _load_themes(args.site_dir)
+    if site_themes is None:
         return 1
+    themes = site_themes.themes
     if args.command == "themes":
         print(seedpalette.report(themes))
         preview = build_theme_preview(themes, args.preview)
@@ -92,7 +96,7 @@ def main(argv: list[str] | None = None) -> int:
         return 0
 
     pages = build_site(
-        site, args.out, args.site_dir / "templates", args.site_dir / "static", themes
+        site, args.out, args.site_dir / "templates", args.site_dir / "static", site_themes
     )
     try:
         pdfs = build_pdfs(site, args.site_dir / "typst", args.out, themes)
