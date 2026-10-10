@@ -19,9 +19,9 @@ Meanwhile, the field kept moving, and so did I. Geospatial scientists are now ex
 do more than make maps: to build the pipelines, ship the code, and keep the data
 trustworthy end to end. At Grassroots Carbon, I grew from Carbon Technical Manager,
 screening ranches with RShiny and QGIS, into a **Data Engineer**, going from Python novice
-to production pipelines in less than a year and a half. Today I build Python pipeli
+to production pipelines in less than a year and a half. Today I build Python pipelines to
 model soil carbon reductions and removals, containerize them with Docker, deploy them with
-cron and GitHub Actata with Pydantic. I've processed a dozen datasets onto Uber's H3 hexagonal
+cron and GitHub Actions, and validate with Pydantic. I've processed a dozen datasets onto Uber's H3 hexagonal
 index as Parquet files on AWS S3, and I review my colleagues' pull requests as carefully
 as I rewrite my own code.
 
