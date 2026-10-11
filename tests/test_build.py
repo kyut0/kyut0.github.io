@@ -11,6 +11,7 @@ from portfolio.load import load_site
 from portfolio.models import Resume
 from portfolio.render import build_site
 from portfolio.render.site import download_name
+from portfolio.themes import load_themes
 
 
 def test_build_writes_every_page(content_dir: Path, site_dir: Path, tmp_path: Path) -> None:
@@ -187,7 +188,7 @@ def test_cli_build(content_dir: Path, site_dir: Path, tmp_path: Path) -> None:
         p.extract_text() for p in (*letter.pages, *resume.pages)
     ]
     # Every other theme gets its own copies, which download.js links when it's selected.
-    for theme in ("sage", "tokyo-night", "rose-pine"):
+    for theme in [t.name for t in load_themes(site_dir).themes.themes[1:]]:
         for name in ("resume.pdf", "cover-letter.pdf", "cover-letter-and-resume.pdf"):
             assert (out / "pdf" / theme / name).is_file(), f"{theme}/{name}"
     assert (out / "pdf" / "sage" / "resume.pdf").read_bytes() != (out / "resume.pdf").read_bytes()
