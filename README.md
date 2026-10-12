@@ -6,7 +6,7 @@ My portfolio site, built as a small data pipeline. Resume and project content li
 structured YAML/Markdown, are validated against typed schemas, rendered to static HTML
 and PDFs, and deployed to GitHub Pages on every push to `main`.
 
-**Live site:** https://kyut0.github.io
+**Live site:** https://katy-yut.com
 
 ## How it works
 
@@ -43,6 +43,11 @@ flowchart LR
 - **Deploy:** `.github/workflows/ci.yml` lints, type-checks, tests, and builds every push
   and pull request; `deploy.yml` builds and publishes `_site/` to Pages from `main`. The
   footer says "built from `<commit>`", linked to that commit on GitHub.
+- **Domain:** the site is served at `katy-yut.com`, set as the custom domain in the
+  repo's Pages settings. Because Pages deploys from Actions, there's no `CNAME` file.
+  DNS is at Cloudflare: apex A/AAAA records to GitHub Pages, `www` as a CNAME to
+  `kyut0.github.io`, all DNS-only (not proxied), plus the domain's GitHub verification
+  TXT record. `kyut0.github.io` and `www` redirect to the apex.
 
 The build never goes online: anything fetched from elsewhere (the Monkeytype stats in
 `content/typing.yaml`) is a committed snapshot, refreshed with its own command.
@@ -153,7 +158,7 @@ fails the build if a JPEG has EXIF GPS tags.
 
 - [x] Phase 2: scaffold, schemas, HTML renderer, CI, Pages deploy
 - [ ] Phase 3: ~~PDF resume rendered from the same YAML~~ ✅; GitHub API project ingestion
-- [ ] Phase 4: real content, design and personal flair, custom domain
+- [ ] Phase 4: real content, design and personal flair, ~~custom domain~~ ✅ (katy-yut.com)
 - [ ] Phase 5: launch, redirect the old Shiny app, archive the legacy repo
 
 ## License
