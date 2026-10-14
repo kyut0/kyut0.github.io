@@ -1,4 +1,7 @@
-# kyut0.github.io
+# katy-yut.com
+
+Source for **[katy-yut.com](https://katy-yut.com)**. The repo keeps its `kyut0.github.io` name
+because that's what makes it my GitHub user site, which keeps the old address redirecting here.
 
 [![CI](https://github.com/kyut0/kyut0.github.io/actions/workflows/ci.yml/badge.svg)](https://github.com/kyut0/kyut0.github.io/actions/workflows/ci.yml)
 
