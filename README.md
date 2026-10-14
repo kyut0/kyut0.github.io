@@ -160,8 +160,8 @@ fails the build if a JPEG has EXIF GPS tags.
 ## Roadmap
 
 - [x] Phase 2: scaffold, schemas, HTML renderer, CI, Pages deploy
-- [ ] Phase 3: ~~PDF resume rendered from the same YAML~~ ✅; GitHub API project ingestion
-- [ ] Phase 4: real content, design and personal flair, ~~custom domain~~ ✅ (katy-yut.com)
+- [x] Phase 3: PDF resume rendered from the same YAML
+- [x] Phase 4: real content, design and personal flair, custom domain (katy-yut.com)
 - [ ] Phase 5: launch, redirect the old Shiny app, archive the legacy repo
 
 ## License
