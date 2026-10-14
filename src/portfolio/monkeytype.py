@@ -24,7 +24,7 @@ def fetch_profile(username: str, timeout: float = 10) -> dict[str, Any]:
     """Return the `data` object of a user's public Monkeytype profile."""
     request = Request(
         API.format(username=quote(username)),
-        headers={"Accept": "application/json", "User-Agent": "kyut0.github.io portfolio"},
+        headers={"Accept": "application/json", "User-Agent": "katy-yut.com portfolio"},
     )
     with urlopen(request, timeout=timeout) as response:
         payload: dict[str, Any] = json.load(response)
